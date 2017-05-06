@@ -382,11 +382,11 @@ fix.numerics<-function(x, k=8, decimal=c(",", " ", "\\.\\.", ",,", "\\.,", ",\\.
   x[, apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !is.numeric(x)) & sapply(x, function(x) length(unique(x))>=k)] <- sapply(x[, apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !is.numeric(x))  & sapply(x, function(x) length(unique(x))>=k), drop=FALSE], function(x) numeros(x))
   final.NA<-sum(sapply(x, function(x) sum(is.na(x)))-previous.NA)
   if(final.NA>30){
-    fc <- readline(paste(final.NA, " new missing values will be generated. Continue with fix? (y/n) "))
+    fc <- readline(paste(final.NA, "new missing values will be generated. Continue with fix? (y/n) "))
     } else fc <- "y"
   if(tolower(fc) %in% "y"){
+    print(final.NA, " new missing values generated")
     return(x[,1:(dim(x)[2]), drop=TRUE])
-    warning(final.NA, " new missing values generated")
   } else return(x.old)
 }
 
