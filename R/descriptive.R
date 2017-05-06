@@ -383,7 +383,7 @@ fix.numerics<-function(x, k=8, decimal=c(",", " ", "\\.\\.", ",,", "\\.,", ",\\.
   final.NA<-sum(sapply(x, function(x) sum(is.na(x)))-previous.NA)
   if(final.NA>30){
     fc <- readline(paste(final.NA, " new missing values will be generated. Continue with fix? (y/n) "))
-    } else fc <- "n"
+    } else fc <- "y"
   if(tolower(fc) %in% "y"){
     return(x[,1:(dim(x)[2]), drop=TRUE])
     warning(final.NA, " new missing values generated")
