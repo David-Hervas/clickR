@@ -385,7 +385,7 @@ fix.numerics<-function(x, k=8, decimal=c(",", " ", "\\.\\.", ",,", "\\.,", ",\\.
     fc <- readline(paste(final.NA, "new missing values will be generated. Continue with fix? (y/n) "))
     } else fc <- "y"
   if(tolower(fc) %in% "y"){
-    print(final.NA, " new missing values generated")
+    print(paste(final.NA, "new missing values generated"))
     return(x[,1:(dim(x)[2]), drop=TRUE])
   } else return(x.old)
 }
