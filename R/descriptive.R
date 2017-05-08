@@ -15,7 +15,7 @@
 #' @examples
 #' descriptivo(iris)
 #' descriptivo(iris, by="Species")
-descriptivo<-function(x, z=3, graph=ifelse(length(data.frame(x))>20, F, T), ignore.na=T, by=NULL){
+descriptivo<-function(x, z=3, graph=ifelse(length(data.frame(x))>20, FALSE, TRUE), ignore.na=T, by=NULL){
   summary1<-summary2<-NULL
   #Data.frame
   if(is.data.frame(x)==F){
