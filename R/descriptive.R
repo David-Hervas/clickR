@@ -483,14 +483,13 @@ peek <- function(x, n=10, which=1:ncol(x)){
 #' @param dat A data.frame
 #' @export
 #' @examples
-#' d <- data.frame('Variable 1'=NA, '% Response'=NA, ' Variable     3'=NA)
+#' d <- data.frame('Variable 1'=NA, '% Response'=NA, ' Variable     3'=NA,check.names=F)
 #' names(d)
 #' names(nice_names(d))
 nice_names<-function (dat){
   old_names <- names(dat)
-  new_names <- old_names %>% gsub("º", "", .) %>% gsub("'", "", .) %>% gsub("\"", "", .) %>% gsub("%", "percent", .) %>%
-    gsub("^[ ]+", "", .) %>% make.names(.) %>% gsub("[.]+", "_", .) %>% gsub("[_]+", "_", .) %>%
-    tolower(.) %>% gsub("_$", "", .)
+  new_names <- gsub("x_","",gsub("_$", "",tolower(gsub("[_]+", "_",gsub("[.]+", "_",make.names(
+    gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("º", "", old_names)))))))))))
   dupe_count <- sapply(1:length(new_names), function(i) {
     sum(new_names[i] == new_names[1:i])
   })
