@@ -4,8 +4,8 @@
 \alias{descriptivo}
 \title{Detailed summary of the data}
 \usage{
-descriptivo(x, z = 3, graph = ifelse(length(data.frame(x)) > 20, F, T),
-  ignore.na = T, by = NULL)
+descriptivo(x, z = 3, graph = ifelse(length(data.frame(x)) > 20, FALSE,
+  TRUE), ignore.na = T, by = NULL)
 }
 \arguments{
 \item{x}{A data.frame}

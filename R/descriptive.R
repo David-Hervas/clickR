@@ -476,3 +476,26 @@ peek <- function(x, n=10, which=1:ncol(x)){
   cat("Data frame with ", nrow(x), " rows (showing ", length(which), " of ", ncol(x), " variables) \n \n")
   print(rbind(as.matrix(head(x[,which], n)), rep("", ncol(x[,which])), class, range), quote = FALSE)
 }
+
+#' Nice names
+#'
+#' @description Changes names of a data frame to ease work with them
+#' @param dat A data.frame
+#' @export
+#' @examples
+#' d <- data.frame('Variable 1'=NA, '% Response'=NA, ' Variable     3'=NA)
+#' names(d)
+#' names(nice_names(d))
+nice_names<-function (dat){
+  old_names <- names(dat)
+  new_names <- old_names %>% gsub("º", "", .) %>% gsub("'", "", .) %>% gsub("\"", "", .) %>% gsub("%", "percent", .) %>%
+    gsub("^[ ]+", "", .) %>% make.names(.) %>% gsub("[.]+", "_", .) %>% gsub("[_]+", "_", .) %>%
+    tolower(.) %>% gsub("_$", "", .)
+  dupe_count <- sapply(1:length(new_names), function(i) {
+    sum(new_names[i] == new_names[1:i])
+  })
+  new_names[dupe_count > 1] <- paste(new_names[dupe_count >
+                                                 1], dupe_count[dupe_count > 1], sep = "_")
+  new_names <- iconv(new_names, to = "ASCII//TRANSLIT")
+  stats::setNames(dat, new_names)
+}
