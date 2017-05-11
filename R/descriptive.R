@@ -460,6 +460,7 @@ fix.levels<-function(x, levels=NULL, plot=FALSE, k=ifelse(!is.null(levels), leng
 #' @param x A data.frame
 #' @param n Number of rows to include in output
 #' @param which Columns to include in output
+#' @importFrom utils head
 #' @export
 #' @examples
 #' peek(iris)
@@ -487,7 +488,7 @@ peek <- function(x, n=10, which=1:ncol(x)){
 #' @param dat A data.frame
 #' @export
 #' @examples
-#' d <- data.frame('Variable 1'=NA, '% Response'=NA, ' Variable     3'=NA,check.names=F)
+#' d <- data.frame('Variable 1'=NA, '% Response'=NA, ' Variable     3'=NA,check.names=FALSE)
 #' names(d)
 #' names(nice_names(d))
 nice_names<-function (dat){

@@ -1,9 +1,20 @@
+clickR 0.2.3 (Release date: 2017-05-12)
+==============
+
+Changes:
+
+* Modified fix.numerics() to avoid massive coercions to NA
+
+
+
 clickR 0.2.1 (Release date: 2017-05-05)
 ==============
 
 Changes:
 
 * Added peek() function for concise visualization of data.frames
+
+
 
 clickR 0.2.0 (Release date: 2017-02-20)
 ==============

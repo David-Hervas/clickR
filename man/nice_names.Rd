@@ -13,7 +13,7 @@ nice_names(dat)
 Changes names of a data frame to ease work with them
 }
 \examples{
-d <- data.frame('Variable 1'=NA, '\% Response'=NA, ' Variable     3'=NA)
+d <- data.frame('Variable 1'=NA, '\% Response'=NA, ' Variable     3'=NA,check.names=FALSE)
 names(d)
 names(nice_names(d))
 }
