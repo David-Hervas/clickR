@@ -4,13 +4,15 @@
 \alias{fix.numerics}
 \title{Fix numeric data}
 \usage{
-fix.numerics(x, k = 8, decimal = c(",", " ", "\\\\.\\\\.", ",,", "\\\\.,",
-  ",\\\\.", "\\\\."))
+fix.numerics(x, k = 8, max.NA = 0.2, decimal = c(",", " ", "\\\\.\\\\.",
+  ",,", "\\\\.,", ",\\\\.", "\\\\."))
 }
 \arguments{
 \item{x}{A data.frame}
 
 \item{k}{Minimum number of different values to be considered numerical}
+
+\item{max.NA}{Maximum allowed proportion of NA values created by coercion}
 
 \item{decimal}{Vector of decimal separators}
 }
