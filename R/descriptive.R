@@ -369,6 +369,7 @@ fix.factors<-function(x, k=5, drop=TRUE){
 #' @description Fixes numeric data
 #' @param x A data.frame
 #' @param k Minimum number of different values to be considered numerical
+#' @param max.NA Maximum allowed proportion of NA values created by coercion
 #' @param decimal Vector of decimal separators
 #' @export
 #' @examples
@@ -376,22 +377,15 @@ fix.factors<-function(x, k=5, drop=TRUE){
 #'                    Numeric2=c(3.1, 1.2, "3.s4", "a48,s5", 7, "6,,4"))
 #' report(mydata)
 #' report(fix.numerics(mydata, k=5))
-fix.numerics<-function(x, k=8, decimal=c(",", " ", "\\.\\.", ",,", "\\.,", ",\\.", "\\.")){
+fix.numerics<-function(x, k=8, max.NA=0.2, decimal=c(",", " ", "\\.\\.", ",,", "\\.,", ",\\.", "\\.")){
   x.old<-x
   previous.NA<- sapply(x, function(x) sum(is.na(x)))
   x[, apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !is.numeric(x)) & sapply(x, function(x) length(unique(x))>=k)] <- sapply(x[, apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !is.numeric(x))  & sapply(x, function(x) length(unique(x))>=k), drop=FALSE], function(x) numeros(x))
-  final.NA<-sum(sapply(x, function(x) sum(is.na(x)))-previous.NA)
-  if(final.NA>30){
-    fc <- readline(paste(final.NA, "new missing values will be generated. Continue with fix? (y/n/map) "))
-  } else fc <- "y"
-  if(tolower(fc) %in% "map"){
-    affected <- sapply(x, function(x) sum(is.na(x))) - previous.NA
-    return(affected[affected>1])
-  }
-  if(tolower(fc) %in% "y"){
-    print(paste(final.NA, "new missing values generated"))
-    return(x[,1:(dim(x)[2]), drop=TRUE])
-  } else return(x.old)
+  final.NA<-sapply(x, function(x) sum(is.na(x)))-previous.NA
+  x[,(final.NA-previous.NA) > nrow(x)*max.NA]<-x.old[,(final.NA-previous.NA) > nrow(x)*max.NA]
+  print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
+  print(paste(sum((final.NA-previous.NA) > nrow(x)*max.NA), "variables excluded following max.NA criterion"))
+  return(x[,1:(dim(x)[2]), drop=TRUE])
 }
 
 
