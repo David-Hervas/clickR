@@ -370,14 +370,14 @@ fix.factors<-function(x, k=5, drop=TRUE){
 #' @param x A data.frame
 #' @param k Minimum number of different values to be considered numerical
 #' @param max.NA Maximum allowed proportion of NA values created by coercion
-#' @param decimal Vector of decimal separators
+#' @param info Add generated missing values an excluded variable information as attributes
 #' @export
 #' @examples
 #' mydata<-data.frame(Numeric1=c(7.8, 9.2, 5.4, 3.3, "6,8", "3..3"),
 #'                    Numeric2=c(3.1, 1.2, "3.s4", "a48,s5", 7, "6,,4"))
 #' report(mydata)
 #' report(fix.numerics(mydata, k=5))
-fix.numerics<-function(x, k=8, max.NA=0.2, decimal=c(",", " ", "\\.\\.", ",,", "\\.,", ",\\.", "\\.")){
+fix.numerics<-function(x, k=8, max.NA=0.2, info=TRUE){
   x.old<-x
   previous.NA<- sapply(x, function(x) sum(is.na(x)))
   x[, apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !is.numeric(x)) & sapply(x, function(x) length(unique(x))>=k)] <- sapply(x[, apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !is.numeric(x))  & sapply(x, function(x) length(unique(x))>=k), drop=FALSE], function(x) numeros(x))
@@ -385,6 +385,10 @@ fix.numerics<-function(x, k=8, max.NA=0.2, decimal=c(",", " ", "\\.\\.", ",,", "
   x[,(final.NA-previous.NA) > nrow(x)*max.NA]<-x.old[,(final.NA-previous.NA) > nrow(x)*max.NA]
   print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
   print(paste(sum((final.NA-previous.NA) > nrow(x)*max.NA), "variables excluded following max.NA criterion"))
+  if(info){
+    attr(x, "missing values generated") <- (sapply(x, function(x) sum(is.na(x)))-previous.NA)>0
+    attr(x, "excluded variable") <- (final.NA-previous.NA) > nrow(x)*max.NA
+  }
   return(x[,1:(dim(x)[2]), drop=TRUE])
 }
 

@@ -4,8 +4,7 @@
 \alias{fix.numerics}
 \title{Fix numeric data}
 \usage{
-fix.numerics(x, k = 8, max.NA = 0.2, decimal = c(",", " ", "\\\\.\\\\.",
-  ",,", "\\\\.,", ",\\\\.", "\\\\."))
+fix.numerics(x, k = 8, max.NA = 0.2, info = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
@@ -14,7 +13,7 @@ fix.numerics(x, k = 8, max.NA = 0.2, decimal = c(",", " ", "\\\\.\\\\.",
 
 \item{max.NA}{Maximum allowed proportion of NA values created by coercion}
 
-\item{decimal}{Vector of decimal separators}
+\item{info}{Add generated missing values an excluded variable information as attributes}
 }
 \description{
 Fixes numeric data
