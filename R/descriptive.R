@@ -386,10 +386,10 @@ fix.numerics<-function(x, k=8, max.NA=0.2, info=TRUE){
   print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
   print(paste(sum((final.NA-previous.NA) > nrow(x)*max.NA), "variables excluded following max.NA criterion"))
   if(info){
-    attr(x, "missing") <- (sapply(x, function(x) sum(is.na(x)))-previous.NA)>0
+    attr(x, "missing") <- (sapply(x, function(x) sum(is.na(x)))-previous.NA)
     attr(x, "excluded") <- (final.NA-previous.NA) > nrow(x)*max.NA
   }
-  return(x[,1:(dim(x)[2]), drop=TRUE])
+  return(x)
 }
 
 
