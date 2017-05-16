@@ -265,6 +265,11 @@ report.data.frame<-function(x, by=NULL, file=NULL, type="word",
     x<-data.frame(x)}
   x<-x[,!sapply(x, function(x) sum(is.na(x))/length(x))==1, drop=FALSE]
   x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))]<-lapply(x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))], factor)
+  if(length(by)>1){
+    x.int <- data.frame(x, by=interaction(x[, match(unlist(by), names(x))]))
+    report(x.int[,-match(unlist(by), names(x.int))], by="by")
+  }
+  else{
   by_v <- factor(rep("", nrow(x)))
   if(!is.null(by)){
     pos_by<-match(by, names(x))
@@ -333,6 +338,7 @@ report.data.frame<-function(x, by=NULL, file=NULL, type="word",
 
   if(!is.null(file)) make_table(output, file, type, font, pointsize, add.rownames)
   return(print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=FALSE, right=FALSE))
+  }
 }
 
 #' Multiple tapply
@@ -404,11 +410,14 @@ fix.numerics<-function(x, k=8, max.NA=0.2, info=TRUE){
 #'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", NA),
 #'                    Numeric1=rnorm(4))
 #' fix.dates(mydata)
-fix.dates<-function(x, cent="19"){
-  previous.NA<- sapply(x, function(x) sum(is.na(x)))
-  x[, apply(sapply(x, function(x)   grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any)] <- lapply(x[, apply(sapply(x, function(x)   grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any), drop=FALSE], function(x) as.Date(gsub("(?<![0-9])0{2}+", cent, perl=TRUE, as.Date(sapply(strsplit(gsub("/", "-", as.character(x)), "-"), function(x) if(is.na(x[1])) NA else if (!as.numeric(x[1])>31)  paste(rev(x), collapse="-") else paste(x, collapse="-"))))))
-  final.NA<-sum(sapply(x, function(x) sum(is.na(x)))-previous.NA)
-  warning(final.NA, " new missing values generated")
+fix.dates <- function (x, cent = "19"){
+  previous.NA <- sapply(x, function(x) sum(is.na(x)))
+  x[, apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any)] <- lapply(x[, apply(sapply(x,
+      function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any), drop = FALSE],
+      function(x) as.Date(gsub("(?<![0-9])0{2}+", cent, perl = TRUE, as.Date(sapply(strsplit(gsub("/", "-", as.character(x)), "-"),
+      function(x) if (is.na(x[1]) | is.na(as.numeric(x[1]))) NA else if (!as.numeric(x[1]) > 31) paste(rev(x), collapse = "-") else paste(x, collapse = "-"))))))
+  final.NA <- sum(sapply(x, function(x) sum(is.na(x))) - previous.NA)
+  print(paste(final.NA, "new missing values generated"))
   return(x)
 }
 
