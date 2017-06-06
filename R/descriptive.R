@@ -510,3 +510,21 @@ nice_names<-function (dat){
   new_names <- iconv(new_names, to = "ASCII//TRANSLIT")
   stats::setNames(dat, new_names)
 }
+
+
+#' Kill factors
+#'
+#' @description Changes factor variables to character
+#' @param dat A data.frame
+#' @param k Maximum number of levels for factors
+#' @export
+#' @examples
+#' d <- data.frame(Letters=letters[1:20], Nums=1:20)
+#' d$Letters
+#' d <- kill.factors(d)
+#' d$Letters
+kill.factors <- function(dat, k=10){
+  filter <- sapply(dat, function(x) is.factor(x) & length(levels(x))>k)
+  dat[filter] <- lapply(dat[filter], as.character)
+  return(dat)
+}
