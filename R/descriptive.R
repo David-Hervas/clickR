@@ -263,11 +263,12 @@ report.data.frame<-function(x, by=NULL, file=NULL, type="word",
                             add.rownames=FALSE, ...){
   if(is.data.frame(x)==F){
     x<-data.frame(x)}
-  x<-x[,!sapply(x, function(x) sum(is.na(x))/length(x))==1, drop=FALSE]
+  x<-x[,!sapply(x, function(x) sum(is.na(x))/length(x))==1 & sapply(x, function(x) is.numeric(x) | is.factor(x)), drop=FALSE]
   x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))]<-lapply(x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))], factor)
   if(length(by)>1){
     x.int <- data.frame(x, by=interaction(x[, match(unlist(by), names(x))]))
-    report(x.int[,-match(unlist(by), names(x.int))], by="by")
+    report(x.int[,-match(unlist(by), names(x.int))], by="by", file=file, type=type, font=font,
+           pointsize=pointsize, add.rownames=add.rownames, ...)
   }
   else{
   by_v <- factor(rep("", nrow(x)))
@@ -366,7 +367,7 @@ mtapply <- function(x, group, fun){
 #' report(mtcars)
 #' report(fix.factors(mtcars))
 fix.factors<-function(x, k=5, drop=TRUE){
-  x[, (sapply(x, function(x) is.numeric(x) & length(unique(x))<=k)) | (sapply(x, function(x) is.factor(x)))]<-lapply(x[, sapply(x, function(x) is.numeric(x) & length(unique(x))<=k) | (sapply(x, function(x) is.factor(x))), drop=FALSE], function(x) if(drop) factor(iconv(droplevels(as.factor(gsub("^ *|(?<= ) | *$", "", tolower(as.character(x)), perl=TRUE))), to="ASCII//TRANSLIT")) else factor(x))
+  x[, (sapply(x, function(x) (is.numeric(x) | is.character(x)) & length(unique(x))<=k)) | (sapply(x, function(x) is.factor(x)))]<-lapply(x[, sapply(x, function(x) (is.numeric(x)|is.character(x)) & length(unique(x))<=k) | (sapply(x, function(x) is.factor(x))), drop=FALSE], function(x) if(drop) factor(iconv(droplevels(as.factor(gsub("^ *|(?<= ) | *$", "", tolower(as.character(x)), perl=TRUE))), to="ASCII//TRANSLIT")) else factor(x))
   return(x)
 }
 
