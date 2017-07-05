@@ -5,7 +5,7 @@ Version: 0.2.9
 Author: Victoria Fornes Ferrer, David Hervas Marin
 Maintainer: David Hervas Marin <ddhervas@yahoo.es>
 Imports: ClustOfVar, ReporteRs, lme4, lmerTest, xtable, beeswarm, lqmm,
-        ordinal, survival
+        ordinal
 Description: Fixes data errors in numerical, factor and date variables, checks data quality and performs report tables from models and summaries.
 License: GPL (>= 2)
 Encoding: UTF-8
