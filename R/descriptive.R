@@ -502,7 +502,7 @@ peek <- function(x, n=10, which=1:ncol(x)){
 nice_names<-function (dat){
   old_names <- names(dat)
   new_names <- gsub("x_","",gsub("_$", "",tolower(gsub("[_]+", "_",gsub("[.]+", "_",make.names(
-    gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("º", "", old_names)))))))))))
+    gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", old_names)))))))))))
   dupe_count <- sapply(1:length(new_names), function(i) {
     sum(new_names[i] == new_names[1:i])
   })

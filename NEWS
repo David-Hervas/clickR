@@ -1,3 +1,15 @@
+clickR 0.2.9 (Release date: 2017-07-05)
+==============
+
+Changes:
+
+* Added nice_names() function to standardize variable names and remove non-ascii characters
+* Added function kill.factors() to remove factor class from variables with many levels (to character)
+* report.data.frame now only summarizes numeric and factor variables
+* Minor bug fixes
+
+
+
 clickR 0.2.6 (Release date: 2017-05-14)
 ==============
 
