@@ -285,6 +285,7 @@ report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                      font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
                                  "Helvetica")[[1]], pointsize=11, ...){
 
+  compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
   obj<-list(coefficients=sx$coefficients[,1][-c(1:length(x$alpha))], se=sx$coefficients[,2][-c(1:length(x$alpha))],
@@ -330,31 +331,40 @@ report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                       font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
                                   "Helvetica")[[1]], pointsize=11, ...){
+  compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
-  output<-rbind(rbind(cbind(round(sx$coefficients[,1],digits)[-c(1:length(x$alpha))],
-                            round(sx$coefficients[,2][-c(1:length(x$alpha))],digits),
-                            round(exp(sx$coefficients[,1]),digits)[-c(1:length(x$alpha))],
-                            rbind(round(exp(confint(x)),digits)[-c(1:length(x$alpha)),]),
-                            round(sx$coefficients[,4],digitspvals)[-c(1:length(x$alpha))]),
-                      c(round(AIC(x),digits-1),rep("",5))),
-                matrix(c(round(rapply(ordinal::VarCorr.clmm(x), function(x) sqrt(diag(x))),digits),
-                         rep("",5*length(rapply(ordinal::VarCorr.clmm(x), function(x) sqrt(diag(x)))))),ncol=6,byrow=F))
-
-  colnames(output)<-c('Estimate','Std. Error','exp(Estimate)','Lower 95%','Upper 95%','P-value')
+  ci<-confint(x)
+  obj <- list(coefficients=sx$coefficients[,1][-c(1:length(x$alpha))], se=sx$coefficients[,2][-c(1:length(x$alpha))],
+              lwr.int=ci[,1][-c(1:length(x$alpha))], upper.int=ci[,2][-c(1:length(x$alpha))], pvalues=sx$coefficients[,4][-c(1:length(x$alpha))], aic=AIC(x),
+              random=ordinal::VarCorr.clmm(x))
+  if(compute.exp){
+    obj$exp.coef <- exp(obj$coefficients)
+    obj$exp.lwr.int <- exp(obj$lwr.int)
+    obj$exp.upper.int <- exp(obj$upper.int)
+  }
+  obj$thresholds <- sx$coefficients[1:length(x$alpha),]
+  output<-rbind(rbind(cbind(round(obj$coefficients,digits), round(obj$se, digits),
+                            if(compute.exp) {
+                              cbind(round(obj$exp.coef,digits), round(obj$exp.lwr.int, digits),
+                                    round(obj$upper.int, digits))
+                            } else{
+                              cbind(round(obj$lwr.int, digits), round(obj$upper.int, digits))
+                            }
+                             , round(obj$pvalues,digitspvals)), c(round(obj$aic,digits),rep("",ifelse(compute.exp, 5, 4)))),
+                matrix(c(round(rapply(obj$random, function(x) sqrt(diag(x))),digits),
+                         rep("",ifelse(compute.exp, 5, 4)*length(rapply(obj$random, function(x) sqrt(diag(x)))))),ncol=ifelse(compute.exp, 6, 5),byrow=F))
+  colnames(output)<-c('Estimate','Std. Error', if(compute.exp) 'exp(Estimate)','Lower 95%','Upper 95%','P-value')
   rownames(output)[length(x$beta)+1]<-c('AIC')
   rownames(output)[rownames(output)==""]<-names(rapply(ordinal::VarCorr.clmm(x), function(x) sqrt(diag(x))))
-
-
-  if(! x$link %in% c("logit")) output[c(1:(dim(sx$coefficients)[1]-length(x$alpha))),4:5]<-round(confint(x),digits)[-c(1:length(x$alpha)),]
-  if(! x$link %in% c("logit")) output<-output[,-3]
-  # intervalos log para distinto de logit falta
-
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
     make_table(output, file, type, font, pointsize)
   }
-  return(print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE))
+  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  class(obj) <- "reportmodel"
+  invisible(obj)
 }
+
 
 #' Report from quantile regression model
 #'
@@ -374,16 +384,21 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                     pointsize=11, ...){
   sx<-summary(x)
   sx2<-summary(x, covariance=TRUE)
-  output<-rbind(cbind(round(sx$coefficients[,1, drop=FALSE],digits),round(sx2$coefficients[,2, drop=FALSE],digits),
-                      round(sx$coefficients[,2:3, drop=FALSE],digits),round(sx2$coefficients[,4, drop=FALSE],digitspvals)),
-                c(round(AIC(x),digits+1),rep("",4)))
+  obj<-list(coefficients=sx$coefficients[,1], se=sx2$coefficients[,2], lwr.int=sx$coefficients[,3],
+            upper.int=sx$coefficients[,4], pvalues=sx2$coefficients[,4], aic=AIC(x))
+  output<-rbind(cbind(round(obj$coefficients,digits),round(obj$se,digits),
+                      round(obj$lwr.int,digits), round(obj$upper.int, digits),
+                      round(obj$pvalues,digitspvals)),
+                c(round(obj$aic, digits),rep("",4)))
   colnames(output)<-c('Estimate','Std. Error','Lower 95%','Upper 95%','P-value')
   rownames(output)[dim(sx$coefficients)[1]+1]<-'AIC'
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
     make_table(output, file, type, font, pointsize)
   }
-  return(print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE))
+  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  class(obj) <- "reportmodel"
+  invisible(obj)
 }
 
 
