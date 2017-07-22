@@ -17,6 +17,7 @@
 #' @return A plot of the coefficients with their CI
 #' @export
 coefplot <- function(coefs, lwr.int=coefs, upper.int=coefs, offset=0, coefnames=names(coefs), abline.pos=0, sorted=FALSE, reverse=FALSE, pch=16, xlim=c(min(lwr.int, na.rm=TRUE), max(upper.int, na.rm=TRUE)), ylim=c(1, length(coefs)), color="black", ...){
+  color <- as.character(data.frame(color, coefs)[,1])
   if(is.null(coefnames)) coefnames <- 1:length(coefs)
   dat <- data.frame(coefs, lwr.int, upper.int, coefnames)
   if(sorted) dat <- dat[order(dat$coefs),]
