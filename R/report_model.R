@@ -284,22 +284,34 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                      font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
                                  "Helvetica")[[1]], pointsize=11, ...){
-  sx<-summary(x)
-  output<-rbind(cbind(round(sx$coefficients[,1],digits)[-c(1:length(x$alpha))],
-                      round(sx$coefficients[,2],digits)[-c(1:length(x$alpha))],
-                      round(exp(sx$coefficients[,1])[-c(1:length(x$alpha))],digits),
-                      round(exp(confint(x)),digits),
-                      round(sx$coefficients[,4],digitspvals)[-c(1:length(x$alpha))]),c(round(AIC(x),digits-1),rep("",5)))
-  colnames(output)<-c('Estimate','Std. Error','exp(Estimate)','Lower 95%','Upper 95%','P-value')
-  rownames(output)[length(rownames(output))]<-c('AIC')
-  if(! x$link %in% c("logit")) output[-dim(output)[1],4:5]<-round(confint(x),digits)
-  if(! x$link %in% c("logit")) output<-output[,-3]
 
+  sx<-summary(x)
+  ci<-confint(x)
+  obj<-list(coefficients=sx$coefficients[,1][-c(1:length(x$alpha))], se=sx$coefficients[,2][-c(1:length(x$alpha))],
+            lwr.int=ci[,1], upper.int=ci[,2], pvalues=sx$coefficients[,4][-c(1:length(x$alpha))], aic=AIC(x))
+  if(compute.exp){
+    obj$exp.coef <- exp(obj$coefficients)
+    obj$exp.lwr.int <- exp(obj$lwr.int)
+    obj$exp.upper.int <- exp(obj$upper.int)
+  }
+  obj$thresholds <- sx$coefficients[1:length(x$alpha),]
+  output<-rbind(cbind(round(obj$coefficients,digits), round(obj$se,digits),
+                      if(compute.exp) {
+                        cbind(round(obj$exp.coef, digits), round(obj$exp.lwr.int,digits),
+                              round(obj$exp.upper.int, digits))
+                      } else{
+                        cbind(round(obj$lwr.int, digits), round(obj$upper.int, digits))
+                      }
+                      , round(obj$pvalues,digitspvals)), c(round(obj$aic,digits),rep("", ifelse(compute.exp, 5, 4))))
+  colnames(output)<-c('Estimate','Std. Error',if(compute.exp) 'exp(Estimate)','Lower 95%','Upper 95%','P-value')
+  rownames(output)[length(rownames(output))]<-c('AIC')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
     make_table(output, file, type, font, pointsize)
   }
-  return(print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE))
+  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  class(obj) <- "reportmodel"
+  invisible(obj)
 }
 
 #' Report from ordinal mixed model
