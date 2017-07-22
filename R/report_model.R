@@ -418,18 +418,35 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                          font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
                          pointsize=11, ...){
+  compute.exp<-x$link$mean$name %in% c("logit", "log")
   sx<-summary(x)
-  output<-rbind(cbind(round(sx$coefficients$mean[,1, drop=FALSE],digits),round(sx$coefficients$mean[,2, drop=FALSE],digits),
-                      round(confint(x),digits)[-dim(confint(x))[1], ,drop=FALSE],round(sx$coefficients$mean[,4, drop=FALSE],digitspvals)),
-                c(round(sx$coefficients$precision[1],digits+1),rep("",4)),
-                c(round(sx$pseudo.r.squared, digits+1), rep("", 4)))
-  colnames(output)<-c('Estimate','Std. Error','Lower 95%','Upper 95%','P-value')
+  ci<-confint(x)
+  obj<-list(coefficients=sx$coefficients$mean[,1], se=sx$coefficients$mean[,2], lwr.int=ci[,1][-dim(ci)[1]],
+       upper.int=ci[,2][-dim(ci)[1]], pvalues=sx$coefficients$mean[,4], aic=AIC(x), pseudo.r=sx$pseudo.r.squared,
+       phi=sx$coefficients$precision)
+  if(compute.exp){
+    obj$exp.coef <- exp(obj$coefficients)
+    obj$exp.lwr.int <- exp(obj$lwr.int)
+    obj$exp.upper.int <- exp(obj$upper.int)
+  }
+  output<-rbind(cbind(round(obj$coefficients,digits),round(obj$se,digits),
+                      if(compute.exp) {
+                        cbind(round(obj$exp.coef,digits), round(obj$exp.lwr.int, digits),
+                              round(obj$exp.upper.int, digits))
+                      } else{
+                        cbind(round(obj$lwr.int, digits), round(obj$upper.int, digits))
+                      }
+                      , round(obj$pvalues, digitspvals)), c(round(obj$phi[1], digits+1),rep("", ifelse(compute.exp, 5, 4))),
+                c(round(obj$pseudo.r, digits), rep("", ifelse(compute.exp, 5, 4))))
+  colnames(output)<-c('Estimate','Std. Error',if(compute.exp) 'exp(Estimate)', 'Lower 95%','Upper 95%','P-value')
   rownames(output)[c(dim(sx$coefficients$mean)[1]+1, dim(sx$coefficients$mean)[1]+2)]<-c("phi", "Pseudo R-squared")
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
     make_table(output, file, type, font, pointsize)
   }
-  return(print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE))
+  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  class(obj) <- "reportmodel"
+  invisible(obj)
 }
 
 
