@@ -257,7 +257,7 @@ matrixPaste<-function (..., sep = rep(" ", length(list(...)) - 1)){
 #' report(iris)
 #' (reporTable<-report(iris, by="Species"))
 #' class(reporTable)
-report.data.frame<-function(x, by=NULL, file=NULL, type="word",
+report.data.frame<-function(x, by=NULL, file=NULL, type="word", digits=2, digitscat=digits,
                             font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
                                         "Helvetica")[[1]], pointsize=11,
                             add.rownames=FALSE, ...){
@@ -267,7 +267,7 @@ report.data.frame<-function(x, by=NULL, file=NULL, type="word",
   x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))]<-lapply(x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))], factor)
   if(length(by)>1){
     x.int <- data.frame(x, by=interaction(x[, match(unlist(by), names(x))]))
-    report(x.int[,-match(unlist(by), names(x.int))], by="by", file=file, type=type, font=font,
+    report(x.int[,-match(unlist(by), names(x.int))], by="by", file=file, type=type, digits=digits, digitscat=digitscat, font=font,
            pointsize=pointsize, add.rownames=add.rownames, ...)
   }
   else{
@@ -283,29 +283,29 @@ report.data.frame<-function(x, by=NULL, file=NULL, type="word",
   if(any(nums==TRUE)){
     estruct<-matrix(nrow=2, ncol=length(unique(na.omit(by_v)))+1)
     estruct[1:2,1]<-c("", "")
-    estruct[1, -1]<-"Mean (SD)"
+    estruct[1, -1]<-paste("Mean (SD)", ifelse(any(nums==FALSE), " / n(%)", ""), sep="")
     estruct[2,-1]<-"Median (1st, 3rd Q.)"
     cont<-character(2*length(x[nums==T]))
     cont[seq(1,length(cont), 2)]<-colnames(x[,nums==T, drop=FALSE])
     if(ncol(x[,nums==T, drop=FALSE])>1){
-      A<-matrixPaste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(mean(x, na.rm=TRUE),2)))), function(x) t(x)), " (",
-                     sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(sd(x, na.rm=TRUE),2)))), function(x) t(x)),")", sep=rep("", 3))
+      A<-matrixPaste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(mean(x, na.rm=TRUE),digits)))), function(x) t(x)), " (",
+                     sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(sd(x, na.rm=TRUE),digits)))), function(x) t(x)),")", sep=rep("", 3))
 
-      B<-matrixPaste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(median(x, na.rm=TRUE),2)))), function(x) t(x)),
+      B<-matrixPaste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(median(x, na.rm=TRUE),digits)))), function(x) t(x)),
                      " (",
-                     sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.25, na.rm=TRUE),2)))), function(x) t(x)),
+                     sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.25, na.rm=TRUE),digits)))), function(x) t(x)),
                      ", ",
-                     sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.75, na.rm=TRUE),2)))), function(x) t(x)),
+                     sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.75, na.rm=TRUE),digits)))), function(x) t(x)),
                      ")", sep=rep("", 5))
     }
     else {
-      A<-paste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(mean(x, na.rm=TRUE),2)))), function(x) t(x)), " (",
-               sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(sd(x, na.rm=TRUE),2)))), function(x) t(x)),")", sep=rep(""))
-      B<-paste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(median(x, na.rm=TRUE),2)))), function(x) t(x)),
+      A<-paste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(mean(x, na.rm=TRUE),digits)))), function(x) t(x)), " (",
+               sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(sd(x, na.rm=TRUE),digits)))), function(x) t(x)),")", sep=rep(""))
+      B<-paste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(median(x, na.rm=TRUE),digits)))), function(x) t(x)),
                " (",
-               sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.25, na.rm=TRUE),2)))), function(x) t(x)),
+               sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.25, na.rm=TRUE),digits)))), function(x) t(x)),
                ", ",
-               sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.75, na.rm=TRUE),2)))), function(x) t(x)),
+               sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.75, na.rm=TRUE),digits)))), function(x) t(x)),
                ")", sep=rep(""))
     }
 
@@ -329,7 +329,7 @@ report.data.frame<-function(x, by=NULL, file=NULL, type="word",
   if(any(nums==FALSE)){
     x[nums==F] <- lapply(x[nums==F],as.factor)
     C<-matrixPaste(sapply(by(x[nums==F], by_v, function(x) sapply(x, function(x) as.character(table(x)))), function(x) unlist(x)), " (",
-                   sapply(by(x[nums==F], by_v, function(x) sapply(x, function(x) as.character(round(100*(table(x)/sum(table(x))),1)))), function(x) unlist(x)),"%)", sep=rep("", 3))
+                   sapply(by(x[nums==F], by_v, function(x) sapply(x, function(x) as.character(round(100*(table(x)/sum(table(x))),digitscat)))), function(x) unlist(x)),"%)", sep=rep("", 3))
     cats[-(rev(rev(cumsum(c(1,pos)))[-1])+rev(rev((0:(dim(x[nums==F])[2])))[-1])),-1]<-C
   }
 
