@@ -249,19 +249,22 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                       font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
                                   "Helvetica")[[1]], pointsize=11, ...){
   sx<-lqmm::summary.lqmm(x, ...)
-  output<-rbind(rbind(cbind(round(sx$tTable[,1:4,drop=FALSE],digits),
-                            round(sx$tTable[,5],digitspvals)),
-                      c(round(sx$aic,digits-1),rep("",4))),
-                matrix(c(round(lqmm::VarCorr.lqmm(x),digits),rep("",4*length(lqmm::VarCorr.lqmm(x)))),ncol=5,byrow=F))
-
+  obj<-list(coefficients=sx$tTable[,1], se=sx$tTable[,2], lwr.int=sx$tTable[,3], upper.int=sx$tTable[,4],
+            pvalues=sx$tTable[,5], aic=sx$aic, random=round(lqmm::VarCorr.lqmm(x)))
+  output<-rbind(rbind(cbind(round(obj$coefficients,digits), round(obj$se,digits),
+                            round(obj$lwr.int, digits), round(obj$upper.int, digits), round(obj$pvalues, digitspvals)),
+                      c(round(obj$aic, digits),rep("",4))),
+                matrix(c(round(obj$random,digits),rep("",4*length(obj$random))),ncol=5,byrow=F))
   colnames(output)<-c('Estimate','Std. Error','Lower 95%','Upper 95%','P-value')
   rownames(output)[dim(sx$tTable)[1]+1]<-c('AIC')
-  rownames(output)[(dim(sx$tTable)[1]+2):(((dim(sx$tTable)[1]+2)+length(lqmm::VarCorr.lqmm(x)))-1)]<-paste('Ran.Eff',names(lqmm::VarCorr.lqmm(x)),sep=' ')
+  rownames(output)[(dim(sx$tTable)[1]+2):(((dim(sx$tTable)[1]+2)+length(obj$random))-1)]<-paste('Ran.Eff',names(lqmm::VarCorr.lqmm(x)),sep=' ')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
     make_table(output, file, type, font, pointsize)
   }
-  return(print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE))
+  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  class(obj) <- "reportmodel"
+  invisible(obj)
 }
 
 
