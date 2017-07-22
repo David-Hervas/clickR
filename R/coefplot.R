@@ -28,7 +28,7 @@ coefplot <- function(coefs, lwr.int=coefs, upper.int=coefs, offset=0, coefnames=
   abline(v=abline.pos, lty=2)
   points(dat$coefs, (1:length(coefs))+offset, pch=pch, col=color)
   for(i in 1:length(coefs)){
-    lines(x=c(dat$lwr.int[i], dat$upper.int[i]), y=c(i, i)+offset, col=color)
+    lines(x=c(dat$lwr.int[i], dat$upper.int[i]), y=c(i, i)+offset, col=color[i])
   }
 }
 
