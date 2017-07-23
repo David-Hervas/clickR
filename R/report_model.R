@@ -493,6 +493,45 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
 }
 
 
+#' Report models from glmnet package
+#'
+#' @description Creates a report table from models fitted by glmnet
+#' @param x A glmnet model object
+#' @param s Value of lambda for estimating the coefficients
+#' @param drop.zero Should zero coefficients be dropped?
+#' @param file Name of the file to export the table
+#' @param type Format of the file
+#' @param digits Number of decimals
+#' @param font Font to use if type="word"
+#' @param pointsize Pointsize to use if type="word"
+#' @param ... Further arguments passed to make_table
+#' @return A data frame with the report table
+#' @export
+report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3,
+                         font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
+                         pointsize=11, ...){
+  compute.exp<- any(grepl("binomial|cox", x$call))
+  coefs <- coef(x, s=s)
+  obj <- list(coefficients=as.numeric(coefs)[if(drop.zero) {as.numeric(coefs)!=0}], lwr.int=NA, upper.int=NA)
+  names(obj$coefficients)<-rownames(coefs)[if(drop.zero) {as.numeric(coefs)!=0}]
+  if(compute.exp){
+    obj$exp.coef <- exp(obj$coefficients)
+  }
+  obj$lambda <- s
+  output<-rbind(cbind(round(obj$coefficients,digits),
+                if(compute.exp){
+                  round(obj$exp.coef, digits)
+                }), cbind(s, rep("", ifelse(compute.exp, 1, 0))))
+  colnames(output)<-c('Estimate', if(compute.exp) 'exp(Estimate)')
+  rownames(output)<-c(names(obj$coefficients), "lambda")
+  if(!is.null(file)){
+    make_table(output, file, type, font, pointsize)
+  }
+  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  class(obj) <- "reportmodel"
+  invisible(obj)
+}
+
 
 
 #' Export a table to word
