@@ -2,6 +2,7 @@
 
 S3method(plot,reportmodel)
 S3method(report,betareg)
+S3method(report,brmsfit)
 S3method(report,clm)
 S3method(report,clmm)
 S3method(report,coxph)

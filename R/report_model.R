@@ -450,6 +450,50 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 }
 
 
+#' Report models from brms package
+#'
+#' @description Creates a report table from model fitted by brms
+#' @param x A brms model object
+#' @param file Name of the file to export the table
+#' @param type Format of the file
+#' @param digits Number of decimals
+#' @param digitspvals Number of decimals for p-values
+#' @param font Font to use if type="word"
+#' @param pointsize Pointsize to use if type="word"
+#' @param ... Further arguments passed to make_table
+#' @return A data frame with the report table
+#' @export
+report.brmsfit<-function(x, file=NULL, type="word", digits=3,
+                         font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
+                         pointsize=11, ...){
+  compute.exp<-x$family$link %in% c("logit", "log")
+  sx<-summary(x)
+  random<-do.call(rbind, sx$random)
+  rownames(random)<-names(sx$random)
+  obj<-list(coefficients=sx$fixed[,1], se=sx$fixed[,2], lwr.int=sx$fixed[,3],
+            upper.int=sx$fixed[,4], random=random)
+  if(compute.exp){
+    obj$exp.coef <- exp(obj$coefficients)
+    obj$exp.lwr.int <- exp(obj$lwr.int)
+    obj$exp.upper.int <- exp(obj$upper.int)
+  }
+  output<-rbind(cbind(round(obj$coefficients,digits),round(obj$se,digits),
+                      if(compute.exp){
+                        cbind(round(obj$exp.coef, digits), round(obj$exp.lwr.int, digits),
+                              round(obj$exp.upper.int, digits))
+                      } else{
+                        cbind(round(obj$lwr.int,digits), round(obj$upper.int, digits))
+                      }), cbind(round(random[,1:2], digits), if(compute.exp) "-", round(random[,3:4], digits)))
+  colnames(output)<-c('Estimate','Std. Error',if(compute.exp) 'exp(Estimate)', 'Lower 95%','Upper 95%')
+  if(!is.null(file)){
+    make_table(output, file, type, font, pointsize)
+  }
+  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  class(obj) <- "reportmodel"
+  invisible(obj)
+}
+
+
 
 
 #' Export a table to word

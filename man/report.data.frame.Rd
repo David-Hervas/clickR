@@ -5,8 +5,9 @@
 \title{Report tables of summary data}
 \usage{
 \method{report}{data.frame}(x, by = NULL, file = NULL, type = "word",
-  font = ifelse(Sys.info()["sysname"] == "Windows", "Arial",
-  "Helvetica")[[1]], pointsize = 11, add.rownames = FALSE, ...)
+  digits = 2, digitscat = digits, font = ifelse(Sys.info()["sysname"] ==
+  "Windows", "Arial", "Helvetica")[[1]], pointsize = 11,
+  add.rownames = FALSE, ...)
 }
 \arguments{
 \item{x}{A data.frame object}
