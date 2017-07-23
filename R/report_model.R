@@ -457,7 +457,6 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param file Name of the file to export the table
 #' @param type Format of the file
 #' @param digits Number of decimals
-#' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
 #' @param ... Further arguments passed to make_table
