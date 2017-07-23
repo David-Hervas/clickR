@@ -1,3 +1,18 @@
+clickR 0.3.0 (Release date: 2017-07-23)
+==============
+
+Changes:
+
+* report(model) now returns an (invisible) list in addition to printing the nice output table
+* Added support for reporting models fitted using brms package
+* report.data.frame now accepts specifying number of decimal places
+* Added a new S3 class "reportmodel" for objects created by report(model) function
+* Added plot.reportmodel function to plot coefficient plots of the models
+* Added function coefplot, which is called by plot.reportmodel, but also can be used to manually plot coefficients for unsupported models
+* Minor bug fixes
+
+
+
 clickR 0.2.9 (Release date: 2017-07-05)
 ==============
 
