@@ -18,6 +18,10 @@
 
 \item{type}{Format of the file}
 
+\item{digits}{Number of decimal places}
+
+\item{digitscat}{Number of decimal places for categorical variables (if different to digits)}
+
 \item{font}{Font to use if type="word"}
 
 \item{pointsize}{Pointsize to use if type="word"}

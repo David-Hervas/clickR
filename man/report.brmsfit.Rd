@@ -5,8 +5,8 @@
 \title{Report models from brms package}
 \usage{
 \method{report}{brmsfit}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, font = ifelse(Sys.info()["sysname"] == "Windows",
-  "Arial", "Helvetica")[[1]], pointsize = 11, ...)
+  font = ifelse(Sys.info()["sysname"] == "Windows", "Arial",
+  "Helvetica")[[1]], pointsize = 11, ...)
 }
 \arguments{
 \item{x}{A brms model object}
@@ -16,8 +16,6 @@
 \item{type}{Format of the file}
 
 \item{digits}{Number of decimals}
-
-\item{digitspvals}{Number of decimals for p-values}
 
 \item{font}{Font to use if type="word"}
 

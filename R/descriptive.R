@@ -248,6 +248,8 @@ matrixPaste<-function (..., sep = rep(" ", length(list(...)) - 1)){
 #' @param by Grouping variable for the report
 #' @param file Name of the file to export the table
 #' @param type Format of the file
+#' @param digits Number of decimal places
+#' @param digitscat Number of decimal places for categorical variables (if different to digits)
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
 #' @param add.rownames Logical for adding rownames to the table
