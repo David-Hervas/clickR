@@ -467,8 +467,8 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
                          pointsize=11, ...){
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
-  random<-do.call(rbind, sx$random)
-  rownames(random)<-names(sx$random)
+  random<-tryCatch(do.call(rbind, sx$random), error=function(e) NA)
+  if(!is.na(random[1])) rownames(random)<-paste("Sd", names(sx$random), sep=" ")
   obj<-list(coefficients=sx$fixed[,1], se=sx$fixed[,2], lwr.int=sx$fixed[,3],
             upper.int=sx$fixed[,4], random=random)
   if(compute.exp){
@@ -482,7 +482,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
                               round(obj$exp.upper.int, digits))
                       } else{
                         cbind(round(obj$lwr.int,digits), round(obj$upper.int, digits))
-                      }), cbind(round(random[,1:2], digits), if(compute.exp) "-", round(random[,3:4], digits)))
+                      }), if(!is.na(random[1])) {cbind(round(random[,1:2, drop=FALSE], digits), if(compute.exp) "-", round(random[,3:4, drop=FALSE], digits))})
   colnames(output)<-c('Estimate','Std. Error',if(compute.exp) 'exp(Estimate)', 'Lower 95%','Upper 95%')
   if(!is.null(file)){
     make_table(output, file, type, font, pointsize)
