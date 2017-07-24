@@ -506,6 +506,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
 #' @param pointsize Pointsize to use if type="word"
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats coef
 #' @export
 report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3,
                          font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
