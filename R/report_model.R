@@ -624,7 +624,7 @@ report<-function(x, ...){
 #' @return A summary of the object
 #' @export
 report.default<-function(x, ...){
-  warning(paste("Non-recognized class for report(). Returning summary(", deparse(substitute(X_npls)), ")", sep=""))
+  warning(paste("Non-recognized class for report(). Returning summary(", deparse(substitute(x)), ")", sep=""))
   return(summary(x, ...))
 }
 
