@@ -346,7 +346,7 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   output<-rbind(rbind(cbind(round(obj$coefficients,digits), round(obj$se, digits),
                             if(compute.exp) {
                               cbind(round(obj$exp.coef,digits), round(obj$exp.lwr.int, digits),
-                                    round(obj$upper.int, digits))
+                                    round(obj$exp.upper.int, digits))
                             } else{
                               cbind(round(obj$lwr.int, digits), round(obj$upper.int, digits))
                             }
