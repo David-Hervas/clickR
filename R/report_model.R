@@ -616,6 +616,19 @@ report<-function(x, ...){
 }
 
 
+#' Default function for report
+#'
+#' @description This is a default function for calling summary(x) on non-implemented classes
+#' @param x Any object without specific report function
+#' @param ... further arguments passed to summary
+#' @return A summary of the object
+#' @export
+report.default<-function(x, ...){
+  warning(paste("Non-recognized class for report(). Returning summary(", deparse(substitute(X_npls)), ")", sep=""))
+  return(summary(x, ...))
+}
+
+
 #' Report from numeric variable
 #'
 #' @description Creates a report table
