@@ -16,7 +16,7 @@ report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                     pointsize=11, ...){
   sx <- summary(x)
   ci <- confint(x)
-  obj <- list(coefficients=sx$coefficients[,1], se=sx$coefficients[,2], lwr.int=ci[,1],
+  obj <- list(coefficients=sx$coefficients[,1, drop=FALSE], se=sx$coefficients[,2], lwr.int=ci[,1],
               upper.int=ci[,2], pvalues=sx$coefficients[,4], r.squared=sx$r.squared, adj.r.squared=sx$adj.r.squared)
   output<-rbind(cbind(round(obj$coefficients,digits),round(obj$se,digits),
                       round(obj$lwr.int,digits),round(obj$upper.int, digits), round(obj$pvalues,digitspvals)),
@@ -52,7 +52,7 @@ report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
-  obj <- list(coefficients=sx$coefficients[,1], se=sx$coefficients[,2], lwr.int=ci[,1],
+  obj <- list(coefficients=sx$coefficients[,1, drop=FALSE], se=sx$coefficients[,2], lwr.int=ci[,1],
               upper.int=ci[,2], pvalues=sx$coefficients[,4], aic=sx$aic)
   if(compute.exp){
     obj$exp.coef <- exp(sx$coefficients[,1])
@@ -96,7 +96,7 @@ report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                        font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
                        pointsize=11, ...){
   sx<-summary(x)
-  obj <- list(coefficients=sx$coefficients[,1], se=sx$coefficients[,3], hr=sx$conf.int[,1],
+  obj <- list(coefficients=sx$coefficients[,1, drop=FALSE], se=sx$coefficients[,3], hr=sx$conf.int[,1],
               lwr.int=sx$conf.int[,3], upper.int=sx$conf.int[,4], pvalues=sx$coefficients[,5], aic=AIC(x))
   output<-rbind(cbind(round(obj$coefficients,digits), round(obj$se, digits), round(obj$hr, digits),
                       round(obj$lwr.int,digits), round(obj$upper.int, digits),
@@ -134,7 +134,7 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
   cor<-as.data.frame(lme4::VarCorr(x))
   ci <- confint(x)
   #cor[dim(cor)[1],2]<-'Residual'
-  obj<- list(coefficients=sx$coefficients[,1], se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
+  obj<- list(coefficients=sx$coefficients[,1, drop=FALSE], se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
              upper.int=ci[,2][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
              pvalues=tryCatch(sx$coefficients[,5], error=function(x) NA), aic=AIC(x),
              random=cor[c(is.na(cor$var2)),c(5)])
@@ -197,7 +197,7 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   sx<-summary(x)
   cor<-as.data.frame(lme4::VarCorr(x))
   ci <- confint(x)
-  obj<- list(coefficients=sx$coefficients[,1], se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
+  obj<- list(coefficients=sx$coefficients[,1, drop=FALSE], se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
              upper.int=ci[,2][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
              pvalues=sx$coefficients[,4], aic=AIC(x),
              random=cor[c(is.na(cor$var2)),c(5)])
@@ -249,7 +249,7 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                       font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
                                   "Helvetica")[[1]], pointsize=11, ...){
   sx<-lqmm::summary.lqmm(x, ...)
-  obj<-list(coefficients=sx$tTable[,1], se=sx$tTable[,2], lwr.int=sx$tTable[,3], upper.int=sx$tTable[,4],
+  obj<-list(coefficients=sx$tTable[,1, drop=FALSE], se=sx$tTable[,2], lwr.int=sx$tTable[,3], upper.int=sx$tTable[,4],
             pvalues=sx$tTable[,5], aic=sx$aic, random=round(lqmm::VarCorr.lqmm(x)))
   output<-rbind(rbind(cbind(round(obj$coefficients,digits), round(obj$se,digits),
                             round(obj$lwr.int, digits), round(obj$upper.int, digits), round(obj$pvalues, digitspvals)),
@@ -384,8 +384,8 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                     pointsize=11, ...){
   sx<-summary(x)
   sx2<-summary(x, covariance=TRUE)
-  obj<-list(coefficients=sx$coefficients[,1], se=sx2$coefficients[,2], lwr.int=sx$coefficients[,3],
-            upper.int=sx$coefficients[,4], pvalues=sx2$coefficients[,4], aic=AIC(x))
+  obj<-list(coefficients=sx$coefficients[,1, drop=FALSE], se=sx2$coefficients[,2], lwr.int=sx$coefficients[,2],
+            upper.int=sx$coefficients[,3], pvalues=sx2$coefficients[,4], aic=AIC(x))
   output<-rbind(cbind(round(obj$coefficients,digits),round(obj$se,digits),
                       round(obj$lwr.int,digits), round(obj$upper.int, digits),
                       round(obj$pvalues,digitspvals)),
@@ -421,7 +421,7 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   compute.exp<-x$link$mean$name %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
-  obj<-list(coefficients=sx$coefficients$mean[,1], se=sx$coefficients$mean[,2], lwr.int=ci[,1][-dim(ci)[1]],
+  obj<-list(coefficients=sx$coefficients$mean[,1, drop=FALSE], se=sx$coefficients$mean[,2], lwr.int=ci[,1][-dim(ci)[1]],
        upper.int=ci[,2][-dim(ci)[1]], pvalues=sx$coefficients$mean[,4], aic=AIC(x), pseudo.r=sx$pseudo.r.squared,
        phi=sx$coefficients$precision)
   if(compute.exp){
@@ -469,7 +469,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
   sx<-summary(x)
   random<-tryCatch(do.call(rbind, sx$random), error=function(e) NA)
   if(!is.na(random[1])) rownames(random)<-paste("Sd", names(sx$random), sep=" ")
-  obj<-list(coefficients=sx$fixed[,1], se=sx$fixed[,2], lwr.int=sx$fixed[,3],
+  obj<-list(coefficients=sx$fixed[,1, drop=FALSE], se=sx$fixed[,2], lwr.int=sx$fixed[,3],
             upper.int=sx$fixed[,4], random=random)
   if(compute.exp){
     obj$exp.coef <- exp(obj$coefficients)
