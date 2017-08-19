@@ -42,5 +42,5 @@ coefplot <- function(coefs, lwr.int=coefs, upper.int=coefs, offset=0, coefnames=
 #' @param ... Further arguments passed to coefplot
 #' @export
 plot.reportmodel<-function(x, ...){
-  coefplot(x$coefficients, x$lwr.int, x$upper.int, ...)
+  coefplot(x$coefficients[,1], x$lwr.int, x$upper.int, ...)
 }
