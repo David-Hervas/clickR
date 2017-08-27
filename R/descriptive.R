@@ -12,16 +12,14 @@
 #' @importFrom stats AIC confint cutree density dist family hclust median na.omit quantile rect.hclust sd var
 #' @importFrom utils write.csv2
 #' @export
-#' @examples
-#' descriptivo(iris)
-#' descriptivo(iris, by="Species")
-descriptivo<-function(x, z=3, graph=ifelse(length(data.frame(x))>20, FALSE, TRUE), ignore.na=T, by=NULL){
+descriptivo<-function(x, z=3, graph=ifelse(length(data.frame(x))>20, FALSE, TRUE), ignore.na=TRUE, by=NULL){
+  .Deprecated("descriptive() (for descriptives) or cluster_var() (for variable clustering)")
   summary1<-summary2<-NULL
   #Data.frame
-  if(is.data.frame(x)==F){
+  if(is.data.frame(x)==FALSE){
     x<-data.frame(x)}
   x<-x[,!sapply(x, function(x) sum(is.na(x))/length(x))==1]
-  if(is.data.frame(x)==F){
+  if(is.data.frame(x)==FALSE){
     x<-data.frame(x)}
   if(!is.null(by))
   {
@@ -152,7 +150,7 @@ descriptivo<-function(x, z=3, graph=ifelse(length(data.frame(x))>20, FALSE, TRUE
       if(length(x[nums==F & !sd_0])>0){
         X.quali<-x[nums==F & !sd_0]}
 
-      plot(ClustOfVar::hclustvar(X.quanti, X.quali), which=1, main="Clustering of variables")
+      #plot(ClustOfVar::hclustvar(X.quanti, X.quali), which=1, main="Clustering of variables")
 
       if(sum(sd_0)>0)
         warning(gettextf("Variables %s have been omited since they are constant",
@@ -160,6 +158,233 @@ descriptivo<-function(x, z=3, graph=ifelse(length(data.frame(x))>20, FALSE, TRUE
     }
   }
   return(invisible(list(Numerical=summary1, Categorical=summary2)))
+}
+
+#' Computes kurtosis
+#'
+#' @description Calculates kurtosis of a numeric variable
+#' @param x A numeric variable
+#' @return kurtosis value
+#' @importFrom stats sd
+kurtosis <- function(x) {
+  m4 <- mean((x-mean(x, na.rm=T))^4, na.rm=T)
+  kurt <- m4/(sd(x, na.rm=T)^4)-3
+  kurt
+}
+
+#' Computes skewness
+#'
+#' @description Calculates skewness of a numeric variable
+#' @param x A numeric variable
+#' @return skewness value
+#' @importFrom stats sd
+skewness <-  function(x) {
+  m3 <- mean((x-mean(x, na.rm=T))^3, na.rm=T)
+  skew <- m3/(sd(x, na.rm=T)^3)
+  skew
+}
+
+#' Estimates number of modes
+#'
+#' @description Estimates the number of modes
+#' @param x A numeric variable
+#' @return Estimated number of modes. If unclear, marked with an '*'
+#' @importFrom stats density
+moda_cont <- function(x) {
+  if(length(na.omit(x))>1){
+    modas2 <- sum(diff(diff(density(x, adjust=2, na.rm=T)$y)>=0)<0)
+    modas1 <- sum(diff(diff(density(x, adjust=1, na.rm=T)$y)>=0)<0)
+    if(modas1!=modas2 & modas2==1)
+      return("1*")
+    else
+      return(paste(modas2, " ", sep=""))
+  }
+  else return(NA)
+}
+
+#' Scales data between 0 and 1
+#'
+#' @description Escale data to 0-1
+#' @param x A numeric variable
+#' @return Scaled data
+scale_01 <- function(x) (x-min(x))/(max(x)-min(x))
+
+#' Internal function for descriptive()
+#'
+#' @description Finds positions for substitution of characters in Distribution column
+#' @param x A numeric value between 0-1
+#' @param to Range of reference values
+#' @return The nearest position to the input value
+nearest <- function(x, to=seq(0, 1, length.out = 30)) {
+  which.min(abs(to - x))
+}
+
+#' Get mode
+#'
+#' @description Returns the most repeated value
+#' @param x A categorical variable
+#' @return The mode
+moda<-function(x){names(sort(-table(x)))[1]}
+
+#' Get anti-mode
+#'
+#' @description Returns the least repeated value
+#' @param x A categorical variable
+#' @return The anti-mode (least repeated value)
+antimoda<-function(x){names(sort(table(x)))[1]}
+
+#' Gets proportion of most repeated value
+#'
+#' @description Returns the proportion for the most repeated value
+#' @param x A categorical variable
+#' @param ignore.na Should NA values be ignored for computing proportions?
+#' @return A proportion
+prop_may<-function(x, ignore.na=TRUE) {sort(-table(x))[1]/-(length(x)-ignore.na*sum(is.na(x)))}
+
+#' Gets proportion of least repeated value
+#'
+#' @description Returns the proportion for the least repeated value
+#' @param x A categorical variable
+#' @param ignore.na Should NA values be ignored for computing proportions?
+#' @return A proportion
+prop_min<-function(x, ignore.na=TRUE){sort(table(x))[1]/(length(x)-ignore.na*sum(is.na(x)))}
+
+
+#' Detailed summary of the data
+#'
+#' @description Creates a detailed summary of the data
+#' @param x A data.frame
+#' @param z Number of decimal places
+#' @param ignore.na If TRUE NA values will not count for relative frequencies calculations
+#' @param by Factor variable definining groups for the summary
+#' @return Summary of the data
+#' @importFrom stats density dist family median na.omit quantile sd var
+#' @export
+#' @examples
+#' descriptive(iris)
+#' descriptive(iris, by="Species")
+descriptive<-function(x, z=3, ignore.na=TRUE, by=NULL){
+  #Data.frame
+  if(is.data.frame(x)==FALSE){
+    x<-data.frame(x)}
+  x<-x[,!sapply(x, function(x) all(is.na(x)))]
+
+  if(!is.null(by))
+  {
+    if (by %in% names(x))
+    {
+      pos_by <- match(by,names(x))
+      by_v <- eval(parse(text=paste("x$",by,sep="")))
+      x_sin <- data.frame(x[,-pos_by])
+      names(x_sin) <- names(x)[-pos_by]
+      if (length(x_sin)==0)
+      {
+        descriptive(x,z,ignore.na,by=NULL)
+        stop("Only one variable in the data. Can't be used as grouping variable")
+      }
+    }
+    else{
+      pos_by<-NULL
+      by_v <- eval(parse(text=by))
+      x_sin <- x
+    }
+
+    if (length(by_v)!=dim(x_sin)[1] | is.numeric(by_v))
+    {
+      descriptive(x=x,z=z,ignore.na=ignore.na,by=NULL)
+      warning(gettextf("Variable %s does not have the same number of observations than the data or is not a factor.
+                       Summary without grouping.", by))
+    }
+    else
+    {
+      x_sin <- x_sin[!is.na(by_v),]
+      by_v <- by_v[!is.na(by_v)]
+      by_v <- factor(by_v)
+      x_sin <- data.frame(x_sin)
+      if(!is.null(pos_by)) names(x_sin) <- names(x)[-pos_by]
+      niveles <- levels(by_v)
+      cat("Summary by ", by, ":", sep="")
+      cat("\n")
+      cat("-------------------------------")
+      cat("\n")
+      for (i in 1:length(niveles))
+      {
+        x_g <- x_sin[by_v==niveles[i],]
+        cat("Level ", by, ": ", niveles[i], sep="")
+        cat("\n")
+        descriptive(x=x_g,z=z,ignore.na=ignore.na,by=NULL)
+        cat("\n")
+        cat("-------------------------------")
+        cat("\n")
+      }
+    }
+    }
+  else{
+
+    #Splitter (Splits data.frame: Numeric and categorical part)
+    nums <- sapply(x, is.numeric)
+
+    #Numeric summary
+    resumen<-function(y){
+      resumen1 <- round(c(min(y, na.rm=T), quantile(y, probs=0.25, na.rm=T), median(y, na.rm=T), quantile(y, probs=0.75, na.rm=T), max(y, na.rm=T), mean(y, na.rm=T), sd(y, na.rm=T), kurtosis(y), skewness(y)),z)
+      names(resumen1) <- c("Min", "1st Q.", "Median", "3rd Q.", "Max", "Mean", "SD", "Kurtosis", "Skewness")
+      distribution <- c("|", rep("-", 28), "|")
+      scaled_Y <- scale_01(y)
+      distribution[(nearest((resumen1["1st Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))+1):(nearest((resumen1["3rd Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))-1)]<-"#"
+      distribution[nearest((resumen1["1st Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-"["
+      distribution[nearest((resumen1["3rd Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-"]"
+      distribution[nearest((resumen1["Median"]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-":"
+      return(data.frame(t(resumen1), Modes=moda_cont(y), NAs=sum(is.na(y)), Distribution=paste(distribution, collapse=""), check.names = FALSE, stringsAsFactors = FALSE))
+    }
+
+    resumen2<-function(w){
+      resumen2<-c(length(table(w)), abbreviate(paste(na.omit(names(sort(-table(w)))[1:5]), collapse="/"), minlength = min(20, nchar(paste(na.omit(names(sort(-table(w)))[1:5]), collapse="/"))), named=FALSE), moda(w), round(prop_may(w, ignore.na = ignore.na),z), antimoda(w), round(prop_min(w, ignore.na = ignore.na),z), sum(is.na(w)))
+      names(resumen2)<- c("N. Classes", "Classes", "Mode", "Prop. mode", "Anti-mode", "Prop. Anti-mode", "NAs")
+      data.frame(t(resumen2), check.names = FALSE, stringsAsFactors = FALSE)
+    }
+    #Results
+    cat(paste("Data frame with", dim(x)[1], "observations and", dim(x)[2], "variables."))
+    cat("\n")
+    cat("\n")
+    if("TRUE" %in% nums){
+      cat("Numeric variables (", sum(nums), ")", sep="")
+      cat("\n")
+      summary1 <- do.call(rbind, lapply(x[,nums], resumen))
+      print(summary1)
+    }
+    if("FALSE" %in% nums){
+      summary2 <- do.call(rbind, lapply(x[,!nums, drop=FALSE], resumen2))
+      cat("\n")
+      cat("Categorical variables (", dim(x)[2]-sum(nums), ")", sep="")
+      cat("\n")
+      print(summary2, quote=FALSE)
+    }
+  }
+}
+
+
+#' Clustering of variables
+#'
+#' @description Displays associations between variables in a data.frame in a heatmap with clustering
+#' @param x A data.frame
+#' @param margins Margins for the plot
+#' @return A heatmap with the variable associations
+#' @importFrom stats lm chisq.test heatmap xtabs
+#' @export
+#' @examples
+#' cluster_var(iris)
+#' cluster_var(mtcars)
+cluster_var <- function(x, margins=c(8,1)){
+  data <- x
+  if(any(sapply(data, is.numeric))){
+    associations <- sapply(data[, sapply(data, is.numeric)], function(x) sapply(data, function(y) suppressWarnings(summary(lm(x ~ y))$r.squared)))
+    heatmap(associations, col=colorRampPalette(c("gray", "darkred"))(25), scale="none", margins=margins)
+  }
+  if (sum(!sapply(data, is.numeric))>1){
+    associations2 <- sapply(data[, !sapply(data, is.numeric)], function(x) sapply(data[, !sapply(data, is.numeric)], function(y) suppressWarnings(chisq.test(xtabs(~ x + y))$statistic)))
+    rownames(associations2)<-colnames(associations2)
+    heatmap(associations2, col=colorRampPalette(c("gray", "darkred"))(25), scale="row", margins=margins)
+  }
 }
 
 #' Mine plot
