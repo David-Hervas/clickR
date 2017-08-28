@@ -384,7 +384,7 @@ descriptive<-function(x, z=3, ignore.na=TRUE, by=NULL){
 #' @param x A data.frame
 #' @param margins Margins for the plot
 #' @return A heatmap with the variable associations
-#' @importFrom stats lm chisq.test heatmap xtabs
+#' @importFrom stats lm heatmap xtabs
 #' @export
 #' @examples
 #' cluster_var(iris)
