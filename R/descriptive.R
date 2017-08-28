@@ -250,6 +250,22 @@ prop_may<-function(x, ignore.na=TRUE) {sort(-table(x))[1]/-(length(x)-ignore.na*
 prop_min<-function(x, ignore.na=TRUE){sort(table(x))[1]/(length(x)-ignore.na*sum(is.na(x)))}
 
 
+#' Computes Goodman and Kruskal's tau
+#'
+#' @description Returns Goodman and Kruskal's tay measure of association between two categorical variables
+#' @param x A categorical variable
+#' @param y A categorical variable
+#' @return Goodman and Kruskal's tau
+#' @export
+GK_assoc <- function(x, y){
+  Nij <- table(x, y)
+  vx <- 1 - sum(rowSums(Nij/sum(Nij))^2)
+  vy <- 1 - sum(colSums(Nij/sum(Nij))^2)
+  d <- 1 - sum(rowSums((Nij/sum(Nij))^2)/rowSums(Nij/sum(Nij)))
+  tau <- (vy - d)/vy
+  return(tau)
+}
+
 #' Detailed summary of the data
 #'
 #' @description Creates a detailed summary of the data
@@ -362,7 +378,6 @@ descriptive<-function(x, z=3, ignore.na=TRUE, by=NULL){
   }
 }
 
-
 #' Clustering of variables
 #'
 #' @description Displays associations between variables in a data.frame in a heatmap with clustering
@@ -378,12 +393,12 @@ cluster_var <- function(x, margins=c(8,1)){
   data <- x
   if(any(sapply(data, is.numeric))){
     associations <- sapply(data[, sapply(data, is.numeric)], function(x) sapply(data, function(y) suppressWarnings(summary(lm(x ~ y))$r.squared)))
-    heatmap(associations, col=colorRampPalette(c("gray", "darkred"))(25), scale="none", margins=margins)
+    heatmap(associations, col=colorRampPalette(c("gray", "darkred"))(25), scale="none", margins=margins, breaks=seq(0, 1, length.out = 26))
   }
   if (sum(!sapply(data, is.numeric))>1){
-    associations2 <- sapply(data[, !sapply(data, is.numeric)], function(x) sapply(data[, !sapply(data, is.numeric)], function(y) suppressWarnings(chisq.test(xtabs(~ x + y))$statistic)))
+    associations2 <- sapply(data[, !sapply(data, is.numeric)], function(x) sapply(data[, !sapply(data, is.numeric)], function(y) GK_assoc(x, y)))
     rownames(associations2)<-colnames(associations2)
-    heatmap(associations2, col=colorRampPalette(c("gray", "darkred"))(25), scale="row", margins=margins)
+    heatmap(associations2, col=colorRampPalette(c("gray", "darkred"))(25), scale="none", margins=margins, breaks=seq(0, 1, length.out = 26))
   }
 }
 
