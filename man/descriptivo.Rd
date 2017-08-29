@@ -2,24 +2,15 @@
 % Please edit documentation in R/descriptive.R
 \name{descriptivo}
 \alias{descriptivo}
-\title{Detailed summary of the data}
+\title{Defunct function for creating data summaries}
 \usage{
-descriptivo(x, z = 3, graph = ifelse(length(data.frame(x)) > 20, FALSE,
-  TRUE), ignore.na = TRUE, by = NULL)
+descriptivo(x)
 }
 \arguments{
 \item{x}{A data.frame}
-
-\item{z}{Number of decimal places}
-
-\item{graph}{If TRUE displays a graph of variable clustering}
-
-\item{ignore.na}{If TRUE NA values will not count for relative frequencies calculations}
-
-\item{by}{Factor variable definining groups for the summary}
 }
 \value{
-Summary of the data
+Nothing, the function is defunct. Use descriptive() instead.
 }
 \description{
 Creates a detailed summary of the data
