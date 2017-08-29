@@ -53,6 +53,8 @@ ttrue<-function(x){
 #' @param output Format of the output. If TRUE, optimize for exporting as csv
 #' @param ... further arguments passed to boxplot()
 #' @return A list of a data.frame with information about data quality of the variable
+#' @importFrom graphics boxplot dotchart
+#' @importFrom stats setNames
 #' @export
 check_quality <- function(x, id=1:length(x), plot=TRUE, numeric=NULL, n=ifelse(is.numeric(x) | ttrue(numeric), 5, 2), output=FALSE, ...){
   call_n <- !is.null(as.list(match.call())$n)
@@ -70,6 +72,7 @@ check_quality <- function(x, id=1:length(x), plot=TRUE, numeric=NULL, n=ifelse(i
     offending_values<-paste(paste(names(off), " (", off, ")", sep=""), collapse="; ", sep="")
   }
   if(plot & num) boxplot(numeros(x), col="gray", outcol="darkred", pch=16, las=1, ylab=as.character(as.list(match.call())$x)[3], ...)
+  if(plot & !num) dotchart(sort(setNames(as.numeric(table(x)), names(table(x)))), pch=16)
   Extremes_low<-NA
   Extremes_high<-NA
   Tabla2<-NA

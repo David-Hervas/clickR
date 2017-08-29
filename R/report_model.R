@@ -10,6 +10,7 @@
 #' @param pointsize Pointsize to use if type="word"
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats confint
 #' @export
 report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                     font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
@@ -91,6 +92,7 @@ report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param pointsize Pointsize to use if type="word"
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats AIC
 #' @export
 report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                        font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
@@ -577,6 +579,7 @@ make_latex_table <- function(x, file){
 #' @description Exports a table to Excel
 #' @param x A data.frame object
 #' @param file Name of the file
+#' @importFrom utils write.csv2
 #' @return Creates a .csv file with the table
 #' @export
 make_csv_table <- function(x, file){

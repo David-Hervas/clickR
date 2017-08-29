@@ -233,6 +233,7 @@ descriptive<-function(x, z=3, ignore.na=TRUE, by=NULL){
 #' @param margins Margins for the plot
 #' @return A heatmap with the variable associations
 #' @importFrom stats lm heatmap xtabs
+#' @importFrom grDevices colorRampPalette
 #' @export
 #' @examples
 #' cluster_var(iris)
@@ -259,6 +260,7 @@ cluster_var <- function(x, margins=c(8,1)){
 #' @param sort If TRUE, variables are sorted according to their results
 #' @param list If TRUE, creates a vector with the results
 #' @param ... further arguments passed to order()
+#' @importFrom graphics par image mtext
 #' @export
 #' @examples
 #' mine.plot(airquality)   #Displays missing data
@@ -301,6 +303,7 @@ is.it <- function(x) is.na(x)
 #' @param formula Formula for the boxplot
 #' @param boxwex Width of the boxes
 #' @param ... further arguments passed to beeswarm()
+#' @importFrom grDevices rgb
 #' @export
 #' @examples
 #' ipboxplot(Sepal.Length ~ Species, data=iris)
@@ -520,6 +523,7 @@ fix.dates <- function (x, cent = "19"){
 #' @param levels Optional vector with the levels names
 #' @param plot Optional: Plot cluster dendrogram?
 #' @param k Number of levels for clustering
+#' @importFrom stats hclust rect.hclust cutree
 #' @export
 #' @examples
 #' factor1<-factor(c("Control", "Treatment", "Tretament", "Tratment", "treatment",

@@ -15,7 +15,7 @@
 #' @param color Color for the points
 #' @param ... Further arguments passed to axis()
 #' @return A plot of the coefficients with their CI
-#' @importFrom graphics abline lines plot.new plot.window points
+#' @importFrom graphics abline lines plot.new plot.window points axis
 #' @export
 coefplot <- function(coefs, lwr.int=coefs, upper.int=coefs, offset=0, coefnames=names(coefs), abline.pos=0, sorted=FALSE, reverse=FALSE, pch=16, xlim=c(min(lwr.int, na.rm=TRUE), max(upper.int, na.rm=TRUE)), ylim=c(1, length(coefs)), color="black", ...){
   color <- as.character(data.frame(color, coefs)[,1])
