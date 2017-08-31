@@ -536,6 +536,69 @@ report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3,
 }
 
 
+#' Report from robust linear model (rlm)
+#'
+#' @description Creates a report table from a robust linear model
+#' @param x A rlm object
+#' @param file Name of the file to export the table
+#' @param type Format of the file
+#' @param digits Number of decimals
+#' @param digitspvals Number of decimals for p-values
+#' @param font Font to use if type="word"
+#' @param pointsize Pointsize to use if type="word"
+#' @param ... Further arguments passed to make_table
+#' @return A data frame with the report table
+#' @export
+report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
+                    font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
+                    pointsize=11, ...){
+  sx <- summary(x, method = "XtWX")
+  ci <- rob.ci(x, ...)
+  obj <- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1],
+              upper.int=ci[,2], pvalues=rob.pvals(x), AIC=AIC(x))
+  output<-rbind(cbind(round(obj$coefficients,digits),round(obj$se,digits),
+                      round(obj$lwr.int,digits),round(obj$upper.int, digits), round(obj$pvalues,digitspvals)),
+                c(round(obj$AIC,digits+1),rep("",4)))
+  colnames(output)<-c('Estimate','Std. Error','Lower 95%','Upper 95%','P-value')
+  rownames(output)[dim(sx$coefficients)[1]+1]<-'AIC'
+  output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
+  if(!is.null(file)){
+    make_table(output, file, type, font, pointsize)
+  }
+  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  class(obj) <- "reportmodel"
+  invisible(obj)
+}
+
+#' Function to compute p-values for robust linear regression models
+#'
+#' @description Estimates p-values for rlm models
+#' @param x A rlm object
+#' @return A vector of p-values
+#' @export
+rob.pvals <- function(x){
+  coefs <- x$coef
+  sx<-summary(x, method = "XtWX")
+  covs<-diag(sx$cov.unscaled)*sx$stddev^2
+  statistics<-sapply(1:length(coefs), function(x) sum(coefs[x]*solve(t.cov[x], coefs[x])))
+  pf(statistics, 1, sx$df[2], lower.tail = FALSE)
+}
+
+#' Function to compute bootstrap confidence intervals for robust linear regression models
+#'
+#' @description Estimates confidence intervals for rlm models
+#' @param x A rlm object
+#' @return A matrix with bootstrap confidence intervals for each variable in the model
+#' @export
+rob.ci <- function(x, level=0.95, maxit=200, R=2000){
+  coefb <- function(object, data, indices){      #Función para extraer el R2 de un modelo
+    d <- data[indices,]
+    fit <- rlm(formula(object), data=d, maxit=maxit)
+    return(coef(fit))
+  }
+  results <- boot(data=x$model, statistic=coefb, R=R, object=x)
+  t(sapply(lapply(1:length(x$coefficients), function(x) boot.ci(results, conf=level, type="bca", index=x)), function(x) x$bca[4:5]))
+}
 
 #' Export a table to word
 #'
