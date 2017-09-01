@@ -8,6 +8,12 @@ rob.ci(x, level = 0.95, maxit = 200, R = 2000)
 }
 \arguments{
 \item{x}{A rlm object}
+
+\item{level}{Confidence level for the interval}
+
+\item{maxit}{Maximum number of iterations per fit}
+
+\item{R}{Number of boostrap samples}
 }
 \value{
 A matrix with bootstrap confidence intervals for each variable in the model

@@ -133,11 +133,11 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
                                 font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
                                             "Helvetica")[[1]], pointsize=11, ...){
   sx=lmerTest::summary(x)
-  cor<-as.data.frame(lme4::VarCorr(x))
+  cor<-as.data.frame(VarCorr(x))
   ci <- confint(x)
   #cor[dim(cor)[1],2]<-'Residual'
-  obj<- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
-             upper.int=ci[,2][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
+  obj<- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(VarCorr(x)))[1])],
+             upper.int=ci[,2][-c(1:dim(as.data.frame(VarCorr(x)))[1])],
              pvalues=tryCatch(sx$coefficients[,5], error=function(x) NA), aic=AIC(x),
              random=cor[c(is.na(cor$var2)),c(5)])
   output<-rbind(rbind(cbind(round(obj$coefficients,digits),round(obj$se,digits),
@@ -197,10 +197,10 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                                       "Helvetica")[[1]], pointsize=11, ...){
   compute.exp<-x@resp$family$link %in% c("logit", "log")
   sx<-summary(x)
-  cor<-as.data.frame(lme4::VarCorr(x))
+  cor<-as.data.frame(VarCorr(x))
   ci <- confint(x)
-  obj<- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
-             upper.int=ci[,2][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
+  obj<- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(VarCorr(x)))[1])],
+             upper.int=ci[,2][-c(1:dim(as.data.frame(VarCorr(x)))[1])],
              pvalues=sx$coefficients[,4], aic=AIC(x),
              random=cor[c(is.na(cor$var2)),c(5)])
   if(compute.exp){
@@ -250,16 +250,16 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                       font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
                                   "Helvetica")[[1]], pointsize=11, ...){
-  sx<-lqmm::summary.lqmm(x, ...)
+  sx<-summary(x, ...)
   obj<-list(coefficients=setNames(sx$tTable[,1], rownames(sx$tTable)), se=sx$tTable[,2], lwr.int=sx$tTable[,3], upper.int=sx$tTable[,4],
-            pvalues=sx$tTable[,5], aic=sx$aic, random=round(lqmm::VarCorr.lqmm(x)))
+            pvalues=sx$tTable[,5], aic=sx$aic, random=round(VarCorr(x)))
   output<-rbind(rbind(cbind(round(obj$coefficients,digits), round(obj$se,digits),
                             round(obj$lwr.int, digits), round(obj$upper.int, digits), round(obj$pvalues, digitspvals)),
                       c(round(obj$aic, digits),rep("",4))),
                 matrix(c(round(obj$random,digits),rep("",4*length(obj$random))),ncol=5,byrow=F))
   colnames(output)<-c('Estimate','Std. Error','Lower 95%','Upper 95%','P-value')
   rownames(output)[dim(sx$tTable)[1]+1]<-c('AIC')
-  rownames(output)[(dim(sx$tTable)[1]+2):(((dim(sx$tTable)[1]+2)+length(obj$random))-1)]<-paste('Ran.Eff',names(lqmm::VarCorr.lqmm(x)),sep=' ')
+  rownames(output)[(dim(sx$tTable)[1]+2):(((dim(sx$tTable)[1]+2)+length(obj$random))-1)]<-paste('Ran.Eff',names(VarCorr(x)),sep=' ')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
     make_table(output, file, type, font, pointsize)
@@ -338,7 +338,7 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   ci<-confint(x)
   obj <- list(coefficients=sx$coefficients[,1][-c(1:length(x$alpha))], se=sx$coefficients[,2][-c(1:length(x$alpha))],
               lwr.int=ci[,1][-c(1:length(x$alpha))], upper.int=ci[,2][-c(1:length(x$alpha))], pvalues=sx$coefficients[,4][-c(1:length(x$alpha))], aic=AIC(x),
-              random=ordinal::VarCorr.clmm(x))
+              random=VarCorr(x))
   if(compute.exp){
     obj$exp.coef <- exp(obj$coefficients)
     obj$exp.lwr.int <- exp(obj$lwr.int)
@@ -357,7 +357,7 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                          rep("",ifelse(compute.exp, 5, 4)*length(rapply(obj$random, function(x) sqrt(diag(x)))))),ncol=ifelse(compute.exp, 6, 5),byrow=F))
   colnames(output)<-c('Estimate','Std. Error', if(compute.exp) 'exp(Estimate)','Lower 95%','Upper 95%','P-value')
   rownames(output)[length(x$beta)+1]<-c('AIC')
-  rownames(output)[rownames(output)==""]<-names(rapply(ordinal::VarCorr.clmm(x), function(x) sqrt(diag(x))))
+  rownames(output)[rownames(output)==""]<-names(rapply(VarCorr(x), function(x) sqrt(diag(x))))
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
     make_table(output, file, type, font, pointsize)
@@ -629,12 +629,13 @@ report.glmmadmb<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @description Estimates p-values for rlm models
 #' @param x A rlm object
 #' @return A vector of p-values
+#' @importFrom stats pf
 #' @export
 rob.pvals <- function(x){
   coefs <- x$coef
   sx<-summary(x, method = "XtWX")
   covs<-diag(sx$cov.unscaled)*sx$stddev^2
-  statistics<-sapply(1:length(coefs), function(x) sum(coefs[x]*solve(t.cov[x], coefs[x])))
+  statistics<-sapply(1:length(coefs), function(x) sum(coefs[x]*solve(covs[x], coefs[x])))
   pf(statistics, 1, sx$df[2], lower.tail = FALSE)
 }
 
@@ -642,16 +643,20 @@ rob.pvals <- function(x){
 #'
 #' @description Estimates confidence intervals for rlm models
 #' @param x A rlm object
+#' @param level Confidence level for the interval
+#' @param maxit Maximum number of iterations per fit
+#' @param R Number of boostrap samples
 #' @return A matrix with bootstrap confidence intervals for each variable in the model
+#' @importFrom stats formula
 #' @export
 rob.ci <- function(x, level=0.95, maxit=200, R=2000){
   coefb <- function(object, data, indices){      #Función para extraer el R2 de un modelo
     d <- data[indices,]
-    fit <- rlm(formula(object), data=d, maxit=maxit)
+    fit <- MASS::rlm(formula(object), data=d, maxit=maxit)
     return(coef(fit))
   }
-  results <- boot(data=x$model, statistic=coefb, R=R, object=x)
-  t(sapply(lapply(1:length(x$coefficients), function(x) boot.ci(results, conf=level, type="bca", index=x)), function(x) x$bca[4:5]))
+  results <- boot::boot(data=x$model, statistic=coefb, R=R, object=x)
+  t(sapply(lapply(1:length(x$coefficients), function(x) boot::boot.ci(results, conf=level, type="bca", index=x)), function(x) x$bca[4:5]))
 }
 
 #' Export a table to word
@@ -733,6 +738,18 @@ make_table<-function(x, file, type, font="Arial", pointsize=11, add.rownames=TRU
 #' @export
 report<-function(x, ...){
   UseMethod("report")
+}
+
+#' Generic VarCorr function
+#'
+#' @description Extract Variance-Covariance Matrix
+#' @param x A model object
+#' @param sigma Optional value used as a multiplier for the standard deviations
+#' @param ... Further arguments passed to VarrCorr methods
+#' @return A Variance-Covariance Matrix
+#' @export
+VarCorr<-function (x, sigma = 1, ...){
+  UseMethod("VarCorr")
 }
 
 

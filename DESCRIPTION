@@ -1,10 +1,10 @@
 Package: clickR
 Type: Package
 Title: Fix Data and Create Report Tables from Different Objects
-Version: 0.3.25
+Version: 0.3.26
 Author: Victoria Fornes Ferrer, David Hervas Marin
 Maintainer: David Hervas Marin <ddhervas@yahoo.es>
-Imports: ReporteRs, lme4, lmerTest, xtable, beeswarm, lqmm, ordinal
+Imports: beeswarm, boot, lme4, lmerTest, MASS, ReporteRs, xtable
 Description: Fixes data errors in numerical, factor and date variables, checks data quality, performs exploratory analysis and creates report tables from models and summaries.
 License: GPL (>= 2)
 Encoding: UTF-8
