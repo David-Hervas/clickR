@@ -570,6 +570,60 @@ report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   invisible(obj)
 }
 
+
+#' Report from generalized linear mixed model from ADMB
+#'
+#' @description Creates a report table from a glmmadmb model
+#' @param x A generalized linear mixed model object (glmmabmb)
+#' @param file Name of the file to export the table
+#' @param type Format of the file
+#' @param digits Number of decimals
+#' @param digitspvals Number of decimals for p-values
+#' @param font Font to use if type="word"
+#' @param pointsize Pointsize to use if type="word"
+#' @param ... Further arguments passed to make_table
+#' @return A data frame with the report table
+#' @export
+report.glmmadmb<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
+                          font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
+                                      "Helvetica")[[1]], pointsize=11, ...){
+  compute.exp<-x$link %in% c("logit", "log")
+  sx<-summary(x)
+  cor<-sqrt(cbind(unlist(lapply(x$S, function(x) diag(x)))))
+  ci <- confint(x)
+  obj<- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1],
+             upper.int=ci[,2],
+             pvalues=sx$coefficients[,4], aic=AIC(x),
+             random=cor)
+  if(compute.exp){
+    obj$exp.coef <- exp(obj$coefficients)
+    obj$exp.lwr.int <- exp(obj$lwr.int)
+    obj$exp.upper.int <- exp(obj$upper.int)
+  }
+  output<-rbind(rbind(cbind(round(obj$coefficients,digits),
+                            round(obj$se, digits),
+                            if(compute.exp) {
+                              cbind(round(obj$exp.coef,digits), round(obj$exp.lwr.int, digits),
+                                    round(obj$exp.upper.int, digits))
+                            } else{
+                              cbind(round(obj$lwr.int, digits), round(obj$upper.int, digits))
+                            }
+                            , round(obj$pvalues,digitspvals)),
+                      c(round(obj$aic, digits), rep("", ifelse(compute.exp, 5, 4)))),
+                matrix(c(round(obj$random,digits),rep("",ifelse(compute.exp, 5, 4)*dim(cor)[1])),ncol=ifelse(compute.exp, 6, 5),byrow=F))
+  colnames(output)<-c('Estimate','Std. Error', if(compute.exp) 'exp(Estimate)','Lower 95%','Upper 95%','P-value')
+  rownames(output)[dim(sx$coefficients)[1]+1]<-c('AIC')
+  rownames(output)[rownames(output)==""]<-paste(rep('Sd ',dim(cor)[1]),
+                                                rownames(cor),sep='')
+  output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
+  if(!is.null(file)){
+    make_table(output, file, type, font, pointsize)
+  }
+  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  class(obj) <- "reportmodel"
+  invisible(obj)
+}
+
 #' Function to compute p-values for robust linear regression models
 #'
 #' @description Estimates p-values for rlm models

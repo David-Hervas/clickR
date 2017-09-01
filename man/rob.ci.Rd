@@ -2,15 +2,15 @@
 % Please edit documentation in R/report_model.R
 \name{rob.ci}
 \alias{rob.ci}
-\title{Function to compute confidence intervals for robust linear regression models}
+\title{Function to compute bootstrap confidence intervals for robust linear regression models}
 \usage{
-rob.ci(x, level = 0.95)
+rob.ci(x, level = 0.95, maxit = 200, R = 2000)
 }
 \arguments{
 \item{x}{A rlm object}
 }
 \value{
-A matrix with condidence intervals for each variable in the model
+A matrix with bootstrap confidence intervals for each variable in the model
 }
 \description{
 Estimates confidence intervals for rlm models
