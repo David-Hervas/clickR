@@ -652,7 +652,9 @@ rob.pvals <- function(x){
 rob.ci <- function(x, level=0.95, maxit=200, R=2000){
   coefb <- function(object, data, indices){      #Función para extraer el R2 de un modelo
     d <- data[indices,]
-    fit <- MASS::rlm(formula(object), data=d, maxit=maxit)
+    object$call$data <- as.name("d")
+    object$call$maxit <- maxit
+    fit <- eval(object$call)
     return(coef(fit))
   }
   results <- boot::boot(data=x$model, statistic=coefb, R=R, object=x)
