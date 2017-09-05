@@ -1,3 +1,14 @@
+clickR 0.3.27 (Release date: 2017-09-03)
+==============
+
+Changes:
+
+* Descriptivo function is now defunct
+* Added support for reporting robust linear models and glmnet models
+* Fixed bugs in some report funtions
+
+
+
 clickR 0.3.2 (Release date: 2017-08-29)
 ==============
 

@@ -133,11 +133,11 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
                                 font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
                                             "Helvetica")[[1]], pointsize=11, ...){
   sx=lmerTest::summary(x)
-  cor<-as.data.frame(VarCorr(x))
+  cor<-as.data.frame(lme4::VarCorr(x))
   ci <- confint(x)
   #cor[dim(cor)[1],2]<-'Residual'
-  obj<- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(VarCorr(x)))[1])],
-             upper.int=ci[,2][-c(1:dim(as.data.frame(VarCorr(x)))[1])],
+  obj<- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
+             upper.int=ci[,2][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
              pvalues=tryCatch(sx$coefficients[,5], error=function(x) NA), aic=AIC(x),
              random=cor[c(is.na(cor$var2)),c(5)])
   output<-rbind(rbind(cbind(round(obj$coefficients,digits),round(obj$se,digits),
@@ -197,10 +197,10 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                                       "Helvetica")[[1]], pointsize=11, ...){
   compute.exp<-x@resp$family$link %in% c("logit", "log")
   sx<-summary(x)
-  cor<-as.data.frame(VarCorr(x))
+  cor<-as.data.frame(lme4::VarCorr(x))
   ci <- confint(x)
-  obj<- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(VarCorr(x)))[1])],
-             upper.int=ci[,2][-c(1:dim(as.data.frame(VarCorr(x)))[1])],
+  obj<- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
+             upper.int=ci[,2][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],
              pvalues=sx$coefficients[,4], aic=AIC(x),
              random=cor[c(is.na(cor$var2)),c(5)])
   if(compute.exp){
@@ -469,8 +469,8 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
                          pointsize=11, ...){
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
-  random<-tryCatch(do.call(rbind, sx$random), error=function(e) NA)
-  if(!is.na(random[1])) rownames(random)<-paste("Sd", names(sx$random), sep=" ")
+  random<-do.call(rbind, sx$random)
+  if(!is.null(random)) rownames(random)<-paste("Sd", names(sx$random), sep=" ")
   obj<-list(coefficients=setNames(sx$fixed[,1], rownames(sx$fixed)), se=sx$fixed[,2], lwr.int=sx$fixed[,3],
             upper.int=sx$fixed[,4], random=random)
   if(compute.exp){
@@ -484,7 +484,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
                               round(obj$exp.upper.int, digits))
                       } else{
                         cbind(round(obj$lwr.int,digits), round(obj$upper.int, digits))
-                      }), if(!is.na(random[1])) {cbind(round(random[,1:2, drop=FALSE], digits), if(compute.exp) "-", round(random[,3:4, drop=FALSE], digits))})
+                      }), if(!is.null(random)) {cbind(round(random[,1:2, drop=FALSE], digits), if(compute.exp) "-", round(random[,3:4, drop=FALSE], digits))})
   colnames(output)<-c('Estimate','Std. Error',if(compute.exp) 'exp(Estimate)', 'Lower 95%','Upper 95%')
   if(!is.null(file)){
     make_table(output, file, type, font, pointsize)
