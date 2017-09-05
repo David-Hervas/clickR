@@ -252,7 +252,7 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                                   "Helvetica")[[1]], pointsize=11, ...){
   sx<-summary(x, ...)
   obj<-list(coefficients=setNames(sx$tTable[,1], rownames(sx$tTable)), se=sx$tTable[,2], lwr.int=sx$tTable[,3], upper.int=sx$tTable[,4],
-            pvalues=sx$tTable[,5], aic=sx$aic, random=round(VarCorr(x)))
+            pvalues=sx$tTable[,5], aic=sx$aic, random=round(VarCorr(x),2))
   output<-rbind(rbind(cbind(round(obj$coefficients,digits), round(obj$se,digits),
                             round(obj$lwr.int, digits), round(obj$upper.int, digits), round(obj$pvalues, digitspvals)),
                       c(round(obj$aic, digits),rep("",4))),
