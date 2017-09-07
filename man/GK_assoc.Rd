@@ -17,3 +17,8 @@ Goodman and Kruskal's tau
 \description{
 Returns Goodman and Kruskal's tay measure of association between two categorical variables
 }
+\examples{
+data(infert)
+GK_assoc(infert$education, infert$case)
+GK_assoc(infert$case, infert$education) #Not the same
+}

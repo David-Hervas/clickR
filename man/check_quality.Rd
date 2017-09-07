@@ -28,3 +28,8 @@ A list of a data.frame with information about data quality of the variable
 \description{
 Returns different data quality details of a numeric or categorical variable
 }
+\examples{
+check_quality(airquality$Ozone)  #For one variable
+lapply(airquality, check_quality)  #For a data.frame
+lapply(airquality, check_quality, output=TRUE)  #For a data.frame, one row per variable
+}

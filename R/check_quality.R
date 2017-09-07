@@ -56,6 +56,10 @@ ttrue<-function(x){
 #' @importFrom graphics boxplot dotchart
 #' @importFrom stats setNames
 #' @export
+#' @examples
+#' check_quality(airquality$Ozone)  #For one variable
+#' lapply(airquality, check_quality)  #For a data.frame
+#' lapply(airquality, check_quality, output=TRUE)  #For a data.frame, one row per variable
 check_quality <- function(x, id=1:length(x), plot=TRUE, numeric=NULL, n=ifelse(is.numeric(x) | ttrue(numeric), 5, 2), output=FALSE, ...){
   call_n <- !is.null(as.list(match.call())$n)
   num <- numeric

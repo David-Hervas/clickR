@@ -14,3 +14,9 @@
 \description{
 Creates a coefplot from the reportmodel object
 }
+\examples{
+lm1 <- lm(Petal.Length ~ Sepal.Width + Species, data=iris)
+a<-report(lm1)
+par(mar=c(4, 10, 3, 2))
+plot(a)   #Coefplot calling plot.reportmodel
+}

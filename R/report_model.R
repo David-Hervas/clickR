@@ -738,6 +738,10 @@ make_table<-function(x, file, type, font="Arial", pointsize=11, add.rownames=TRU
 #' @param ... further arguments passed to make_table
 #' @return A data frame with the report table
 #' @export
+#' @examples
+#' report(iris)  #Report of descriptive statistics
+#' lm1 <- lm(Petal.Length ~ Sepal.Width + Species, data=iris)
+#' report(lm1)   #Report of model
 report<-function(x, ...){
   UseMethod("report")
 }

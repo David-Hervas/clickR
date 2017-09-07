@@ -17,6 +17,14 @@
 #' @return A plot of the coefficients with their CI
 #' @importFrom graphics abline lines plot.new plot.window points axis
 #' @export
+#' @examples
+#' lm1 <- lm(Petal.Length ~ Sepal.Width + Species, data=iris)
+#' a<-report(lm1)
+#' par(mar=c(4, 10, 3, 2))
+#' #Coefplot calling plot.reportmodel
+#' plot(a)
+#' #Manual coefplot
+#' coefplot(coefs=c(1, 2, 3), lwr.int=c(0, 1, 2), upper.int=c(5, 6, 7), coefnames=c("A", "B", "C"))
 coefplot <- function(coefs, lwr.int=coefs, upper.int=coefs, offset=0, coefnames=names(coefs), abline.pos=0, sorted=FALSE, reverse=FALSE, pch=16, xlim=c(min(lwr.int, na.rm=TRUE), max(upper.int, na.rm=TRUE)), ylim=c(1, length(coefs)), color="black", ...){
   color <- as.character(data.frame(color, coefs)[,1])
   if(is.null(coefnames)) coefnames <- 1:length(coefs)
@@ -41,6 +49,11 @@ coefplot <- function(coefs, lwr.int=coefs, upper.int=coefs, offset=0, coefnames=
 #' @param x A reportmodel object
 #' @param ... Further arguments passed to coefplot
 #' @export
+#' @examples
+#' lm1 <- lm(Petal.Length ~ Sepal.Width + Species, data=iris)
+#' a<-report(lm1)
+#' par(mar=c(4, 10, 3, 2))
+#' plot(a)   #Coefplot calling plot.reportmodel
 plot.reportmodel<-function(x, ...){
   coefplot(x$coefficients, x$lwr.int, x$upper.int, ...)
 }

@@ -105,6 +105,10 @@ prop_min<-function(x, ignore.na=TRUE){sort(table(x))[1]/(length(x)-ignore.na*sum
 #' @param y A categorical variable
 #' @return Goodman and Kruskal's tau
 #' @export
+#' @examples
+#' data(infert)
+#' GK_assoc(infert$education, infert$case)
+#' GK_assoc(infert$case, infert$education) #Not the same
 GK_assoc <- function(x, y){
   Nij <- table(x, y)
   vx <- 1 - sum(rowSums(Nij/sum(Nij))^2)
