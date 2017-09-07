@@ -1,4 +1,4 @@
-#' Report from generalized linear mixed model
+#' Plot of the coefficients of a model
 #'
 #' @description Creates a plot of the coefficients of a model
 #' @param coefs A vector with each coefficient
