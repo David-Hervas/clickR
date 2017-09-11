@@ -501,24 +501,61 @@ fix.numerics<-function(x, k=8, max.NA=0.2, info=TRUE){
 #'
 #' @description Fixes dates
 #' @param x A data.frame
-#' @param cent Fixes century
+#' @param max.NA Maximum allowed proportion of NA values created by coercion
+#' @param min.obs Minimum number of non-NA observations allowed per variable
+#' @param locale Locale to be used for month names
+#' @param info Add generated missing values an excluded variable information as attributes
+#' @param use.probs Solve ambiguities by similarity to the most frequent formats
 #' @export
 #' @examples
 #' mydata<-data.frame(Dates1=c("25/06/1983", "25-08/2014", "2001/11/01", "2008-10-01"),
 #'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", NA),
 #'                    Numeric1=rnorm(4))
 #' fix.dates(mydata)
-fix.dates <- function (x, cent = "19"){
+fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, locale="C", info=TRUE, use.probs=TRUE){
+  x<-kill.factors(x)
+  x.old<-x
   previous.NA <- sapply(x, function(x) sum(is.na(x)))
-  x[, apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any)] <- lapply(x[, apply(sapply(x,
-      function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any), drop = FALSE],
-      function(x) as.Date(gsub("(?<![0-9])0{2}+", cent, perl = TRUE, as.Date(sapply(strsplit(gsub("/", "-", as.character(x)), "-"),
-      function(x) if (is.na(x[1]) | is.na(as.numeric(x[1]))) NA else if (!as.numeric(x[1]) > 31) paste(rev(x), collapse = "-") else paste(x, collapse = "-"))))))
-  final.NA <- sum(sapply(x, function(x) sum(is.na(x))) - previous.NA)
-  print(paste(final.NA, "new missing values generated"))
+  previous.minobs <- sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
+  x[, apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any)] <- lapply(x[, apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any), drop = FALSE], function(x) fxd(x, locale=locale, use.probs=use.probs))
+  final.NA <- sapply(x, function(x) sum(is.na(x))) - previous.NA
+  final.minobs<-sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
+  x[,((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)]<-x.old[,((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)]
+  print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
+  print(paste(sum((final.NA-previous.NA) > nrow(x)*max.NA), "variables excluded following max.NA criterion"))
+  print(paste(final.minobs-previous.minobs, "variables excluded following min.obs criterion"))
+  if(info){
+    attr(x, "missing") <- (sapply(x, function(x) sum(is.na(x)))-previous.NA)
+    attr(x, "excluded") <- (final.NA-previous.NA) > nrow(x)*max.NA
+  }
   return(x)
 }
 
+#' Internal function to fix.dates
+#'
+#' @description Function to format dates
+#' @param d A character vector
+#' @param locale Locale to be used for month names
+#' @param use.probs Solve ambiguities by similarity to the most frequent formats
+fxd <- function(d, locale="C", use.probs=TRUE){
+  formats <- c("%d-%m-%Y", "%d-%m-%y", "%Y-%m-%d", "%m-%d-%Y", "%m-%d-%y", "%d-%b-%Y", "%d-%B-%Y", "%d-%b-%y", "%d-%B-%y",
+               "%d%m%Y", "%d%m%y", "%Y%m%d", "%m%d%Y", "%m%d%y", "%d%b%Y", "%d%B%Y", "%d%b%y", "%d%B%y")
+  d[grep("ene", d)]<-gsub("ene", "jan", d[grep("ene", d)])
+  d[grep("abr", d)]<-gsub("abr", "apr", d[grep("abr", d)])
+  d[grep("ago", d)]<-gsub("ago", "aug", d[grep("ago", d)])
+  d[grep("dic", d)]<-gsub("dic", "dec", d[grep("dic", d)])
+  Sys.setlocale("LC_TIME", locale)
+  prueba <- lapply(formats, function(x) as.Date(tolower(gsub("--", "-", gsub('[[:punct:]]','-',d))), format=x))
+  co<-lapply(prueba, function(x) {
+    x[format.Date(x, "%Y")<100]<-NA
+    return(x)
+  })
+  if(use.probs){
+    co<-co[order(unlist(lapply(co, function(x) sum(is.na(x)))))]
+  }
+  return(do.call("c", lapply(1:length(d), function(y) na.omit(do.call("c", lapply(co, function(x) x[y])))[1])))
+  Sys.setlocale("LC_TIME", "")
+}
 
 #' Fix levels
 #'
