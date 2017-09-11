@@ -2,7 +2,7 @@
 % Please edit documentation in R/coefplot.R
 \name{coefplot}
 \alias{coefplot}
-\title{Report from generalized linear mixed model}
+\title{Plot of the coefficients of a model}
 \usage{
 coefplot(coefs, lwr.int = coefs, upper.int = coefs, offset = 0,
   coefnames = names(coefs), abline.pos = 0, sorted = FALSE,

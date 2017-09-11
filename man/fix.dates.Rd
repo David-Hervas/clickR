@@ -4,12 +4,21 @@
 \alias{fix.dates}
 \title{Fix dates}
 \usage{
-fix.dates(x, cent = "19")
+fix.dates(x, max.NA = 0.8, min.obs = nrow(x) * 0.05, locale = "C",
+  info = TRUE, use.probs = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
 
-\item{cent}{Fixes century}
+\item{max.NA}{Maximum allowed proportion of NA values created by coercion}
+
+\item{min.obs}{Minimum number of non-NA observations allowed per variable}
+
+\item{locale}{Locale to be used for month names}
+
+\item{info}{Add generated missing values an excluded variable information as attributes}
+
+\item{use.probs}{Solve ambiguities by similarity to the most frequent formats}
 }
 \description{
 Fixes dates
