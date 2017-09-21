@@ -198,10 +198,10 @@ descriptive<-function(x, z=3, ignore.na=TRUE, by=NULL){
       names(resumen1) <- c("Min", "1st Q.", "Median", "3rd Q.", "Max", "Mean", "SD", "Kurtosis", "Skewness")
       distribution <- c("|", rep("-", 28), "|")
       scaled_Y <- scale_01(y)
-      distribution[(nearest((resumen1["1st Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))+1):(nearest((resumen1["3rd Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))-1)]<-"#"
-      distribution[nearest((resumen1["1st Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-"["
-      distribution[nearest((resumen1["3rd Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-"]"
-      distribution[nearest((resumen1["Median"]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-":"
+      tryCatch(distribution[(nearest((resumen1["1st Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))+1):(nearest((resumen1["3rd Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))-1)]<-"#", error=function(e) NA)
+      tryCatch(distribution[nearest((resumen1["1st Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-"[", error=function(e) NA)
+      tryCatch(distribution[nearest((resumen1["3rd Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-"]", error=function(e) NA)
+      tryCatch(distribution[nearest((resumen1["Median"]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-":", error=function(e) NA)
       return(data.frame(t(resumen1), Modes=moda_cont(y), NAs=sum(is.na(y)), Distribution=paste(distribution, collapse=""), check.names = FALSE, stringsAsFactors = FALSE))
     }
 

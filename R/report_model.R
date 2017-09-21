@@ -469,7 +469,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
                          pointsize=11, ...){
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
-  random<-do.call(rbind, sx$random)
+  random<-tryCatch(do.call(rbind, sx$random), error=function(e) NA)
   if(!is.null(random)) rownames(random)<-paste("Sd", names(sx$random), sep=" ")
   obj<-list(coefficients=setNames(sx$fixed[,1], rownames(sx$fixed)), se=sx$fixed[,2], lwr.int=sx$fixed[,3],
             upper.int=sx$fixed[,4], random=random)
