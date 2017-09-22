@@ -614,15 +614,18 @@ peek <- function(x, n=10, which=1:ncol(x)){
       length(unique(x))
     }
     else if(is.numeric(x)){
-      paste(range(x), collapse="-")
+      paste(range(x, na.rm=TRUE), collapse="-")
     }
     else {
       ""
     }
   }
   ), ")", sep="")
+  blank <- rep("", length=length(class))
+  output <- rbind(as.matrix(head(x[,which], n)), rep("", ncol(x[,which])), class, range, blank, blank)
+  rownames(output)[(n+4):(n+5)]<-""
   cat("Data frame with ", nrow(x), " rows (showing ", length(which), " of ", ncol(x), " variables) \n \n")
-  print(rbind(as.matrix(head(x[,which], n)), rep("", ncol(x[,which])), class, range), quote = FALSE)
+  print(output, quote = FALSE)
 }
 
 #' Nice names
