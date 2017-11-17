@@ -384,7 +384,7 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                     font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
                     pointsize=11, ...){
-  sx<-summary(x)
+  sx<-summary(x, se="rank")
   sx2<-summary(x, covariance=TRUE)
   obj<-list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx2$coefficients[,2], lwr.int=sx$coefficients[,2],
             upper.int=sx$coefficients[,3], pvalues=sx2$coefficients[,4], aic=AIC(x))
