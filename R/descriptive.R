@@ -263,13 +263,15 @@ cluster_var <- function(x, margins=c(8,1)){
 #' @param spacing Numerical separation between lines at the y-axis
 #' @param sort If TRUE, variables are sorted according to their results
 #' @param list If TRUE, creates a vector with the results
+#' @param show.x Should the x-axis be plotted?
+#' @param show.y Should the y-axis be plotted?
 #' @param ... further arguments passed to order()
 #' @importFrom graphics par image mtext
 #' @export
 #' @examples
 #' mine.plot(airquality)   #Displays missing data
 #' mine.plot(airquality, what="x>mean(x)+2*sd(x) | x<mean(x)-2*sd(x)")   #Shows extreme values
-mine.plot <- function(x, what="is.na(x)", spacing=5, sort=F, list=FALSE, ...){
+mine.plot <- function(x, what="is.na(x)", spacing=5, sort=F, list=FALSE, show.x=TRUE, show.y=TRUE, ...){
   eval(parse(text=paste("is.it<-function(x)", what)))
   x<-as.data.frame(x)
   if(sort){
@@ -280,8 +282,12 @@ mine.plot <- function(x, what="is.na(x)", spacing=5, sort=F, list=FALSE, ...){
   pad<- ceiling(dim(x)[2]/30)
   old.par <- par(mar=c(8, 4.5, 6, 4))
   image(t(sapply(x, function(x) is.it(x))), xaxt="n", yaxt="n", col=colorRampPalette(c("lightcyan4", "darkred"))(2))
-  axis(1, at=seq(0, 1, length=dim(x)[2]), labels=names(x), las=2, lwd=0, cex.axis=0.8)
-  axis(2, at=seq(0, dim(x)[1], by=spacing)/dim(x)[1], labels=seq(0, dim(x)[1], by=spacing), las=1, cex.axis=0.6)
+  if(show.x){
+    axis(1, at=seq(0, 1, length=dim(x)[2]), labels=paste(names(x), "\n", "(", sapply(x, class), ")", sep=""), las=2, lwd=0, cex.axis=0.8)
+  }
+  if(show.y){
+    axis(2, at=seq(0, dim(x)[1], by=spacing)/dim(x)[1], labels=seq(0, dim(x)[1], by=spacing), las=1, cex.axis=0.6)
+  }
   for(i in 1:pad){
     axis(3, at=seq(0, 1, length=dim(x)[2])[seq(0+i, dim(x)[2], by=pad)],
          labels=sapply(x, function(x) round(100*sum(is.it(x))/length(x)))[seq(0+i, dim(x)[2], by=pad)], cex.axis=0.6, lwd=0, line=-1+i/2)

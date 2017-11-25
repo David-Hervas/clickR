@@ -1,3 +1,14 @@
+clickR 0.3.40 (Release date: 2017-11-25)
+==============
+
+Changes:
+
+* Fixed bug in report.rq() function
+* mine.plot() now gives information about variable classes
+
+
+
+
 clickR 0.3.36 (Release date: 2017-10-28)
 ==============
 
