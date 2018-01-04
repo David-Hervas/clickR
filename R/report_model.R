@@ -469,7 +469,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
                          pointsize=11, ...){
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
-  WC<-brms::WAIC(x)
+  WC<-eval(parse(text="brms::WAIC(x)"))
   random<-tryCatch(do.call(rbind, sx$random), error=function(e) NA)
   if(!any(is.na(random))) rownames(random)<-paste(rownames(random),rep(names(sx$random), sapply(sx$random, nrow)), sep=" ")
   obj<-list(coefficients=setNames(sx$fixed[,1], rownames(sx$fixed)), se=sx$fixed[,2], lwr.int=sx$fixed[,3],
