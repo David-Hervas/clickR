@@ -5,7 +5,7 @@
 \title{Mine plot}
 \usage{
 mine.plot(x, what = "is.na(x)", spacing = 5, sort = F, list = FALSE,
-  ...)
+  show.x = TRUE, show.y = TRUE, ...)
 }
 \arguments{
 \item{x}{A data.frame}
@@ -17,6 +17,10 @@ mine.plot(x, what = "is.na(x)", spacing = 5, sort = F, list = FALSE,
 \item{sort}{If TRUE, variables are sorted according to their results}
 
 \item{list}{If TRUE, creates a vector with the results}
+
+\item{show.x}{Should the x-axis be plotted?}
+
+\item{show.y}{Should the y-axis be plotted?}
 
 \item{...}{further arguments passed to order()}
 }
