@@ -281,7 +281,7 @@ mine.plot <- function(x, what="is.na(x)", spacing=5, sort=F, list=FALSE, show.x=
   old.warn <- options(warn=-1)
   pad<- ceiling(dim(x)[2]/30)
   old.par <- par(mar=c(8, 4.5, 6, 4))
-  image(t(sapply(x, function(x) is.it(x))), xaxt="n", yaxt="n", col=colorRampPalette(c("lightcyan4", "darkred"))(2))
+  image(t(sapply(x, function(x) is.it(x))), xaxt="n", yaxt="n", col=colorRampPalette(c("lightcyan4", "darkred"))(2), ...)
   if(show.x){
     axis(1, at=seq(0, 1, length=dim(x)[2]), labels=paste(names(x), "\n", "(", sapply(x, class), ")", sep=""), las=2, lwd=0, cex.axis=0.8)
   }
@@ -292,7 +292,7 @@ mine.plot <- function(x, what="is.na(x)", spacing=5, sort=F, list=FALSE, show.x=
     axis(3, at=seq(0, 1, length=dim(x)[2])[seq(0+i, dim(x)[2], by=pad)],
          labels=sapply(x, function(x) round(100*sum(is.it(x))/length(x)))[seq(0+i, dim(x)[2], by=pad)], cex.axis=0.6, lwd=0, line=-1+i/2)
   }
-  mtext(paste("%", what), 3, line=max(pad/1.5, 2.5), cex=1.2)
+  if(!hasArg(main)) mtext(paste("%", what), 3, line=max(pad/1.5, 2.5), cex=1.2)
   options(old.warn)
   if(list){
     return(sapply(x, function(x) round(100*sum(is.it(x))/length(x))))
