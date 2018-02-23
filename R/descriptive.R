@@ -552,8 +552,13 @@ fxd <- function(d, locale="C", use.probs=TRUE){
   d[grep("dic", d)]<-gsub("dic", "dec", d[grep("dic", d)])
   Sys.setlocale("LC_TIME", locale)
   prueba <- lapply(formats, function(x) as.Date(tolower(gsub("--", "-", gsub('[[:punct:]]','-',d))), format=x))
-  co<-lapply(prueba, function(x) {
+  co <-lapply(prueba, function(x) {
     x[format.Date(x, "%Y")<100]<-NA
+    return(x)
+  })
+  to.NA <- which(sapply(d, function(x) nchar(as.character(x)))>8)
+  co[c(2, 5, 8, 9, 11, 14, 17, 18)] <- lapply(co[c(2, 5, 8, 9, 11, 14, 17, 18)], function(x){
+    x[to.NA]<-NA
     return(x)
   })
   if(use.probs){
