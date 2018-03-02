@@ -556,7 +556,7 @@ fxd <- function(d, locale="C", use.probs=TRUE){
     x[format.Date(x, "%Y")<100]<-NA
     return(x)
   })
-  to.NA <- which(sapply(d, function(x) nchar(as.character(x)))>8)
+  to.NA <- which(sapply(d, function(x) nchar(as.character(gsub("[[:alpha:]]+", "xx", x)))>8))
   co[c(2, 5, 8, 9, 11, 14, 17, 18)] <- lapply(co[c(2, 5, 8, 9, 11, 14, 17, 18)], function(x){
     x[to.NA]<-NA
     return(x)
