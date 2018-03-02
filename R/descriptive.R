@@ -625,7 +625,7 @@ peek <- function(x, n=10, which=1:ncol(x)){
       length(unique(x))
     }
     else if(is.numeric(x)){
-      paste(range(x, na.rm=TRUE), collapse="-")
+      paste(round(range(x, na.rm=TRUE),2), collapse="-")
     }
     else {
       ""
