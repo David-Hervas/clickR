@@ -293,7 +293,7 @@ mine.plot <- function(x, what="is.na(x)", spacing=5, sort=F, list=FALSE, show.x=
     axis(3, at=seq(0, 1, length=dim(x)[2])[seq(0+i, dim(x)[2], by=pad)],
          labels=sapply(x, function(x) round(100*sum(is.it(x))/length(x)))[seq(0+i, dim(x)[2], by=pad)], cex.axis=0.6, lwd=0, line=-1+i/2)
   }
-  if(!hasArg(main)) mtext(paste("%", what), 3, line=max(pad/1.5, 2.5), cex=1.2)
+  if(!hasArg("main")) mtext(paste("%", what), 3, line=max(pad/1.5, 2.5), cex=1.2)
   options(old.warn)
   if(list){
     return(sapply(x, function(x) round(100*sum(is.it(x))/length(x))))
