@@ -267,6 +267,7 @@ cluster_var <- function(x, margins=c(8,1)){
 #' @param show.y Should the y-axis be plotted?
 #' @param ... further arguments passed to order()
 #' @importFrom graphics par image mtext
+#' @importFrom methods hasArg
 #' @export
 #' @examples
 #' mine.plot(airquality)   #Displays missing data
