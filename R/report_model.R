@@ -518,7 +518,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
                       } else{
                         cbind(round(obj$lwr.int,digits), round(obj$upper.int, digits))
                       }), if(!any(is.na(random))) {cbind(round(random[,1:2, drop=FALSE], digits), if(compute.exp) "-", round(random[,3:4, drop=FALSE], digits))},
-                c(round(WC$waic, digits), round(WC$se_waic, digits), rep("", ifelse(compute.exp, 3, 2))))
+                c(round(WC$estimates[3,1], digits), round(WC$estimates[3,2], digits), rep("", ifelse(compute.exp, 3, 2))))
   rownames(output)[dim(output)[1]]<-"WAIC"
   colnames(output)<-c('Estimate','Std. Error',if(compute.exp) 'exp(Estimate)', 'Lower 95%','Upper 95%')
   if(!is.null(file)){
