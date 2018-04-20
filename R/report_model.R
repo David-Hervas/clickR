@@ -505,7 +505,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
   random<-tryCatch(do.call(rbind, sx$random), error=function(e) NA)
   if(!any(is.na(random))) rownames(random)<-paste(rownames(random),rep(names(sx$random), sapply(sx$random, nrow)), sep=" ")
   obj<-list(coefficients=setNames(sx$fixed[,1], rownames(sx$fixed)), se=sx$fixed[,2], lwr.int=sx$fixed[,3],
-            upper.int=sx$fixed[,4], random=random, WAIC=setNames(c(WC$waic, WC$se_waic), c("WAIC", "WAIC SE")), Eff.Sample_min=round(min(sx$fixed[,5])), Rhat_max=round(max(sx$fixed[,6]),2))
+            upper.int=sx$fixed[,4], random=random, WAIC=setNames(c(WC$estimates[3,1], WC$estimates[3,2]), c("WAIC", "WAIC SE")), Eff.Sample_min=round(min(sx$fixed[,5])), Rhat_max=round(max(sx$fixed[,6]),2))
   if(compute.exp){
     obj$exp.coef <- exp(obj$coefficients)
     obj$exp.lwr.int <- exp(obj$lwr.int)
