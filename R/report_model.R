@@ -8,13 +8,14 @@
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
-#' @importFrom stats confint
+#' @importFrom stats confint getCall
 #' @export
 report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                     font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
-                    pointsize=11, ...){
+                    pointsize=11, info=TRUE, ...){
   sx <- summary(x)
   ci <- confint(x)
   obj <- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1],
@@ -27,7 +28,8 @@ report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   rownames(output)[c(dim(sx$coefficients)[1]+1,dim(sx$coefficients)[1]+2)]<-c('R Squared','Adj.R Squared')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -44,12 +46,14 @@ report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                      font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
-                     pointsize=11, ...){
+                     pointsize=11, info=TRUE, ...){
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
@@ -73,7 +77,8 @@ report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   rownames(output)[dim(sx$coefficients)[1]+1]<-c('AIC')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -90,13 +95,14 @@ report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
-#' @importFrom stats AIC
+#' @importFrom stats AIC getCall
 #' @export
 report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                        font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
-                       pointsize=11, ...){
+                       pointsize=11, info=TRUE, ...){
   sx<-summary(x)
   obj <- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,3], hr=sx$conf.int[,1],
               lwr.int=sx$conf.int[,3], upper.int=sx$conf.int[,4], pvalues=sx$coefficients[,5], aic=AIC(x))
@@ -107,7 +113,8 @@ report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   rownames(output)[dim(output)[1]]<-c('AIC')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -126,12 +133,14 @@ report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                                 font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
-                                            "Helvetica")[[1]], pointsize=11, ...){
+                                            "Helvetica")[[1]], pointsize=11, info=TRUE, ...){
   sx=lmerTest::summary(x)
   cor<-as.data.frame(lme4::VarCorr(x))
   ci <- confint(x)
@@ -152,7 +161,8 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
                                                 c(na.omit(cor[is.na(cor$var2), c(2)]), ""),sep='')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -169,14 +179,16 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.lmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                          font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
-                                     "Helvetica")[[1]], pointsize=11, ...){
+                                     "Helvetica")[[1]], pointsize=11, info=TRUE, ...){
   x<-lmerTest::lmer(x@call,data=x@frame)
-  report.merModLmerTest(x, file, type, digits, digitspvals, font, pointsize)
+  report.merModLmerTest(x, file, type, digits, digitspvals, font, pointsize, info=info, ...)
 }
 
 #' Report from generalized linear mixed model
@@ -189,12 +201,14 @@ report.lmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                           font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
-                                      "Helvetica")[[1]], pointsize=11, ...){
+                                      "Helvetica")[[1]], pointsize=11, info=TRUE, ...){
   compute.exp<-x@resp$family$link %in% c("logit", "log")
   sx<-summary(x)
   cor<-as.data.frame(lme4::VarCorr(x))
@@ -226,7 +240,8 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                                                 na.omit(cor[is.na(cor$var2), c(2)]),sep='')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -244,12 +259,14 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                       font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
-                                  "Helvetica")[[1]], pointsize=11, ...){
+                                  "Helvetica")[[1]], pointsize=11, info=TRUE, ...){
   sx<-summary(x, ...)
   obj<-list(coefficients=setNames(sx$tTable[,1], rownames(sx$tTable)), se=sx$tTable[,2], lwr.int=sx$tTable[,3], upper.int=sx$tTable[,4],
             pvalues=sx$tTable[,5], aic=sx$aic, random=round(VarCorr(x),2))
@@ -262,7 +279,8 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   rownames(output)[(dim(sx$tTable)[1]+2):(((dim(sx$tTable)[1]+2)+length(obj$random))-1)]<-paste('Ran.Eff',names(VarCorr(x)),sep=' ')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -280,12 +298,14 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                      font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
-                                 "Helvetica")[[1]], pointsize=11, ...){
+                                 "Helvetica")[[1]], pointsize=11, info=TRUE, ...){
 
   compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
@@ -310,7 +330,8 @@ report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   rownames(output)[length(rownames(output))]<-c('AIC')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -327,12 +348,14 @@ report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                       font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
-                                  "Helvetica")[[1]], pointsize=11, ...){
+                                  "Helvetica")[[1]], pointsize=11, info=TRUE, ...){
   compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
@@ -360,7 +383,8 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   rownames(output)[rownames(output)==""]<-names(rapply(VarCorr(x), function(x) sqrt(diag(x))))
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -378,12 +402,14 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                     font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
-                    pointsize=11, ...){
+                    pointsize=11, info=TRUE, ...){
   sx<-summary(x, se="rank")
   sx2<-summary(x, covariance=TRUE)
   obj<-list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx2$coefficients[,2], lwr.int=sx$coefficients[,2],
@@ -396,7 +422,8 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   rownames(output)[dim(sx$coefficients)[1]+1]<-'AIC'
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -414,12 +441,14 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                          font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
-                         pointsize=11, ...){
+                         pointsize=11, info=TRUE, ...){
   compute.exp<-x$link$mean$name %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
@@ -444,7 +473,8 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   rownames(output)[c(dim(sx$coefficients$mean)[1]+1, dim(sx$coefficients$mean)[1]+2)]<-c("phi", "Pseudo R-squared")
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -461,12 +491,14 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digits Number of decimals
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.brmsfit<-function(x, file=NULL, type="word", digits=3,
                          font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
-                         pointsize=11, ...){
+                         pointsize=11, info=TRUE, ...){
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
   WC<-eval(parse(text="brms::WAIC(x)"))
@@ -490,7 +522,8 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
   rownames(output)[dim(output)[1]]<-"WAIC"
   colnames(output)<-c('Estimate','Std. Error',if(compute.exp) 'exp(Estimate)', 'Lower 95%','Upper 95%')
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   if(obj$Rhat_max > 1.1) warning("Please diagnose your model, Rhat values greater than 1.1")
@@ -510,13 +543,14 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3,
 #' @param digits Number of decimals
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
-#' @importFrom stats coef
+#' @importFrom stats coef getCall
 #' @export
 report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3,
                          font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
-                         pointsize=11, ...){
+                         pointsize=11, info=TRUE, ...){
   compute.exp<- any(grepl("binomial|cox", x$call))
   coefs <- coef(x, s=s)
   obj <- list(coefficients=as.numeric(coefs)[if(drop.zero) {as.numeric(coefs)!=0}], lwr.int=NA, upper.int=NA)
@@ -532,7 +566,8 @@ report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3,
   colnames(output)<-c('Estimate', if(compute.exp) 'exp(Estimate)')
   rownames(output)<-c(names(obj$coefficients), "lambda")
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -550,12 +585,14 @@ report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                     font=ifelse(Sys.info()["sysname"]=="Windows", "Arial", "Helvetica")[[1]],
-                    pointsize=11, ...){
+                    pointsize=11, info=TRUE, ...){
   sx <- summary(x, method = "XtWX")
   ci <- rob.ci(x, ...)
   obj <- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1],
@@ -567,7 +604,8 @@ report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
   rownames(output)[dim(sx$coefficients)[1]+1]<-'AIC'
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -585,12 +623,14 @@ report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param digitspvals Number of decimals for p-values
 #' @param font Font to use if type="word"
 #' @param pointsize Pointsize to use if type="word"
+#' @param info If TRUE, include call in the exported table
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
+#' @importFrom stats getCall
 #' @export
 report.glmmadmb<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                           font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
-                                      "Helvetica")[[1]], pointsize=11, ...){
+                                      "Helvetica")[[1]], pointsize=11, info=TRUE, ...){
   compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
   cor<-sqrt(cbind(unlist(lapply(x$S, function(x) diag(x)))))
@@ -621,7 +661,8 @@ report.glmmadmb<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                                                 rownames(cor),sep='')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    make_table(output, file, type, font, pointsize)
+    info <- if(info) deparse(getCall(x)) else NULL
+    make_table(output, file, type, font, pointsize, info=info, ...)
   }
   print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
@@ -673,9 +714,10 @@ rob.ci <- function(x, level=0.95, maxit=200, R=2000){
 #' @param font Font type
 #' @param file Name of the file
 #' @param add.rownames Should rownames be added to the output?
+#' @param info Footer for the table
 #' @return Creates a word with the table
 #' @export
-make_word_table <- function(x, pointsize, font, file, add.rownames){
+make_word_table <- function(x, pointsize, font, file, add.rownames, info){
   mydoc <- ReporteRs::docx()
   MyFTable= ReporteRs::FlexTable(data.frame(x, check.names=FALSE, stringsAsFactors=FALSE),
                                  add.rownames=add.rownames,header.text.props=ReporteRs::textProperties(font.size=pointsize,
@@ -688,6 +730,7 @@ make_word_table <- function(x, pointsize, font, file, add.rownames){
                                             outer.vertical = ReporteRs::borderProperties( style='none' ),
                                             outer.horizontal = ReporteRs::borderProperties( width = 3 ) )
   mydoc = ReporteRs::addFlexTable(mydoc,MyFTable)
+  if(!is.null(info)) mydoc <- ReporteRs::addParagraph(mydoc, info)
   ReporteRs::writeDoc(mydoc, file = paste(file, ".docx", sep=""))
 }
 
@@ -707,11 +750,13 @@ make_latex_table <- function(x, file){
 #' @description Exports a table to Excel
 #' @param x A data.frame object
 #' @param file Name of the file
+#' @param info Footer for the table
 #' @importFrom utils write.csv2
 #' @return Creates a .csv file with the table
 #' @export
-make_csv_table <- function(x, file){
-  write.csv2(data.frame(x, check.names=FALSE, stringsAsFactors=FALSE), paste(file, ".csv", sep=""),
+make_csv_table <- function(x, file, info){
+  write.csv2(data.frame(rbind(x, c(info, rep("", ncol(x)-1))), check.names=FALSE,
+                        stringsAsFactors=FALSE), paste(file, ".csv", sep=""),
              row.names=TRUE)
 }
 
@@ -725,12 +770,13 @@ make_csv_table <- function(x, file){
 #' @param font Font type
 #' @param pointsize Size of font
 #' @param add.rownames Should rownames be added to the output?
+#' @param info Footer for the table
 #' @return Creates a file with the table
 #' @export
-make_table<-function(x, file, type, font="Arial", pointsize=11, add.rownames=TRUE){
-  if(type=="csv") {make_csv_table(x, file)}
+make_table<-function(x, file, type, font="Arial", pointsize=11, add.rownames=TRUE, info=NULL){
+  if(type=="csv") {make_csv_table(x, file, info)}
   if(type=="latex") {make_latex_table(x, file)}
-  if(is.null(type) | type=="word") {make_word_table(x, pointsize, font, file, add.rownames = add.rownames)}
+  if(is.null(type) | type=="word") {make_word_table(x, pointsize, font, file, add.rownames = add.rownames, info)}
   message(paste0("Exported table as ", file))
 }
 

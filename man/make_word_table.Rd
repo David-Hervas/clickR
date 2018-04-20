@@ -4,7 +4,7 @@
 \alias{make_word_table}
 \title{Export a table to word}
 \usage{
-make_word_table(x, pointsize, font, file, add.rownames)
+make_word_table(x, pointsize, font, file, add.rownames, info)
 }
 \arguments{
 \item{x}{A data.frame object}
@@ -16,6 +16,8 @@ make_word_table(x, pointsize, font, file, add.rownames)
 \item{file}{Name of the file}
 
 \item{add.rownames}{Should rownames be added to the output?}
+
+\item{info}{Footer for the table}
 }
 \value{
 Creates a word with the table

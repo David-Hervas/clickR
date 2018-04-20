@@ -5,7 +5,7 @@
 \title{Make a table from report}
 \usage{
 make_table(x, file, type, font = "Arial", pointsize = 11,
-  add.rownames = TRUE)
+  add.rownames = TRUE, info = NULL)
 }
 \arguments{
 \item{x}{A data.frame object}
@@ -19,6 +19,8 @@ make_table(x, file, type, font = "Arial", pointsize = 11,
 \item{pointsize}{Size of font}
 
 \item{add.rownames}{Should rownames be added to the output?}
+
+\item{info}{Footer for the table}
 }
 \value{
 Creates a file with the table

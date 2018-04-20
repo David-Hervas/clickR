@@ -4,12 +4,14 @@
 \alias{make_csv_table}
 \title{Export a table to excel}
 \usage{
-make_csv_table(x, file)
+make_csv_table(x, file, info)
 }
 \arguments{
 \item{x}{A data.frame object}
 
 \item{file}{Name of the file}
+
+\item{info}{Footer for the table}
 }
 \value{
 Creates a .csv file with the table

@@ -6,7 +6,7 @@
 \usage{
 \method{report}{coxph}(x, file = NULL, type = "word", digits = 3,
   digitspvals = 3, font = ifelse(Sys.info()["sysname"] == "Windows",
-  "Arial", "Helvetica")[[1]], pointsize = 11, ...)
+  "Arial", "Helvetica")[[1]], pointsize = 11, info = TRUE, ...)
 }
 \arguments{
 \item{x}{A cox model object}
@@ -22,6 +22,8 @@
 \item{font}{Font to use if type="word"}
 
 \item{pointsize}{Pointsize to use if type="word"}
+
+\item{info}{If TRUE, include call in the exported table}
 
 \item{...}{Further arguments passed to make_table}
 }
