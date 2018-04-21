@@ -137,12 +137,16 @@ report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
+#' @importFrom methods loadMethod
 #' @export
 report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals=3,
                                 font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
                                             "Helvetica")[[1]], pointsize=11, info=TRUE, ...){
-  sx=lmerTest::summary(x)
-  cor<-as.data.frame(lme4::VarCorr(x))
+  #loadNamespace("lmerTest")
+  loadMethod("summary", "summary.lmerModLmerTest", envir="lmerTest")
+  sx <- summary(x)
+  #unloadNamespace("lmerTest")
+  cor <- as.data.frame(lme4::VarCorr(x))
   ci <- confint(x)
   #cor[dim(cor)[1],2]<-'Residual'
   obj<- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1][-c(1:dim(as.data.frame(lme4::VarCorr(x)))[1])],

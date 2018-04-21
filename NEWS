@@ -1,8 +1,8 @@
-clickR 0.3.63 (Release date: 2018-20-04)
+clickR 0.3.64 (Release date: 2018-21-04)
 
 Changes:
 
-* Added option to report.model so that the model call can be included in the exported table
+* Added option to report.model (info=TRUE) so that the model call can be included in the exported table
 * Fixed small bugs regarding compatibility with brms models
 
 
