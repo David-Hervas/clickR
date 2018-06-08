@@ -795,7 +795,7 @@ report.factor<-function(x,...){
 #' @param args A names list with the header names
 #' @importFrom utils tail
 #' @return A flextable object with assigned header names
-set_noms<-function (x, args=list(...))
+set_noms<-function (x, args)
 {
   header_ <- x$header$dataset
   values <- as.list(tail(x$header$dataset, n = 1))

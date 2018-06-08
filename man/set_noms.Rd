@@ -4,7 +4,7 @@
 \alias{set_noms}
 \title{Set header names for word tables}
 \usage{
-set_noms(x, args = list(...))
+set_noms(x, args)
 }
 \arguments{
 \item{x}{A flextable object}
