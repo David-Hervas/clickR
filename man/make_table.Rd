@@ -4,8 +4,7 @@
 \alias{make_table}
 \title{Make a table from report}
 \usage{
-make_table(x, file, type, font = "Arial", pointsize = 11,
-  add.rownames = TRUE, info = NULL)
+make_table(x, file, type, info = NULL, ...)
 }
 \arguments{
 \item{x}{A data.frame object}
@@ -14,13 +13,9 @@ make_table(x, file, type, font = "Arial", pointsize = 11,
 
 \item{type}{Type of file}
 
-\item{font}{Font type}
-
-\item{pointsize}{Size of font}
-
-\item{add.rownames}{Should rownames be added to the output?}
-
 \item{info}{Footer for the table}
+
+\item{...}{Additional parameters passed to make_word_table}
 }
 \value{
 Creates a file with the table

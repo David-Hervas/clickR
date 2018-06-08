@@ -352,27 +352,20 @@ matrixPaste<-function (..., sep = rep(" ", length(list(...)) - 1)){
 #' @param type Format of the file
 #' @param digits Number of decimal places
 #' @param digitscat Number of decimal places for categorical variables (if different to digits)
-#' @param font Font to use if type="word"
-#' @param pointsize Pointsize to use if type="word"
-#' @param add.rownames Logical for adding rownames to the table
 #' @param ... further arguments passed to make_table()
 #' @export
 #' @examples
 #' report(iris)
 #' (reporTable<-report(iris, by="Species"))
 #' class(reporTable)
-report.data.frame<-function(x, by=NULL, file=NULL, type="word", digits=2, digitscat=digits,
-                            font=ifelse(Sys.info()["sysname"] == "Windows", "Arial",
-                                        "Helvetica")[[1]], pointsize=11,
-                            add.rownames=FALSE, ...){
+report.data.frame<-function(x, by=NULL, file=NULL, type="word", digits=2, digitscat=digits, ...){
   if(is.data.frame(x)==F){
     x<-data.frame(x)}
   x<-x[,!sapply(x, function(x) sum(is.na(x))/length(x))==1 & sapply(x, function(x) is.numeric(x) | is.factor(x)), drop=FALSE]
   x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))]<-lapply(x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))], factor)
   if(length(by)>1){
     x.int <- data.frame(x, by=interaction(x[, match(unlist(by), names(x))]))
-    report(x.int[,-match(unlist(by), names(x.int))], by="by", file=file, type=type, digits=digits, digitscat=digitscat, font=font,
-           pointsize=pointsize, add.rownames=add.rownames, ...)
+    report(x.int[,-match(unlist(by), names(x.int))], by="by", file=file, type=type, digits=digits, digitscat=digitscat, ...)
   }
   else{
   by_v <- factor(rep("", nrow(x)))
@@ -441,7 +434,7 @@ report.data.frame<-function(x, by=NULL, file=NULL, type="word", digits=2, digits
   output<-rbind(estruct, AB, cats)
   colnames(output)<-c("Variable", paste(by, levels(by_v), sep=" ", "n =", as.vector(table(by_v))))
 
-  if(!is.null(file)) make_table(output, file, type, font, pointsize, add.rownames)
+  if(!is.null(file)) make_table(output, file, type, use.rownames=FALSE)
   return(print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=FALSE, right=FALSE))
   }
 }

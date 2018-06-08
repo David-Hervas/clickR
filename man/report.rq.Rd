@@ -5,8 +5,7 @@
 \title{Report from quantile regression model}
 \usage{
 \method{report}{rq}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, font = ifelse(Sys.info()["sysname"] == "Windows",
-  "Arial", "Helvetica")[[1]], pointsize = 11, info = TRUE, ...)
+  digitspvals = 3, info = TRUE, ...)
 }
 \arguments{
 \item{x}{A quantreg model object}
@@ -18,10 +17,6 @@
 \item{digits}{Number of decimals}
 
 \item{digitspvals}{Number of decimals for p-values}
-
-\item{font}{Font to use if type="word"}
-
-\item{pointsize}{Pointsize to use if type="word"}
 
 \item{info}{If TRUE, include call in the exported table}
 

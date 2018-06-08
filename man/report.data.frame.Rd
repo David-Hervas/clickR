@@ -5,9 +5,7 @@
 \title{Report tables of summary data}
 \usage{
 \method{report}{data.frame}(x, by = NULL, file = NULL, type = "word",
-  digits = 2, digitscat = digits, font = ifelse(Sys.info()["sysname"] ==
-  "Windows", "Arial", "Helvetica")[[1]], pointsize = 11,
-  add.rownames = FALSE, ...)
+  digits = 2, digitscat = digits, ...)
 }
 \arguments{
 \item{x}{A data.frame object}
@@ -21,12 +19,6 @@
 \item{digits}{Number of decimal places}
 
 \item{digitscat}{Number of decimal places for categorical variables (if different to digits)}
-
-\item{font}{Font to use if type="word"}
-
-\item{pointsize}{Pointsize to use if type="word"}
-
-\item{add.rownames}{Logical for adding rownames to the table}
 
 \item{...}{further arguments passed to make_table()}
 }

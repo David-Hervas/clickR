@@ -4,23 +4,19 @@
 \alias{make_word_table}
 \title{Export a table to word}
 \usage{
-make_word_table(x, pointsize, font, file, add.rownames, info)
+make_word_table(x, file, info = NULL, use.rownames = TRUE)
 }
 \arguments{
 \item{x}{A data.frame object}
 
-\item{pointsize}{Font size}
-
-\item{font}{Font type}
-
 \item{file}{Name of the file}
 
-\item{add.rownames}{Should rownames be added to the output?}
-
 \item{info}{Footer for the table}
+
+\item{use.rownames}{Should row names be added to the output?}
 }
 \value{
-Creates a word with the table
+Creates a word file with the table
 }
 \description{
 Exports a table to Word

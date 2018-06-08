@@ -5,8 +5,7 @@
 \title{Report models from brms package}
 \usage{
 \method{report}{brmsfit}(x, file = NULL, type = "word", digits = 3,
-  font = ifelse(Sys.info()["sysname"] == "Windows", "Arial",
-  "Helvetica")[[1]], pointsize = 11, info = TRUE, ...)
+  info = TRUE, ...)
 }
 \arguments{
 \item{x}{A brms model object}
@@ -16,10 +15,6 @@
 \item{type}{Format of the file}
 
 \item{digits}{Number of decimals}
-
-\item{font}{Font to use if type="word"}
-
-\item{pointsize}{Pointsize to use if type="word"}
 
 \item{info}{If TRUE, include call in the exported table}
 
