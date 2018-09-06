@@ -11,7 +11,7 @@
 #' @return A data frame with the report table
 #' @importFrom stats confint getCall
 #' @export
-report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   sx <- summary(x)
   ci <- confint(x)
   obj <- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1],
@@ -27,7 +27,8 @@ report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -45,7 +46,7 @@ report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
@@ -72,7 +73,8 @@ report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -90,7 +92,7 @@ report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 #' @return A data frame with the report table
 #' @importFrom stats AIC getCall
 #' @export
-report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   sx<-summary(x)
   obj <- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,3], hr=sx$conf.int[,1],
               lwr.int=sx$conf.int[,3], upper.int=sx$conf.int[,4], pvalues=sx$coefficients[,5], aic=AIC(x))
@@ -104,7 +106,8 @@ report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -125,7 +128,7 @@ report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=
 #' @importFrom stats getCall
 #' @importFrom methods loadMethod
 #' @export
-report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   #loadNamespace("lmerTest")
   loadMethod("summary", "summary.lmerModLmerTest", envir="lmerTest")
   sx <- summary(x)
@@ -152,7 +155,8 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -170,7 +174,7 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.lmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.lmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   x<-lmerTest::lmer(x@call,data=x@frame)
   report.merModLmerTest(x, file, type, digits, digitspvals, info=info, ...)
 }
@@ -188,7 +192,7 @@ report.lmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, inf
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   compute.exp<-x@resp$family$link %in% c("logit", "log")
   sx<-summary(x)
   cor<-as.data.frame(lme4::VarCorr(x))
@@ -223,7 +227,8 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, in
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -242,7 +247,7 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, in
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   sx<-summary(x, ...)
   obj<-list(coefficients=setNames(sx$tTable[,1], rownames(sx$tTable)), se=sx$tTable[,2], lwr.int=sx$tTable[,3], upper.int=sx$tTable[,4],
             pvalues=sx$tTable[,5], aic=sx$aic, random=round(VarCorr(x),2))
@@ -258,7 +263,8 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -277,7 +283,7 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
 
   compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
@@ -305,7 +311,8 @@ report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -323,7 +330,7 @@ report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
@@ -354,7 +361,8 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -373,7 +381,7 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   sx<-summary(x, se="rank")
   sx2<-summary(x, covariance=TRUE)
   obj<-list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx2$coefficients[,2], lwr.int=sx$coefficients[,2],
@@ -389,7 +397,8 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -408,7 +417,7 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   compute.exp<-x$link$mean$name %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
@@ -436,7 +445,8 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3, inf
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -454,7 +464,7 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3, inf
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, ...){
+report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, print=TRUE, ...){
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
   WC<-eval(parse(text="brms::WAIC(x)"))
@@ -481,7 +491,8 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, ...){
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   if(obj$Rhat_max > 1.1) warning("Please diagnose your model, Rhat values greater than 1.1")
   class(obj) <- "reportmodel"
   invisible(obj)
@@ -502,7 +513,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, ...){
 #' @return A data frame with the report table
 #' @importFrom stats coef getCall
 #' @export
-report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3, info=TRUE, ...){
+report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3, info=TRUE, print=TRUE, ...){
   compute.exp<- any(grepl("binomial|cox", x$call))
   coefs <- coef(x, s=s)
   obj <- list(coefficients=as.numeric(coefs)[if(drop.zero) {as.numeric(coefs)!=0}], lwr.int=NA, upper.int=NA)
@@ -521,7 +532,8 @@ report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3, 
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -540,7 +552,7 @@ report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3, 
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   sx <- summary(x, method = "XtWX")
   ci <- rob.ci(x, ...)
   obj <- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1],
@@ -555,7 +567,8 @@ report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
@@ -576,7 +589,7 @@ report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 #' @return A data frame with the report table
 #' @importFrom stats getCall
 #' @export
-report.glmmadmb<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, ...){
+report.glmmadmb<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
   compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
   cor<-sqrt(cbind(unlist(lapply(x$S, function(x) diag(x)))))
@@ -610,7 +623,8 @@ report.glmmadmb<-function(x, file=NULL, type="word", digits=3, digitspvals=3, in
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
-  print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=TRUE, right=TRUE)
+  obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(obj$output, row.names=TRUE, right=TRUE)
   class(obj) <- "reportmodel"
   invisible(obj)
 }
