@@ -5,7 +5,7 @@
 \title{Report models from glmnet package}
 \usage{
 \method{report}{glmnet}(x, s, drop.zero = TRUE, file = NULL,
-  type = "word", digits = 3, info = TRUE, ...)
+  type = "word", digits = 3, info = TRUE, print = TRUE, ...)
 }
 \arguments{
 \item{x}{A glmnet model object}
@@ -21,6 +21,8 @@
 \item{digits}{Number of decimals}
 
 \item{info}{If TRUE, include call in the exported table}
+
+\item{print}{Should the report table be printed on screen?}
 
 \item{...}{Further arguments passed to make_table}
 }

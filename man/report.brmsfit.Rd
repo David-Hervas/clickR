@@ -5,7 +5,7 @@
 \title{Report models from brms package}
 \usage{
 \method{report}{brmsfit}(x, file = NULL, type = "word", digits = 3,
-  info = TRUE, ...)
+  info = TRUE, print = TRUE, ...)
 }
 \arguments{
 \item{x}{A brms model object}
@@ -17,6 +17,8 @@
 \item{digits}{Number of decimals}
 
 \item{info}{If TRUE, include call in the exported table}
+
+\item{print}{Should the report table be printed on screen?}
 
 \item{...}{Further arguments passed to make_table}
 }

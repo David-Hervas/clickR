@@ -7,6 +7,7 @@
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats confint getCall
@@ -42,6 +43,7 @@ report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -88,6 +90,7 @@ report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats AIC getCall
@@ -123,6 +126,7 @@ report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -170,6 +174,7 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -188,6 +193,7 @@ report.lmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, inf
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -243,6 +249,7 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, in
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -279,6 +286,7 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -326,6 +334,7 @@ report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -377,6 +386,7 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -413,6 +423,7 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -460,6 +471,7 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3, inf
 #' @param type Format of the file
 #' @param digits Number of decimals
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -509,6 +521,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, print=T
 #' @param type Format of the file
 #' @param digits Number of decimals
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats coef getCall
@@ -548,6 +561,7 @@ report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3, 
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall
@@ -582,9 +596,8 @@ report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 #' @param type Format of the file
 #' @param digits Number of decimals
 #' @param digitspvals Number of decimals for p-values
-
-
 #' @param info If TRUE, include call in the exported table
+#' @param print Should the report table be printed on screen?
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @importFrom stats getCall

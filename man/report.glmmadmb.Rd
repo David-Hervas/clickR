@@ -5,7 +5,7 @@
 \title{Report from generalized linear mixed model from ADMB}
 \usage{
 \method{report}{glmmadmb}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, ...)
+  digitspvals = 3, info = TRUE, print = TRUE, ...)
 }
 \arguments{
 \item{x}{A generalized linear mixed model object (glmmabmb)}
@@ -19,6 +19,8 @@
 \item{digitspvals}{Number of decimals for p-values}
 
 \item{info}{If TRUE, include call in the exported table}
+
+\item{print}{Should the report table be printed on screen?}
 
 \item{...}{Further arguments passed to make_table}
 }
