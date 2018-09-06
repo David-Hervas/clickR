@@ -1,3 +1,10 @@
+clickR 0.4.05 (Release date: 2018-21-06)
+
+Changes:
+
+* Removed dependency from reporteRs (and consequently from rJava)
+
+
 clickR 0.3.64 (Release date: 2018-21-04)
 
 Changes:
