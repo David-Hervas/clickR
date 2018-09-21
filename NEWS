@@ -1,11 +1,18 @@
-clickR 0.4.05 (Release date: 2018-21-06)
+clickR 0.4.1 (Release date: 2018-09-21)
+
+Changes:
+
+* Added new function good2go() for loading automatically all packages used in a project
+
+
+clickR 0.4.05 (Release date: 2018-06-21)
 
 Changes:
 
 * Removed dependency from reporteRs (and consequently from rJava)
 
 
-clickR 0.3.64 (Release date: 2018-21-04)
+clickR 0.3.64 (Release date: 2018-04-21)
 
 Changes:
 

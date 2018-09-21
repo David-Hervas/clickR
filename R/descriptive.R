@@ -672,3 +672,22 @@ kill.factors <- function(dat, k=10){
   dat[filter] <- lapply(dat[filter], as.character)
   return(dat)
 }
+
+
+#' Good to go
+#'
+#' @description Loads all libraries used in scripts inside the selected path
+#' @param path Path where the scripts are located
+#' @param info List the libraries found?
+#' @param load Should the libraries found be loaded?
+#' @export
+good2go <- function(path=getwd(), info=TRUE, load=TRUE){
+  files <- list.files(path=path, pattern="\\.R$")
+  libraries <- unique(do.call("c", lapply(files, function(x) {
+    x <- readLines(x)
+    x[grepl("library\\(", x)]
+  }
+  )))
+  if(load) eval(parse(text=paste(libraries, collapse=";")))
+  if(info) print(paste("Packages:", paste(gsub("\\)", "", gsub("library\\(", "", libraries)), collapse=", ")), quote=FALSE)
+}
