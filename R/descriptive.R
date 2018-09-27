@@ -688,6 +688,7 @@ good2go <- function(path=getwd(), info=TRUE, load=TRUE){
     x[grepl("library\\(", x)]
   }
   )))
-  if(load) eval(parse(text=paste(libraries, collapse=";")))
+  p_list <- gsub("\\)", "", gsub("library\\(", "", libraries))
+  if(load) lapply(p_list, function(x) require(x, character.only = TRUE, quietly=TRUE))
   if(info) print(paste("Packages:", paste(gsub("\\)", "", gsub("library\\(", "", libraries)), collapse=", ")), quote=FALSE)
 }
