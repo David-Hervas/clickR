@@ -13,5 +13,5 @@ ttrue(x)
 A logical vector
 }
 \description{
-Makes possible logical comparisons against NULL values
+Makes possible logical comparisons against NULL and NA values
 }

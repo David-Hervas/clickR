@@ -34,13 +34,59 @@ numeros <- function(x) {
 
 #' True TRUE
 #'
-#' @description Makes possible logical comparisons against NULL values
+#' @description Makes possible logical comparisons against NULL and NA values
 #' @param x A logical vector
 #' @return A logical vector
-ttrue<-function(x){
-  x[is.null(x)]<-FALSE
-  return(x)
+#' @export
+ttrue <- function(x){
+  x[is.null(x) | is.na(x)] <- FALSE
+  x
 }
+
+#' greater & NA
+#'
+#' @description '>' operator where NA values return FALSE
+#' @param x Vector for the left side of the operator
+#' @param y A Scalar or vector of the same length as x for the right side of the operator
+#' @return A logical vector of the same length as x
+#' @export
+`%>NA%` <- function(x, y){
+  ttrue(x > y)
+}
+
+#' less & NA
+#'
+#' @description '<' operator where NA values return FALSE
+#' @param x Vector for the left side of the operator
+#' @param y A Scalar or vector of the same length as x for the right side of the operator
+#' @return A logical vector of the same length as x
+#' @export
+`%<NA%` <- function(x, y){
+  ttrue(x < y)
+}
+
+#' geq & not NA
+#'
+#' @description '>=' operator where NA values return FALSE
+#' @param x Vector for the left side of the operator
+#' @param y A Scalar or vector of the same length as x for the right side of the operator
+#' @return A logical vector of the same length as x
+#' @export
+`%>=NA%` <- function(x, y){
+  ttrue(x >= y)
+}
+
+#' leq & not NA
+#'
+#' @description '<=' operator where NA values return FALSE
+#' @param x Vector for the left side of the operator
+#' @param y A Scalar or vector of the same length as x for the right side of the operator
+#' @return A logical vector of the same length as x
+#' @export
+`%<=NA%` <- function(x, y){
+  ttrue(x <= y)
+}
+
 
 #' Checks data quality of a variable
 #'
