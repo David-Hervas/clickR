@@ -700,10 +700,15 @@ good2go <- function(path=getwd(), info=TRUE, load=TRUE){
 #' @description Reshapes a data frame from wide to long format
 #' @param data data.frame
 #' @param affixes Affixes for repeated measures
+#' @param force.fixed Variables with matching affix to be excluded
 #' @export
-forge <- function(data, affixes){
+forge <- function(data, affixes, force.fixed=NULL){
   data_ord <- data[,order(names(data))]
   indices <- data.frame(sapply(affixes, function(x) grepl(x, names(data_ord))))
+  if(!is.null(force.fixed)){
+    positions <- which(names(data) %in% force.fixed)
+    indices[positions,] <- FALSE
+  }
   cat("Repetitions for each variable: \n \n")
   print(sort(table(unlist(lapply(indices, function(x) gsub(paste(affixes, collapse="|"), "", names(data_ord)[x])))), decreasing=TRUE))
   listas <- lapply(indices, function(x) {

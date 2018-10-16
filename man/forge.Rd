@@ -4,12 +4,14 @@
 \alias{forge}
 \title{Forge}
 \usage{
-forge(data, affixes)
+forge(data, affixes, force.fixed = NULL)
 }
 \arguments{
 \item{data}{data.frame}
 
 \item{affixes}{Affixes for repeated measures}
+
+\item{force.fixed}{Variables with matching affix to be excluded}
 }
 \description{
 Reshapes a data frame from wide to long format
