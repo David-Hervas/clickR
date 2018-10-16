@@ -706,7 +706,7 @@ forge <- function(data, affixes, force.fixed=NULL){
   data_ord <- data[,order(names(data))]
   indices <- data.frame(sapply(affixes, function(x) grepl(x, names(data_ord))))
   if(!is.null(force.fixed)){
-    positions <- which(names(data) %in% force.fixed)
+    positions <- which(names(data_ord) %in% force.fixed)
     indices[positions,] <- FALSE
   }
   cat("Repetitions for each variable: \n \n")
