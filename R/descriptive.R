@@ -714,7 +714,7 @@ forge <- function(data, affixes, force.fixed=NULL){
   listas <- lapply(indices, function(x) {
     setNames(data_ord[,x, drop=FALSE], gsub(paste(affixes, collapse="|"), "", names(data_ord)[x]))
   })
-  variables <- names(listas[[which.max(sapply(listas, ncol))]])
+  variables <- unique(unlist(lapply(listas, names)))
   listas <- lapply(listas, function(x){
     df <- data.frame(x, matrix(NA, nrow=nrow(data), ncol=length(variables[!variables %in% names(x)])))
     names(df) <- c(names(x), variables[!variables %in% names(x)])
