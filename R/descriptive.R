@@ -692,3 +692,30 @@ good2go <- function(path=getwd(), info=TRUE, load=TRUE){
   if(load) lapply(p_list, function(x) require(x, character.only = TRUE, quietly=TRUE))
   if(info) print(paste("Packages:", paste(gsub("\\)", "", gsub("library\\(", "", libraries)), collapse=", ")), quote=FALSE)
 }
+
+
+
+#' Forge
+#'
+#' @description Reshapes a data frame from wide to long format
+#' @param data data.frame
+#' @param affixes Affixes for repeated measures
+#' @export
+forge <- function(data, affixes){
+  data_ord <- data[,order(names(data))]
+  indices <- data.frame(sapply(affixes, function(x) grepl(x, names(data_ord))))
+  cat("Repetitions for each variable: \n \n")
+  print(sort(table(unlist(lapply(indices, function(x) gsub(paste(affixes, collapse="|"), "", names(data_ord)[x])))), decreasing=TRUE))
+  listas <- lapply(indices, function(x) {
+    setNames(data_ord[,x, drop=FALSE], gsub(paste(affixes, collapse="|"), "", names(data_ord)[x]))
+  })
+  variables <- names(listas[[which.max(sapply(listas, ncol))]])
+  listas <- lapply(listas, function(x){
+    df <- data.frame(x, matrix(NA, nrow=nrow(data), ncol=length(variables[!variables %in% names(x)])))
+    names(df) <- c(names(x), variables[!variables %in% names(x)])
+    df
+  })
+  long <- do.call("rbind", listas)
+  fixed <- data_ord[,!apply(indices, 1, any)]
+  data.frame(fixed[,na.omit(match(names(data), names(fixed)))][rep(1:nrow(data), length(affixes)),], long, affix=rep(affixes, each=nrow(data)))
+}
