@@ -709,19 +709,19 @@ good2go <- function(path=getwd(), info=TRUE, load=TRUE){
 #'                   score2 = c(2,1,3,1), score3 = c(1,1,0,1))
 #' df1
 #' #Data frame in long format
-#' forge(df1, affixes= c(1, 2, 3))
+#' forge(df1, affixes= c("1", "2", "3"))
 #'
 #' #Data frame in wide format with two repeated measured variables
-#' df2 <- data.frame(df1, var1=c(15, 20, 16, 19), var3=c(12, 15, 15, 17))
+#' df2 <- data.frame(df1, var1 = c(15, 20, 16, 19), var3 = c(12, 15, 15, 17))
 #' df2
 #' #Missing times are filled with NAs
-#' forge(df2, affixes = c(1,2,3))
+#' forge(df2, affixes = c("1", "2", "3"))
 #'
 #' #Use of parameter force.fixed
-#' df3 <- df2[,-7]
+#' df3 <- df2[, -7]
 #' df3
-#' forge(df3, affixes=c(1,2,3))
-#' forge(df3, affixes=c(1,2,3), force.fixed = c("var1"))
+#' forge(df3, affixes=c("1", "2", "3"))
+#' forge(df3, affixes=c("1", "2", "3"), force.fixed = c("var1"))
 forge <- function(data, affixes, force.fixed=NULL, var.name="time"){
   data_ord <- data[,order(names(data))]
   indices <- data.frame(sapply(affixes, function(x) grepl(x, names(data_ord))))
