@@ -1,3 +1,10 @@
+clickR 0.4.20
+
+Changes:
+
+* Added new function forge() for reshaping data from wide to long format
+
+
 clickR 0.4.1 (Release date: 2018-09-21)
 
 Changes:
