@@ -701,8 +701,28 @@ good2go <- function(path=getwd(), info=TRUE, load=TRUE){
 #' @param data data.frame
 #' @param affixes Affixes for repeated measures
 #' @param force.fixed Variables with matching affix to be excluded
+#' @param var.name Name for the new created variable (repetitions)
 #' @export
-forge <- function(data, affixes, force.fixed=NULL){
+#' @examples
+#' #Data frame in wide format
+#' df1 <- data.frame(id = 1:4, age = c(20, 30, 30, 35), score1 = c(2,2,3,4),
+#'                   score2 = c(2,1,3,1), score3 = c(1,1,0,1))
+#' df1
+#' #Data frame in long format
+#' forge(df1, affixes= c(1, 2, 3))
+#'
+#' #Data frame in wide format with two repeated measured variables
+#' df2 <- data.frame(df1, var1=c(15, 20, 16, 19), var3=c(12, 15, 15, 17))
+#' df2
+#' #Missing times are filled with NAs
+#' forge(df2, affixes = c(1,2,3))
+#'
+#' #Use of parameter force.fixed
+#' df3 <- df2[,-7]
+#' df3
+#' forge(df3, affixes=c(1,2,3))
+#' forge(df3, affixes=c(1,2,3), force.fixed = c("var1"))
+forge <- function(data, affixes, force.fixed=NULL, var.name="time"){
   data_ord <- data[,order(names(data))]
   indices <- data.frame(sapply(affixes, function(x) grepl(x, names(data_ord))))
   if(!is.null(force.fixed)){
@@ -722,5 +742,7 @@ forge <- function(data, affixes, force.fixed=NULL){
   })
   long <- do.call("rbind", listas)
   fixed <- data_ord[,!apply(indices, 1, any)]
-  data.frame(fixed[,na.omit(match(names(data), names(fixed)))][rep(1:nrow(data), length(affixes)),], long, affix=rep(affixes, each=nrow(data)))
+  out <- data.frame(fixed[,na.omit(match(names(data), names(fixed)))][rep(1:nrow(data), length(affixes)),], long, affix=rep(affixes, each=nrow(data)))
+  names(out)[ncol(out)] <- var.name
+  out
 }
