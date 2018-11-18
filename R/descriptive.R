@@ -722,27 +722,31 @@ good2go <- function(path=getwd(), info=TRUE, load=TRUE){
 #' df3
 #' forge(df3, affixes=c("1", "2", "3"))
 #' forge(df3, affixes=c("1", "2", "3"), force.fixed = c("var1"))
-forge <- function(data, affixes, force.fixed=NULL, var.name="time"){
-  data_ord <- data[,order(names(data))]
+forge <- function(data, affixes, force.fixed = NULL, var.name = "time"){
+  data_ord <- data[, order(names(data))]
   indices <- data.frame(sapply(affixes, function(x) grepl(x, names(data_ord))))
   if(!is.null(force.fixed)){
     positions <- which(names(data_ord) %in% force.fixed)
-    indices[positions,] <- FALSE
+    indices[positions, ] <- FALSE
   }
   cat("Repetitions for each variable: \n \n")
-  print(sort(table(unlist(lapply(indices, function(x) gsub(paste(affixes, collapse="|"), "", names(data_ord)[x])))), decreasing=TRUE))
+  print(sort(table(unlist(lapply(indices, function(x) gsub(paste(affixes,
+    collapse = "|"), "", names(data_ord)[x])))), decreasing = TRUE))
   listas <- lapply(indices, function(x) {
-    setNames(data_ord[,x, drop=FALSE], gsub(paste(affixes, collapse="|"), "", names(data_ord)[x]))
+    setNames(data_ord[, x, drop = FALSE], gsub(paste(affixes,
+      collapse = "|"), "", names(data_ord)[x]))
   })
   variables <- unique(unlist(lapply(listas, names)))
-  listas <- lapply(listas, function(x){
-    df <- data.frame(x, matrix(NA, nrow=nrow(data), ncol=length(variables[!variables %in% names(x)])))
+  listas <- lapply(listas, function(x) {
+    df <- data.frame(x, matrix(NA, nrow = nrow(data), ncol = length(variables[!variables %in%
+                                                                                names(x)])))
     names(df) <- c(names(x), variables[!variables %in% names(x)])
     df
   })
   long <- do.call("rbind", listas)
-  fixed <- data_ord[,!apply(indices, 1, any)]
-  out <- data.frame(fixed[,na.omit(match(names(data), names(fixed)))][rep(1:nrow(data), length(affixes)),], long, affix=rep(affixes, each=nrow(data)))
+  fixed <- data_ord[, !apply(indices, 1, any), drop=FALSE]
+  out <- data.frame(fixed[, na.omit(match(names(data), names(fixed))), drop=FALSE][rep(1:nrow(data),
+    length(affixes)), ,drop=FALSE], long, affix = rep(affixes, each = nrow(data)))
   names(out)[ncol(out)] <- var.name
   out
 }
