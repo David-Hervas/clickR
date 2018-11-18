@@ -685,12 +685,12 @@ good2go <- function(path=getwd(), info=TRUE, load=TRUE){
   files <- list.files(path=path, pattern="\\.R$")
   libraries <- unique(do.call("c", lapply(files, function(x) {
     x <- readLines(x)
-    x[grepl("library\\(", x)]
+    x[grepl("library\\(|require\\(", x)]
   }
   )))
-  p_list <- gsub("\\)", "", gsub("library\\(", "", libraries))
+  p_list <- gsub("\\)", "", gsub("library\\(|require\\(", "", libraries))
   if(load) lapply(p_list, function(x) require(x, character.only = TRUE, quietly=TRUE))
-  if(info) print(paste("Packages:", paste(gsub("\\)", "", gsub("library\\(", "", libraries)), collapse=", ")), quote=FALSE)
+  if(info) print(paste("Packages:", paste(p_list, collapse=", ")), quote=FALSE)
 }
 
 
