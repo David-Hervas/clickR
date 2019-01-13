@@ -5,8 +5,8 @@
 \title{Checks data quality of a variable}
 \usage{
 check_quality(x, id = 1:length(x), plot = TRUE, numeric = NULL,
-  n = ifelse(is.numeric(x) | ttrue(numeric) | class(x) \%in\% "Date", 5, 2),
-  output = FALSE, ...)
+  n = ifelse(is.numeric(x) | ttrue(numeric) | class(x) \%in\% "Date", 5,
+  2), output = FALSE, ...)
 }
 \arguments{
 \item{x}{A variable from a data.frame}

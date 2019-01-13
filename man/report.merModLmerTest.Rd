@@ -4,8 +4,8 @@
 \alias{report.merModLmerTest}
 \title{Report from linear mixed model with pvalues}
 \usage{
-\method{report}{merModLmerTest}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, print = TRUE, ...)
+\method{report}{merModLmerTest}(x, file = NULL, type = "word",
+  digits = 3, digitspvals = 3, info = TRUE, print = TRUE, ...)
 }
 \arguments{
 \item{x}{A linear mixed model object}

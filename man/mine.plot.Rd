@@ -4,8 +4,8 @@
 \alias{mine.plot}
 \title{Mine plot}
 \usage{
-mine.plot(x, what = "is.na(x)", spacing = 5, sort = F, list = FALSE,
-  show.x = TRUE, show.y = TRUE, ...)
+mine.plot(x, what = "is.na(x)", spacing = 5, sort = F,
+  list = FALSE, show.x = TRUE, show.y = TRUE, ...)
 }
 \arguments{
 \item{x}{A data.frame}
