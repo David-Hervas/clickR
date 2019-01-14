@@ -352,13 +352,14 @@ matrixPaste<-function (..., sep = rep(" ", length(list(...)) - 1)){
 #' @param type Format of the file
 #' @param digits Number of decimal places
 #' @param digitscat Number of decimal places for categorical variables (if different to digits)
+#' @param print Should the report table be printed on screen?
 #' @param ... further arguments passed to make_table()
 #' @export
 #' @examples
 #' report(iris)
 #' (reporTable<-report(iris, by="Species"))
 #' class(reporTable)
-report.data.frame<-function(x, by=NULL, file=NULL, type="word", digits=2, digitscat=digits, ...){
+report.data.frame<-function(x, by=NULL, file=NULL, type="word", digits=2, digitscat=digits, print=TRUE, ...){
   if(is.data.frame(x)==F){
     x<-data.frame(x)}
   x<-x[,!sapply(x, function(x) sum(is.na(x))/length(x))==1 & sapply(x, function(x) is.numeric(x) | is.factor(x)), drop=FALSE]
@@ -433,9 +434,10 @@ report.data.frame<-function(x, by=NULL, file=NULL, type="word", digits=2, digits
   #Matrix binding
   output<-rbind(estruct, AB, cats)
   colnames(output)<-c("Variable", paste(by, levels(by_v), sep=" ", "n =", as.vector(table(by_v))))
-
   if(!is.null(file)) make_table(output, file, type, use.rownames=FALSE)
-  return(print(data.frame(output, check.names=FALSE, stringsAsFactors=FALSE), row.names=FALSE, right=FALSE))
+  output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+  if(print) print(output, row.names=FALSE, right=FALSE)
+  invisible(output)
   }
 }
 

@@ -5,7 +5,7 @@
 \title{Report tables of summary data}
 \usage{
 \method{report}{data.frame}(x, by = NULL, file = NULL, type = "word",
-  digits = 2, digitscat = digits, ...)
+  digits = 2, digitscat = digits, print = TRUE, ...)
 }
 \arguments{
 \item{x}{A data.frame object}
@@ -19,6 +19,8 @@
 \item{digits}{Number of decimal places}
 
 \item{digitscat}{Number of decimal places for categorical variables (if different to digits)}
+
+\item{print}{Should the report table be printed on screen?}
 
 \item{...}{further arguments passed to make_table()}
 }
