@@ -4,16 +4,16 @@
 \alias{unforge}
 \title{Un-Forge}
 \usage{
-unforge(data, origin, variables, prefix = "")
+unforge(data, origin, variables, prefix = origin)
 }
 \arguments{
 \item{data}{data.frame}
 
-\item{origin}{Variable in data containing the values to be assigned to the different new variables}
+\item{origin}{Character vector with variable names in data containing the values to be assigned to the different new variables}
 
 \item{variables}{Variable in data containing the variable names to be created}
 
-\item{prefix}{Prefix for the new variable names}
+\item{prefix}{Vector with prefixes for the new variable names}
 }
 \description{
 Reshapes a data frame from long to wide format

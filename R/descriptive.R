@@ -757,9 +757,9 @@ forge <- function(data, affixes, force.fixed = NULL, var.name = "time"){
 #'
 #' @description Reshapes a data frame from long to wide format
 #' @param data data.frame
-#' @param origin Variable in data containing the values to be assigned to the different new variables
+#' @param origin Character vector with variable names in data containing the values to be assigned to the different new variables
 #' @param variables Variable in data containing the variable names to be created
-#' @param prefix Prefix for the new variable names
+#' @param prefix Vector with prefixes for the new variable names
 #' @export
 #' @examples
 #' #Data frame in wide format
@@ -772,9 +772,9 @@ forge <- function(data, affixes, force.fixed = NULL, var.name = "time"){
 #' #Data frame in wide format again
 #' df3 <- unforge(df2, "score", "time", prefix="score")
 #'
-unforge <- function(data, origin, variables, prefix=""){
+unforge <- function(data, origin, variables, prefix=origin){
   splitted <- split(data, data[variables])
   out_data <- cbind(splitted[[1]][,!names(data) %in% c(origin, variables)],
-                    setNames(do.call(cbind, lapply(split(data, data[variables]), function(x) x[origin])), paste(prefix, names(splitted), sep="")))
+                    setNames(do.call(cbind, lapply(split(data, data[variables]), function(x) x[origin])), paste(rep(prefix, each=length(unique(data[,variables]))), names(splitted), sep="")))
   out_data
 }
