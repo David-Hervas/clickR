@@ -780,3 +780,23 @@ unforge <- function(data, origin, variables, prefix=origin){
                                    rep(names(splitted), each=length(origin)), sep="")))
   out_data
 }
+
+
+#' Search string
+#'
+#' @description Searches for strings in R script files
+#' @param string Character string to search
+#' @param path Character vector with the path name
+#' @param recursive Logical. Should the search be recursive into subdirectories?
+#' @return A list with each element being one of the files containing the search string
+#' @export
+search_scripts <- function(string, path=getwd(), recursive=TRUE){
+  files <- list.files(path=path, pattern="\\.R$", recursive = recursive, full.names=TRUE)
+  listado <- lapply(files, function(x) {
+    x <- readLines(x, warn=FALSE)
+    x[grepl(string, x)]
+  })
+  names(listado) <- files
+  listado[sapply(listado, length) != 0]
+}
+

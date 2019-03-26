@@ -1,3 +1,10 @@
+clickR 0.4.30
+
+Changes:
+
+* Added new function search_scripts() for searching specific string into R scripts in a directory
+
+
 clickR 0.4.20
 
 Changes:
