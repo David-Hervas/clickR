@@ -501,7 +501,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, print=T
   colnames(output)<-c('Estimate','Std. Error',if(compute.exp) 'exp(Estimate)', 'Lower 95%','Upper 95%')
   if(!is.null(file)){
     info <- if(info) deparse(getCall(x)) else NULL
-    make_table(output, file, type, info=info, ...)
+    suppressWarnings(make_table(output, file, type, info=info, ...))
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
   if(print) print(obj$output, row.names=TRUE, right=TRUE)

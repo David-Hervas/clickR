@@ -782,7 +782,7 @@ unforge <- function(data, origin, variables, prefix=origin){
 }
 
 
-#' Search string
+#' Search scripts
 #'
 #' @description Searches for strings in R script files
 #' @param string Character string to search
