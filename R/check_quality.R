@@ -168,6 +168,8 @@ check_quality <- function(x, id=1:length(x), plot=TRUE, numeric=NULL, n=ifelse(i
 #' @return A list of object names by class or a table with frequencies if table = TRUE
 #' @export
 #' @examples
+#' df1 <- data.frame(x=rnorm(10), y=rnorm(10, 1, 2))
+#' df2 <- data.frame(x=rnorm(20), y=rnorm(20, 1, 2))
 #' workspace(table=TRUE)  #Frequency table of the different object classes
 #' workspace()  #All objects in the global object separated by class
 workspace <- function(table=FALSE) {
@@ -186,7 +188,7 @@ workspace <- function(table=FALSE) {
 #' @examples
 #' df1 <- data.frame(x=rnorm(10), y=rnorm(10, 1, 2))
 #' df2 <- data.frame(x=rnorm(20), y=rnorm(20, 1, 2))
-#' workspace_apply("data.frame", "summary")  #Gives a summary of each data.frame
+#' workspace_sapply("data.frame", "summary")  #Gives a summary of each data.frame
 workspace_sapply <- function(object_class, action="summary"){
   sapply(workspace()[[object_class]], function(x) get(action)(get(x)), simplify=FALSE)
 }

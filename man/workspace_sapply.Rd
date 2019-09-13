@@ -20,5 +20,5 @@ Applies a function over all objects of a specific class in the global environmen
 \examples{
 df1 <- data.frame(x=rnorm(10), y=rnorm(10, 1, 2))
 df2 <- data.frame(x=rnorm(20), y=rnorm(20, 1, 2))
-workspace_apply("data.frame", "summary")  #Gives a summary of each data.frame
+workspace_sapply("data.frame", "summary")  #Gives a summary of each data.frame
 }
