@@ -2,7 +2,7 @@
 % Please edit documentation in R/descriptive.R
 \name{search_scripts}
 \alias{search_scripts}
-\title{Search string}
+\title{Search scripts}
 \usage{
 search_scripts(string, path = getwd(), recursive = TRUE)
 }
