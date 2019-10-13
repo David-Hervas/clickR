@@ -39,7 +39,8 @@ numeros <- function(x) {
 #' @return A logical vector
 #' @export
 ttrue <- function(x){
-  x[is.null(x) | is.na(x)] <- FALSE
+  x[is.na(x)] <- FALSE
+  if(length(x) == 0L) x <- FALSE
   x
 }
 
