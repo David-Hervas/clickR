@@ -560,7 +560,12 @@ fxd <- function(d, locale="C", use.probs=TRUE){
   if(use.probs){
     co<-co[order(unlist(lapply(co, function(x) sum(is.na(x)))))]
   }
-  return(do.call("c", lapply(1:length(d), function(y) na.omit(do.call("c", lapply(co, function(x) x[y])))[1])))
+  final_dates <- do.call("c", lapply(1:length(d), function(y) na.omit(do.call("c", lapply(co, function(x) x[y])))[1]))
+  years <- as.numeric(substr(final_dates, 1, 4))
+  median_year <- median(years)
+  final_dates[abs(years - median_year) > abs(years-100 - median_year)] <- do.call(c, lapply(final_dates[abs(years - median_year) > abs(years-100 - median_year)], function(x) seq(x, length=2, by="-100 years")[2]))
+  final_dates[abs(years - median_year) > abs(years+100 - median_year)] <- do.call(c, lapply(final_dates[abs(years - median_year) > abs(years+100 - median_year)], function(x) seq(x, length=2, by="100 years")[2]))
+  return(final_dates)
   Sys.setlocale("LC_TIME", "")
 }
 
