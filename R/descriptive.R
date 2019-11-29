@@ -695,7 +695,7 @@ good2go <- function(path=getwd(), info=TRUE, load=TRUE){
     x[grepl("library\\(|require\\(", x)]
   }
   )))
-  p_list <- gsub("\\)", "", gsub("library\\(|require\\(", "", libraries))
+  p_list <- gsub('\\"', "", gsub("\\)", "", gsub("library\\(|require\\(", "", libraries)))
   if(load) lapply(p_list, function(x) require(x, character.only = TRUE, quietly=TRUE))
   if(info) print(paste("Packages:", paste(p_list, collapse=", ")), quote=FALSE)
 }
