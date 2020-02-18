@@ -4,8 +4,15 @@
 \alias{report.brmsfit}
 \title{Report models from brms package}
 \usage{
-\method{report}{brmsfit}(x, file = NULL, type = "word", digits = 3,
-  info = TRUE, print = TRUE, ...)
+\method{report}{brmsfit}(
+  x,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A brms model object}

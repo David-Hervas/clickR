@@ -4,8 +4,16 @@
 \alias{report.data.frame}
 \title{Report tables of summary data}
 \usage{
-\method{report}{data.frame}(x, by = NULL, file = NULL, type = "word",
-  digits = 2, digitscat = digits, print = TRUE, ...)
+\method{report}{data.frame}(
+  x,
+  by = NULL,
+  file = NULL,
+  type = "word",
+  digits = 2,
+  digitscat = digits,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A data.frame object}

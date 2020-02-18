@@ -4,8 +4,12 @@
 \alias{fix.levels}
 \title{Fix levels}
 \usage{
-fix.levels(x, levels = NULL, plot = FALSE,
-  k = ifelse(!is.null(levels), length(levels), 2))
+fix.levels(
+  x,
+  levels = NULL,
+  plot = FALSE,
+  k = ifelse(!is.null(levels), length(levels), 2)
+)
 }
 \arguments{
 \item{x}{A factor vector}

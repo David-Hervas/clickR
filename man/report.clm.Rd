@@ -4,8 +4,16 @@
 \alias{report.clm}
 \title{Report from ordinal model}
 \usage{
-\method{report}{clm}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, print = TRUE, ...)
+\method{report}{clm}(
+  x,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  digitspvals = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{An ordinal model object}

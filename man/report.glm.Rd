@@ -4,8 +4,16 @@
 \alias{report.glm}
 \title{Report from generalized linear model}
 \usage{
-\method{report}{glm}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, print = TRUE, ...)
+\method{report}{glm}(
+  x,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  digitspvals = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A generalized linear model object}

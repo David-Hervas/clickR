@@ -4,8 +4,14 @@
 \alias{fix.dates}
 \title{Fix dates}
 \usage{
-fix.dates(x, max.NA = 0.8, min.obs = nrow(x) * 0.05, locale = "C",
-  info = TRUE, use.probs = TRUE)
+fix.dates(
+  x,
+  max.NA = 0.8,
+  min.obs = nrow(x) * 0.05,
+  locale = "C",
+  info = TRUE,
+  use.probs = TRUE
+)
 }
 \arguments{
 \item{x}{A data.frame}

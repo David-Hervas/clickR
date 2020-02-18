@@ -4,8 +4,16 @@
 \alias{report.clmm}
 \title{Report from ordinal mixed model}
 \usage{
-\method{report}{clmm}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, print = TRUE, ...)
+\method{report}{clmm}(
+  x,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  digitspvals = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{An ordinal model object}

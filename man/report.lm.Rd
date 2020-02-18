@@ -4,8 +4,16 @@
 \alias{report.lm}
 \title{Report from linear model}
 \usage{
-\method{report}{lm}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, print = TRUE, ...)
+\method{report}{lm}(
+  x,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  digitspvals = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A linear model object}

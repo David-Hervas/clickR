@@ -4,8 +4,16 @@
 \alias{report.lmerMod}
 \title{Report from linear mixed model}
 \usage{
-\method{report}{lmerMod}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, print = TRUE, ...)
+\method{report}{lmerMod}(
+  x,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  digitspvals = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A linear mixed model object}

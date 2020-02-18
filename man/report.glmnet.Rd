@@ -4,13 +4,25 @@
 \alias{report.glmnet}
 \title{Report models from glmnet package}
 \usage{
-\method{report}{glmnet}(x, s, drop.zero = TRUE, file = NULL,
-  type = "word", digits = 3, info = TRUE, print = TRUE, ...)
+\method{report}{glmnet}(
+  x,
+  s,
+  gamma = 1,
+  drop.zero = TRUE,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A glmnet model object}
 
 \item{s}{Value of lambda for estimating the coefficients}
+
+\item{gamma}{Value of gamma for estimating the coefficients (only used in relaxed fits)}
 
 \item{drop.zero}{Should zero coefficients be dropped?}
 

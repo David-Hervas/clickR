@@ -4,8 +4,16 @@
 \alias{report.rlm}
 \title{Report from robust linear model (rlm)}
 \usage{
-\method{report}{rlm}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, print = TRUE, ...)
+\method{report}{rlm}(
+  x,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  digitspvals = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A rlm object}

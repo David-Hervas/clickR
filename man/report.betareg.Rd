@@ -4,8 +4,16 @@
 \alias{report.betareg}
 \title{Report from beta regression model}
 \usage{
-\method{report}{betareg}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, print = TRUE, ...)
+\method{report}{betareg}(
+  x,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  digitspvals = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A betareg model object}

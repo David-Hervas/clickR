@@ -11,6 +11,6 @@ Description: Tools for assessing data quality, performing exploratory analysis,
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 NeedsCompilation: no
 Packaged: 2016-11-20 16:56:35 UTC; Aghila

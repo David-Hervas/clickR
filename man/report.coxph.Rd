@@ -4,8 +4,16 @@
 \alias{report.coxph}
 \title{Report from cox regression model}
 \usage{
-\method{report}{coxph}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, print = TRUE, ...)
+\method{report}{coxph}(
+  x,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  digitspvals = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A cox model object}

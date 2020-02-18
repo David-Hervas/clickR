@@ -4,8 +4,16 @@
 \alias{report.rq}
 \title{Report from quantile regression model}
 \usage{
-\method{report}{rq}(x, file = NULL, type = "word", digits = 3,
-  digitspvals = 3, info = TRUE, print = TRUE, ...)
+\method{report}{rq}(
+  x,
+  file = NULL,
+  type = "word",
+  digits = 3,
+  digitspvals = 3,
+  info = TRUE,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A quantreg model object}
