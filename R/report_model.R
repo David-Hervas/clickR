@@ -526,21 +526,35 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, print=T
 #' @return A data frame with the report table
 #' @importFrom stats coef getCall
 #' @export
-report.glmnet<-function(x, s, drop.zero=TRUE, file=NULL, type="word", digits=3, info=TRUE, print=TRUE, ...){
+report.glmnet<-function(x, s, gamma=1, drop.zero=TRUE, file=NULL, type="word", digits=3, info=TRUE, print=TRUE, ...){
   compute.exp<- any(grepl("binomial|cox", x$call))
-  coefs <- coef(x, s=s)
-  obj <- list(coefficients=as.numeric(coefs)[if(drop.zero) {as.numeric(coefs)!=0}], lwr.int=NA, upper.int=NA)
-  names(obj$coefficients)<-rownames(coefs)[if(drop.zero) {as.numeric(coefs)!=0}]
+  if("relaxed" %in% class(x)){
+    coefs <- coef(x, s=s, gamma=gamma)
+  } else {
+    coefs <- coef(x, s=s)
+  }
+  if("multnet" %in% class(x)){
+    temp_coef <- setNames(data.frame(as.matrix(do.call(cbind, coefs))), names(coefs))
+    obj <- list(coefficients=temp_coef[apply(temp_coef, 1, function(x) any(x != 0)),], lwr.int=NA, upper.int=NA)
+  } else {
+    obj <- list(coefficients=as.numeric(coefs)[if(drop.zero) {as.numeric(coefs)!=0}], lwr.int=NA, upper.int=NA)
+    names(obj$coefficients)<-rownames(coefs)[if(drop.zero) {as.numeric(coefs)!=0}]
+  }
   if(compute.exp){
     obj$exp.coef <- exp(obj$coefficients)
   }
   obj$lambda <- s
-  output<-rbind(cbind(round(obj$coefficients,digits),
-                if(compute.exp){
-                  round(obj$exp.coef, digits)
-                }), cbind(s, rep("", ifelse(compute.exp, 1, 0))))
-  colnames(output)<-c('Estimate', if(compute.exp) 'exp(Estimate)')
-  rownames(output)<-c(names(obj$coefficients), "lambda")
+  if("multnet" %in% class(x)){
+    output <- rbind(round(obj$coefficients, digits), c(s, rep("", ifelse(compute.exp, max(ncol(obj$coefficients), 1), max(ncol(obj$coefficients)-1, 0)))))
+    rownames(output)[nrow(output)] <- "lambda"
+  } else {
+    output<-rbind(cbind(round(obj$coefficients,digits),
+                        if(compute.exp){
+                          round(obj$exp.coef, digits)
+                          }), cbind(s, rep("", ifelse(compute.exp, 1, 0))))
+    colnames(output)<-c('Estimate', if(compute.exp) 'exp(Estimate)')
+    rownames(output)<-c(names(obj$coefficients), "lambda")
+  }
   if(!is.null(file)){
     info <- if(info) deparse(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
