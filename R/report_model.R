@@ -516,6 +516,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, print=T
 #' @description Creates a report table from models fitted by glmnet
 #' @param x A glmnet model object
 #' @param s Value of lambda for estimating the coefficients
+#' @param gamma Value of gamma for estimating the coefficients (only used in relaxed fits)
 #' @param drop.zero Should zero coefficients be dropped?
 #' @param file Name of the file to export the table
 #' @param type Format of the file
