@@ -480,7 +480,7 @@ fix.factors<-function(x, k=5, drop=TRUE){
 #' @export
 #' @examples
 #' mydata<-data.frame(Numeric1=c(7.8, 9.2, 5.4, 3.3, "6,8", "3..3"),
-#'                    Numeric2=c(3.1, 1.2, "3.s4", "a48,s5", 7, "6,,4"))
+#'                    Numeric2=c(3.1, 1.2, "3.s4", "a48,s5", 7, "6,,4"), stringsAsFactors=TRUE)
 #' report(mydata)
 #' report(fix.numerics(mydata, k=5))
 fix.numerics<-function(x, k=8, max.NA=0.2, info=TRUE){
