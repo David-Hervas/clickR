@@ -25,7 +25,7 @@ report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
   rownames(output)[c(dim(sx$coefficients)[1]+1,dim(sx$coefficients)[1]+2)]<-c('R Squared','Adj.R Squared')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -72,7 +72,7 @@ report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
   rownames(output)[dim(sx$coefficients)[1]+1]<-c('AIC')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -106,7 +106,7 @@ report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=
   rownames(output)[dim(output)[1]]<-c('AIC')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -156,7 +156,7 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
                                                 c(na.omit(cor[is.na(cor$var2), c(2)]), ""),sep='')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -230,7 +230,7 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, in
                                                 na.omit(cor[is.na(cor$var2), c(2)]),sep='')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -267,7 +267,7 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
   rownames(output)[(dim(sx$tTable)[1]+2):(((dim(sx$tTable)[1]+2)+length(obj$random))-1)]<-paste('Ran.Eff',names(VarCorr(x)),sep=' ')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -316,7 +316,7 @@ report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
   rownames(output)[length(rownames(output))]<-c('AIC')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -367,7 +367,7 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
   rownames(output)[rownames(output)==""]<-names(rapply(VarCorr(x), function(x) sqrt(diag(x))))
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -404,7 +404,7 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
   rownames(output)[dim(sx$coefficients)[1]+1]<-'AIC'
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -453,7 +453,7 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3, inf
   rownames(output)[c(dim(sx$coefficients$mean)[1]+1, dim(sx$coefficients$mean)[1]+2)]<-c("phi", "Pseudo R-squared")
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -500,7 +500,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, print=T
   rownames(output)[dim(output)[1]]<-"WAIC"
   colnames(output)<-c('Estimate','Std. Error',if(compute.exp) 'exp(Estimate)', 'Lower 95%','Upper 95%')
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     suppressWarnings(make_table(output, file, type, info=info, ...))
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -557,7 +557,7 @@ report.glmnet<-function(x, s, gamma=1, drop.zero=TRUE, file=NULL, type="word", d
     rownames(output)<-c(names(obj$coefficients), "lambda")
   }
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -593,7 +593,7 @@ report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
   rownames(output)[dim(sx$coefficients)[1]+1]<-'AIC'
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -648,7 +648,7 @@ report.glmmadmb<-function(x, file=NULL, type="word", digits=3, digitspvals=3, in
                                                 rownames(cor),sep='')
   output[,"P-value"][output[,"P-value"]=="0"]<-"<0.001"
   if(!is.null(file)){
-    info <- if(info) deparse(getCall(x)) else NULL
+    info <- if(info) deparse1(getCall(x)) else NULL
     make_table(output, file, type, info=info, ...)
   }
   obj$output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
@@ -802,7 +802,7 @@ VarCorr<-function (x, sigma = 1, ...){
 #' @return A summary of the object
 #' @export
 report.default<-function(x, ...){
-  warning(paste("Non-recognized class for report(). Returning summary(", deparse(substitute(x)), ")", sep=""))
+  warning(paste("Non-recognized class for report(). Returning summary(", deparse1(substitute(x)), ")", sep=""))
   return(summary(x, ...))
 }
 
