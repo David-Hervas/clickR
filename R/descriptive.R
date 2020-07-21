@@ -779,10 +779,10 @@ forge <- function(data, affixes, force.fixed = NULL, var.name = "time"){
 #'
 unforge <- function(data, origin, variables, prefix=origin){
   splitted <- split(data, data[variables])
-  out_data <- cbind(splitted[[1]][,!names(data) %in% c(origin, variables)],
+  out_data <- cbind(splitted[[1]][,!names(data) %in% c(origin, variables), drop=FALSE],
                     setNames(do.call(cbind, lapply(split(data, data[variables]), function(x) x[origin])),
                              paste(rep(prefix, length(unique(data[,variables]))),
-                                   rep(names(splitted), each=length(origin)), sep="")))
+                                   rep(names(splitted), each=length(origin)), sep="_")))
   out_data
 }
 
