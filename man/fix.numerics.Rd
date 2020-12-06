@@ -4,7 +4,7 @@
 \alias{fix.numerics}
 \title{Fix numeric data}
 \usage{
-fix.numerics(x, k = 8, max.NA = 0.2, info = TRUE)
+fix.numerics(x, k = 8, max.NA = 0.2, track = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
@@ -13,7 +13,7 @@ fix.numerics(x, k = 8, max.NA = 0.2, info = TRUE)
 
 \item{max.NA}{Maximum allowed proportion of NA values created by coercion}
 
-\item{info}{Add generated missing values an excluded variable information as attributes}
+\item{track}{Keep track of changes?}
 }
 \description{
 Fixes numeric data

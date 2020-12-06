@@ -9,8 +9,8 @@ fix.dates(
   max.NA = 0.8,
   min.obs = nrow(x) * 0.05,
   locale = "C",
-  info = TRUE,
-  use.probs = TRUE
+  use.probs = TRUE,
+  track = TRUE
 )
 }
 \arguments{
@@ -22,9 +22,9 @@ fix.dates(
 
 \item{locale}{Locale to be used for month names}
 
-\item{info}{Add generated missing values an excluded variable information as attributes}
-
 \item{use.probs}{Solve ambiguities by similarity to the most frequent formats}
+
+\item{track}{Track changes?}
 }
 \description{
 Fixes dates

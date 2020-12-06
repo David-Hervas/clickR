@@ -10,7 +10,7 @@ moda_cont(x)
 \item{x}{A numeric variable}
 }
 \value{
-Estimated number of modes. If unclear, marked with an '*'
+Estimated number of modes.
 }
 \description{
 Estimates the number of modes

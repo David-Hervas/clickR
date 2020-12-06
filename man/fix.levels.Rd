@@ -5,27 +5,33 @@
 \title{Fix levels}
 \usage{
 fix.levels(
-  x,
+  data,
+  factor_name,
   levels = NULL,
   plot = FALSE,
-  k = ifelse(!is.null(levels), length(levels), 2)
+  k = ifelse(!is.null(levels), length(levels), 2),
+  track = TRUE
 )
 }
 \arguments{
-\item{x}{A factor vector}
+\item{data}{data.frame with the factor to fix}
+
+\item{factor_name}{Name of the factor to fix (as character)}
 
 \item{levels}{Optional vector with the levels names}
 
 \item{plot}{Optional: Plot cluster dendrogram?}
 
 \item{k}{Number of levels for clustering}
+
+\item{track}{Keep track of changes?}
 }
 \description{
 Fixes levels of a factor
 }
 \examples{
-factor1<-factor(c("Control", "Treatment", "Tretament", "Tratment", "treatment",
-"teatment", "contrl", "cntrol", "CONTol", "not available", "na"))
-fix.levels(factor1, k=4, plot=TRUE)   #Chose k to select matching levels
-fix.levels(factor1, levels=c("Control", "Treatment"), k=4)
+mydata <- data.frame(factor1=factor(c("Control", "Treatment", "Tretament", "Tratment", "treatment",
+"teatment", "contrl", "cntrol", "CONTol", "not available", "na")))
+fix.levels(mydata, "factor1", k=4, plot=TRUE)   #Chose k to select matching levels
+fix.levels(mydata, "factor1", levels=c("Control", "Treatment"), k=4)
 }

@@ -14,7 +14,7 @@ mtapply(x, group, fun)
 \item{fun}{Function to apply by group}
 }
 \description{
-Modification of the tapply function to use with data.frames
+Modification of the tapply function to use with data.frames. Consider using aggregate()
 }
 \examples{
 mtapply(mtcars, mtcars$gear, mean)

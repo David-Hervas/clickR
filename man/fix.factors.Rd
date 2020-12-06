@@ -4,7 +4,7 @@
 \alias{fix.factors}
 \title{Fix factors imported as numerics}
 \usage{
-fix.factors(x, k = 5, drop = TRUE)
+fix.factors(x, k = 5, drop = TRUE, track = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
@@ -12,6 +12,8 @@ fix.factors(x, k = 5, drop = TRUE)
 \item{k}{Maximum number of numeric values to be converted to factor}
 
 \item{drop}{Drop similar levels?}
+
+\item{track}{Keep track of changes?}
 }
 \description{
 Fixes factors imported as numerics

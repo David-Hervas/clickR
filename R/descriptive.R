@@ -1,13 +1,3 @@
-#' Defunct function for creating data summaries
-#'
-#' @description Creates a detailed summary of the data
-#' @param x A data.frame
-#' @return Nothing, the function is defunct. Use descriptive() instead.
-#' @export
-descriptivo<-function(x){
-  .Defunct("descriptive() (for descriptives) or cluster_var() (for variable clustering)")
-}
-
 #' Computes kurtosis
 #'
 #' @description Calculates kurtosis of a numeric variable
@@ -36,16 +26,13 @@ skewness <-  function(x) {
 #'
 #' @description Estimates the number of modes
 #' @param x A numeric variable
-#' @return Estimated number of modes. If unclear, marked with an '*'
+#' @return Estimated number of modes.
 #' @importFrom stats density
-moda_cont <- function(x) {
+moda_cont <- function(x){
   if(length(na.omit(x))>1){
-    modas2 <- sum(diff(diff(density(x, adjust=2, na.rm=T)$y)>=0)<0)
-    modas1 <- sum(diff(diff(density(x, adjust=1, na.rm=T)$y)>=0)<0)
-    if(modas1!=modas2 & modas2==1)
-      return("1*")
-    else
-      return(paste(modas2, " ", sep=""))
+    maxima <- density(x)$y[diff(diff(density(x, adjust=1, na.rm=T)$y)>=0)<0]
+    modas <- length(maxima[maxima >= max(maxima)*1/3])
+    return(paste(modas, " ", sep=""))
   }
   else return(NA)
 }
@@ -72,14 +59,14 @@ nearest <- function(x, to=seq(0, 1, length.out = 30)) {
 #' @description Returns the most repeated value
 #' @param x A categorical variable
 #' @return The mode
-moda<-function(x){names(sort(-table(x)))[1]}
+moda <- function(x){names(sort(-table(x)))[1]}
 
 #' Get anti-mode
 #'
 #' @description Returns the least repeated value
 #' @param x A categorical variable
 #' @return The anti-mode (least repeated value)
-antimoda<-function(x){names(sort(table(x)))[1]}
+antimoda <- function(x){names(sort(table(x)))[1]}
 
 #' Gets proportion of most repeated value
 #'
@@ -87,7 +74,7 @@ antimoda<-function(x){names(sort(table(x)))[1]}
 #' @param x A categorical variable
 #' @param ignore.na Should NA values be ignored for computing proportions?
 #' @return A proportion
-prop_may<-function(x, ignore.na=TRUE) {sort(-table(x))[1]/-(length(x)-ignore.na*sum(is.na(x)))}
+prop_may <- function(x, ignore.na=TRUE) {sort(-table(x))[1]/-(length(x)-ignore.na*sum(is.na(x)))}
 
 #' Gets proportion of least repeated value
 #'
@@ -95,7 +82,7 @@ prop_may<-function(x, ignore.na=TRUE) {sort(-table(x))[1]/-(length(x)-ignore.na*
 #' @param x A categorical variable
 #' @param ignore.na Should NA values be ignored for computing proportions?
 #' @return A proportion
-prop_min<-function(x, ignore.na=TRUE){sort(table(x))[1]/(length(x)-ignore.na*sum(is.na(x)))}
+prop_min <- function(x, ignore.na=TRUE){sort(table(x))[1]/(length(x)-ignore.na*sum(is.na(x)))}
 
 
 #' Computes Goodman and Kruskal's tau
@@ -443,7 +430,7 @@ report.data.frame<-function(x, by=NULL, file=NULL, type="word", digits=2, digits
 
 #' Multiple tapply
 #'
-#' @description Modification of the tapply function to use with data.frames
+#' @description Modification of the tapply function to use with data.frames. Consider using aggregate()
 #' @param x A data.frame
 #' @param group Grouping variable
 #' @param fun Function to apply by group
@@ -461,12 +448,35 @@ mtapply <- function(x, group, fun){
 #' @param x A data.frame
 #' @param k Maximum number of numeric values to be converted to factor
 #' @param drop Drop similar levels?
+#' @param track Keep track of changes?
 #' @export
 #' @examples
 #' report(mtcars)
 #' report(fix.factors(mtcars))
-fix.factors<-function(x, k=5, drop=TRUE){
-  x[, (sapply(x, function(x) (is.numeric(x) | is.character(x)) & length(unique(x))<=k)) | (sapply(x, function(x) is.factor(x)))]<-lapply(x[, sapply(x, function(x) (is.numeric(x)|is.character(x)) & length(unique(x))<=k) | (sapply(x, function(x) is.factor(x))), drop=FALSE], function(x) if(drop) factor(iconv(droplevels(as.factor(gsub("^ *|(?<= ) | *$", "", tolower(as.character(x)), perl=TRUE))), to="ASCII//TRANSLIT")) else factor(x))
+fix.factors<-function(x, k=5, drop=TRUE, track=TRUE){
+  changes_old <- attr(x, "changes")
+  if(track) old <- x
+  candidate_variables <- (sapply(x, function(x) (is.numeric(x) |
+                                                   is.character(x)) &
+                                   length(unique(x))<=k)) |
+    (sapply(x, function(x) is.factor(x)))
+  x[, candidate_variables] <- lapply(x[, candidate_variables, drop=FALSE],
+                                     function(x) {
+                                       if(drop) {factor(iconv(droplevels(as.factor(gsub("^ *|(?<= ) | *$", "", tolower(as.character(x)), perl=TRUE))), to="ASCII//TRANSLIT"))
+                                       } else factor(x)
+                                     })
+  if(track){
+    changes <- data.frame(variable=names(candidate_variables)[candidate_variables],
+                          observation="all",
+                          original=sapply(old[,candidate_variables], class),
+                          new="factor",
+                          fun="fix.factors", row.names=NULL)
+    if(!is.null(changes_old)){
+      attr(x, "changes") <- rbind(changes_old, changes)
+    } else {
+      attr(x, "changes") <- changes
+    }
+  }
   return(x)
 }
 
@@ -476,24 +486,44 @@ fix.factors<-function(x, k=5, drop=TRUE){
 #' @param x A data.frame
 #' @param k Minimum number of different values to be considered numerical
 #' @param max.NA Maximum allowed proportion of NA values created by coercion
-#' @param info Add generated missing values an excluded variable information as attributes
+#' @param track Keep track of changes?
 #' @export
 #' @examples
 #' mydata<-data.frame(Numeric1=c(7.8, 9.2, 5.4, 3.3, "6,8", "3..3"),
 #'                    Numeric2=c(3.1, 1.2, "3.s4", "a48,s5", 7, "6,,4"), stringsAsFactors=TRUE)
 #' report(mydata)
 #' report(fix.numerics(mydata, k=5))
-fix.numerics<-function(x, k=8, max.NA=0.2, info=TRUE){
-  x.old<-x
+fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
+  changes_old <- attr(x, "changes")
+  old <- x
   previous.NA<- sapply(x, function(x) sum(is.na(x)))
-  x[, apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !is.numeric(x)) & sapply(x, function(x) length(unique(x))>=k)] <- sapply(x[, apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !is.numeric(x))  & sapply(x, function(x) length(unique(x))>=k), drop=FALSE], function(x) numeros(x))
+  candidate_variables <- apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !is.numeric(x)) & sapply(x, function(x) length(unique(x))>=k)
+  x[, candidate_variables] <- sapply(x[, candidate_variables, drop=FALSE], function(x) numeros(x))
   final.NA<-sapply(x, function(x) sum(is.na(x)))-previous.NA
-  x[,(final.NA-previous.NA) > nrow(x)*max.NA]<-x.old[,(final.NA-previous.NA) > nrow(x)*max.NA]
+  x[,(final.NA-previous.NA) > nrow(x)*max.NA] <- old[,(final.NA-previous.NA) > nrow(x)*max.NA]
   print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
   print(paste(sum((final.NA-previous.NA) > nrow(x)*max.NA), "variables excluded following max.NA criterion"))
-  if(info){
-    attr(x, "missing") <- (sapply(x, function(x) sum(is.na(x)))-previous.NA)
-    attr(x, "excluded") <- (final.NA-previous.NA) > nrow(x)*max.NA
+  if(track){
+    changes1 <- data.frame(variable=names(candidate_variables[candidate_variables & !((final.NA-previous.NA) > nrow(x)*max.NA)]),
+                           observation="all",
+                           original=sapply(old[,candidate_variables & !((final.NA-previous.NA) > nrow(x)*max.NA)], class),
+                           new="numeric",
+                           fun="fix.numerics",
+                           row.names=NULL)
+    changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
+      observations <- which(!(old[, y] %in% x[, y]))
+      data.frame(variable=y,
+                 observation=observations,
+                 original=old[observations, y],
+                 new=x[observations, y],
+                 fun="fix.numerics")
+    }))
+    changes <- rbind(changes1, changes2)
+    if(!is.null(changes_old)){
+      attr(x, "changes") <- rbind(changes_old, changes)
+    } else {
+      attr(x, "changes") <- changes
+    }
   }
   return(x)
 }
@@ -506,29 +536,50 @@ fix.numerics<-function(x, k=8, max.NA=0.2, info=TRUE){
 #' @param max.NA Maximum allowed proportion of NA values created by coercion
 #' @param min.obs Minimum number of non-NA observations allowed per variable
 #' @param locale Locale to be used for month names
-#' @param info Add generated missing values an excluded variable information as attributes
 #' @param use.probs Solve ambiguities by similarity to the most frequent formats
+#' @param track Track changes?
 #' @export
 #' @examples
 #' mydata<-data.frame(Dates1=c("25/06/1983", "25-08/2014", "2001/11/01", "2008-10-01"),
 #'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", NA),
 #'                    Numeric1=rnorm(4))
 #' fix.dates(mydata)
-fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, locale="C", info=TRUE, use.probs=TRUE){
+fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, locale="C", use.probs=TRUE, track=TRUE){
+  changes_old <- attr(x, "changes")
+  old <- x
   x<-kill.factors(x)
   x.old<-x
   previous.NA <- sapply(x, function(x) sum(is.na(x)))
   previous.minobs <- sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
-  x[, apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any)] <- lapply(x[, apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any), drop = FALSE], function(x) fxd(x, locale=locale, use.probs=use.probs))
+  candidate_variables <- apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any)
+  x[, candidate_variables] <- lapply(x[, candidate_variables, drop = FALSE], function(x) fxd(x, locale=locale, use.probs=use.probs))
   final.NA <- sapply(x, function(x) sum(is.na(x))) - previous.NA
   final.minobs<-sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
   x[,((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)]<-x.old[,((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)]
   print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
   print(paste(sum((final.NA-previous.NA) > nrow(x)*max.NA), "variables excluded following max.NA criterion"))
   print(paste(final.minobs-previous.minobs, "variables excluded following min.obs criterion"))
-  if(info){
-    attr(x, "missing") <- (sapply(x, function(x) sum(is.na(x)))-previous.NA)
-    attr(x, "excluded") <- (final.NA-previous.NA) > nrow(x)*max.NA
+  if(track){
+    changes1 <- data.frame(variable=names(candidate_variables[candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs))]),
+                           observation="all",
+                           original=sapply(old[,candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs))], class),
+                           new="Date",
+                           fun="fix.dates",
+                           row.names=NULL)
+    changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
+      observations <- which(!(old[, y] %in% x[, y]))
+      data.frame(variable=y,
+                 observation=observations,
+                 original=old[observations, y],
+                 new=as.character(x[observations, y]),
+                 fun="fix.dates")
+    }))
+    changes <- rbind(changes1, changes2)
+    if(!is.null(changes_old)){
+      attr(x, "changes") <- rbind(changes_old, changes)
+    } else {
+      attr(x, "changes") <- changes
+    }
   }
   return(x)
 }
@@ -572,18 +623,22 @@ fxd <- function(d, locale="C", use.probs=TRUE){
 #' Fix levels
 #'
 #' @description Fixes levels of a factor
-#' @param x A factor vector
+#' @param data data.frame with the factor to fix
+#' @param factor_name Name of the factor to fix (as character)
 #' @param levels Optional vector with the levels names
 #' @param plot Optional: Plot cluster dendrogram?
 #' @param k Number of levels for clustering
+#' @param track Keep track of changes?
 #' @importFrom stats hclust rect.hclust cutree
 #' @export
 #' @examples
-#' factor1<-factor(c("Control", "Treatment", "Tretament", "Tratment", "treatment",
-#' "teatment", "contrl", "cntrol", "CONTol", "not available", "na"))
-#' fix.levels(factor1, k=4, plot=TRUE)   #Chose k to select matching levels
-#' fix.levels(factor1, levels=c("Control", "Treatment"), k=4)
-fix.levels<-function(x, levels=NULL, plot=FALSE, k=ifelse(!is.null(levels), length(levels), 2)){
+#' mydata <- data.frame(factor1=factor(c("Control", "Treatment", "Tretament", "Tratment", "treatment",
+#' "teatment", "contrl", "cntrol", "CONTol", "not available", "na")))
+#' fix.levels(mydata, "factor1", k=4, plot=TRUE)   #Chose k to select matching levels
+#' fix.levels(mydata, "factor1", levels=c("Control", "Treatment"), k=4)
+fix.levels <- function(data, factor_name, levels=NULL, plot=FALSE, k=ifelse(!is.null(levels), length(levels), 2), track=TRUE){
+  changes_old <- attr(data, "changes")
+  x <- data[,factor_name]
   listado<-unique(unlist(strsplit(tolower(as.character(x)), "")))
   simil<-sapply(strsplit(tolower(as.character(x)), ""), function(x) listado %in% x)
   rownames(simil)<-listado
@@ -602,12 +657,82 @@ fix.levels<-function(x, levels=NULL, plot=FALSE, k=ifelse(!is.null(levels), leng
       p<-p+1
     }
     x[! x %in% levels]<-NA
-    return(droplevels(factor(x)))
+    output <- droplevels(factor(x))
   } else{
-    return(groups)
+    output <- groups
   }
+  if(track){
+    observations <- which(!(data[,factor_name] %in% output))
+    changes <- data.frame(variable=factor_name,
+                          observation=observations,
+                          original=data[observations, factor_name],
+                          new=output[observations],
+                          fun="fix.levels",
+                          row.names=NULL)
+    if(!is.null(changes_old)){
+      attr(data, "changes") <- rbind(changes_old, changes)
+    } else {
+      attr(data, "changes") <- changes
+    }
+  }
+  data[, factor_name] <- output
+  return(data)
 }
 
+#' fix.NA
+#'
+#' @description Fixes miscoded missing values
+#' @param x A data.frame
+#' @param na.strings Strings to be considered NA
+#' @param track Track changes?
+#' @export
+#' @examples
+#' mydata <- data.frame(prueba = c("", NA, "A", 4, " ", "?", "-", "+"),
+#' casa = c("", 1, 2, 3, 4, " ", 6, 7))
+#' fix.NA(mydata)
+fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$"), track=TRUE){
+  changes_old <- attr(x, "changes")
+  string <- paste(na.strings, collapse="|")
+  output <- as.data.frame(lapply(x, function(x) {
+    kk <- class(x)
+    x <- gsub(string, NA, x)
+    eval(parse(text=paste("as.", kk, "(x)", sep="")))
+  }))
+  if(track){
+    variables <- which(sapply(x, function(x) sum(is.na(x))) != sapply(output, function(x) sum(is.na(x))))
+    changes <- do.call(rbind, lapply(variables, function(y){
+      observations <- which(!is.na(x[, y]) & is.na(output[, y]))
+      data.frame(variable=y,
+                 observation=observations,
+                 original=x[observations, y],
+                 new=output[observations, y],
+                 fun="fix.NA",
+                 row.names=NULL)
+    }))
+    if(!is.null(changes_old)){
+      attr(output, "changes") <- rbind(changes_old, changes)
+    } else {
+      attr(output, "changes") <- changes
+    }
+  }
+  return(output)
+}
+
+#' track_changes
+#'
+#' @description Gets a data.frame with all the changes performed by the different fix functions
+#' @param x A data.frame
+#' @export
+#' @examples
+#' mydata<-data.frame(Dates1=c("25/06/1983", "25-08/2014", "2001/11/01", "2008-10-01"),
+#'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", NA),
+#'                    Numeric1=rnorm(4))
+#' mydata <- fix.dates(mydata)
+#' mydata
+#' track_changes(mydata)
+track_changes <- function(x){
+  attr(x, "changes")
+}
 
 #' Peek
 #'
