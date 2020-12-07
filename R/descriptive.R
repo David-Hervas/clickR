@@ -527,7 +527,7 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
       }
     }
     return(x)
-  }
+  } else return(old)
 }
 
 
