@@ -561,20 +561,21 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, locale="C", use.prob
   print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
   print(paste(sum((final.NA-previous.NA) > nrow(x)*max.NA), "variables excluded following max.NA criterion"))
   print(paste(final.minobs-previous.minobs, "variables excluded following min.obs criterion"))
-  if(track){
-    changes1 <- data.frame(variable=names(candidate_variables[candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs))]),
+  final_variables <- candidate_variables[candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs))]
+  if(track & length(final_variables>0)){
+    changes1 <- data.frame(variable=names(final_variables),
                            observation="all",
-                           original=sapply(old[,candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)), drop=FALSE], class),
+                           original=sapply(old[,final_variables, drop=FALSE], class),
                            new="Date",
                            fun="fix.dates",
                            row.names=NULL)
     changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
       observations <- which(!(old[, y] %in% x[, y]))
       tryCatch(data.frame(variable=y,
-                 observation=observations,
-                 original=old[observations, y],
-                 new=as.character(x[observations, y]),
-                 fun="fix.dates"), error = function(e) NULL)
+                          observation=observations,
+                          original=old[observations, y],
+                          new=as.character(x[observations, y]),
+                          fun="fix.dates"), error = function(e) NULL)
     }))
     changes <- rbind(changes1, changes2)
     if(!is.null(changes_old)){
