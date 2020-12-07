@@ -561,9 +561,9 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, locale="C", use.prob
   print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
   print(paste(sum((final.NA-previous.NA) > nrow(x)*max.NA), "variables excluded following max.NA criterion"))
   print(paste(final.minobs-previous.minobs, "variables excluded following min.obs criterion"))
-  final_variables <- candidate_variables[candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs))]
-  if(track & length(final_variables>0)){
-    changes1 <- data.frame(variable=names(final_variables),
+  final_variables <- candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs))
+  if(track & sum(final_variables)>0){
+    changes1 <- data.frame(variable=names(final_variables[final_variables]),
                            observation="all",
                            original=sapply(old[,final_variables, drop=FALSE], class),
                            new="Date",
