@@ -6,7 +6,7 @@
 \usage{
 fix.NA(
   x,
-  na.strings = c("^$", "^ $", "^\\\\?$", "^-$", "^\\\\.$", "^NaN$", "^NULL$"),
+  na.strings = c("^$", "^ $", "^\\\\?$", "^-$", "^\\\\.$", "^NaN$", "^NULL$", "^N/A$"),
   track = TRUE
 )
 }

@@ -497,7 +497,7 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
   previous.NA<- sapply(x, function(x) sum(is.na(x)))
-  candidate_variables <- apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !is.numeric(x)) & sapply(x, function(x) length(unique(x))>=k)
+  candidate_variables <- apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !(is.numeric(x) | inherits(x, 'Date'))) & sapply(x, function(x) length(unique(x))>=k)
   x[, candidate_variables] <- sapply(x[, candidate_variables, drop=FALSE], function(x) numeros(x))
   final.NA<-sapply(x, function(x) sum(is.na(x)))-previous.NA
   x[,(final.NA-previous.NA) > nrow(x)*max.NA] <- old[,(final.NA-previous.NA) > nrow(x)*max.NA]
@@ -570,11 +570,11 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, locale="C", use.prob
                            row.names=NULL)
     changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
       observations <- which(!(old[, y] %in% x[, y]))
-      data.frame(variable=y,
+      tryCatch(data.frame(variable=y,
                  observation=observations,
                  original=old[observations, y],
                  new=as.character(x[observations, y]),
-                 fun="fix.dates")
+                 fun="fix.dates"), error = function(e) NULL)
     }))
     changes <- rbind(changes1, changes2)
     if(!is.null(changes_old)){
@@ -734,6 +734,33 @@ fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
 #' track_changes(mydata)
 track_changes <- function(x){
   attr(x, "changes")
+}
+
+#' Restore changes
+#'
+#' @description Restores original values after using a fix function
+#' @param x A data.frame
+#' @param var.names Character vector with names of the variables to be restored
+#' @export
+#' @examples
+#' mydata<-data.frame(Dates1=c("25/06/1983", "25-08/2014", "2001/11/01", "2008-10-01"),
+#'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", NA),
+#'                    Numeric1=rnorm(4))
+#' mydata <- fix.dates(mydata)
+#' mydata
+#' mydata <- restore_changes(mydata, "Dates1")
+#' mydata
+restore_changes <- function(x, var.names){
+  changes <- track_changes(x)
+  x[, var.names] <- lapply(var.names, function(y){
+    changes.y <- changes[changes$variable == y,]
+    class(x[, y]) <- changes.y$original[changes.y$observation == "all"][1]
+    x[, y][as.numeric(changes.y$observation[changes.y$observation != "all"])] <- changes.y$original[changes.y$observation != "all"]
+    x[, y]
+  })
+  changes <- changes[!changes$variable %in% var.names, ]
+  attr(x, "changes") <- changes
+  x
 }
 
 #' Peek
