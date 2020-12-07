@@ -1,3 +1,10 @@
+clickR 0.5.27
+
+Changes:
+
+* Added new functions to track changes made by the different "fix" functions. See track_changes().
+
+
 clickR 0.4.30
 
 Changes:

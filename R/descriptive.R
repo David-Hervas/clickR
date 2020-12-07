@@ -498,7 +498,7 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
   old <- x
   previous.NA<- sapply(x, function(x) sum(is.na(x)))
   candidate_variables <- apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !(is.numeric(x) | inherits(x, 'Date'))) & sapply(x, function(x) length(unique(x))>=k)
-  x[, candidate_variables] <- sapply(x[, candidate_variables, drop=FALSE], function(x) numeros(x))
+  x[, candidate_variables] <- lapply(x[, candidate_variables, drop=FALSE], function(x) numeros(x))
   final.NA<-sapply(x, function(x) sum(is.na(x)))-previous.NA
   x[,(final.NA-previous.NA) > nrow(x)*max.NA] <- old[,(final.NA-previous.NA) > nrow(x)*max.NA]
   print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
