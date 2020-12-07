@@ -503,29 +503,31 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
   x[,(final.NA-previous.NA) > nrow(x)*max.NA] <- old[,(final.NA-previous.NA) > nrow(x)*max.NA]
   print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
   print(paste(sum((final.NA-previous.NA) > nrow(x)*max.NA), "variables excluded following max.NA criterion"))
-  if(track){
-    changes1 <- data.frame(variable=names(candidate_variables[candidate_variables & !((final.NA-previous.NA) > nrow(x)*max.NA)]),
-                           observation="all",
-                           original=sapply(old[,candidate_variables & !((final.NA-previous.NA) > nrow(x)*max.NA), drop=FALSE], class),
-                           new="numeric",
-                           fun="fix.numerics",
-                           row.names=NULL)
-    changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
-      observations <- which(!(old[, y] %in% x[, y]))
-      tryCatch(data.frame(variable=y,
-                          observation=observations,
-                          original=old[observations, y],
-                          new=x[observations, y],
-                          fun="fix.numerics"), error = function(e) NULL)
-    }))
-    changes <- rbind(changes1, changes2)
-    if(!is.null(changes_old)){
-      attr(x, "changes") <- rbind(changes_old, changes)
-    } else {
-      attr(x, "changes") <- changes
+  if(!identical(old, x)){
+    if(track){
+      changes1 <- data.frame(variable=names(candidate_variables[candidate_variables & !((final.NA-previous.NA) > nrow(x)*max.NA)]),
+                             observation="all",
+                             original=sapply(old[,candidate_variables & !((final.NA-previous.NA) > nrow(x)*max.NA), drop=FALSE], class),
+                             new="numeric",
+                             fun="fix.numerics",
+                             row.names=NULL)
+      changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
+        observations <- which(!(old[, y] %in% x[, y]))
+        tryCatch(data.frame(variable=y,
+                            observation=observations,
+                            original=old[observations, y],
+                            new=x[observations, y],
+                            fun="fix.numerics"), error = function(e) NULL)
+      }))
+      changes <- rbind(changes1, changes2)
+      if(!is.null(changes_old)){
+        attr(x, "changes") <- rbind(changes_old, changes)
+      } else {
+        attr(x, "changes") <- changes
+      }
     }
+    return(x)
   }
-  return(x)
 }
 
 
