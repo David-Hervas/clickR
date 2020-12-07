@@ -4,7 +4,11 @@
 \alias{fix.NA}
 \title{fix.NA}
 \usage{
-fix.NA(x, na.strings = c("^$", "^ $", "^\\\\?$", "^-$"), track = TRUE)
+fix.NA(
+  x,
+  na.strings = c("^$", "^ $", "^\\\\?$", "^-$", "^\\\\.$", "^NaN$", "^NULL$"),
+  track = TRUE
+)
 }
 \arguments{
 \item{x}{A data.frame}

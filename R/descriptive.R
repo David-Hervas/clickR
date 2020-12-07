@@ -30,7 +30,7 @@ skewness <-  function(x) {
 #' @importFrom stats density
 moda_cont <- function(x){
   if(length(na.omit(x))>1){
-    maxima <- density(x)$y[diff(diff(density(x, adjust=1, na.rm=T)$y)>=0)<0]
+    maxima <- density(x, na.rm=TRUE)$y[diff(diff(density(x, adjust=1, na.rm=T)$y)>=0)<0]
     modas <- length(maxima[maxima >= max(maxima)*1/3])
     return(paste(modas, " ", sep=""))
   }
@@ -506,17 +506,17 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
   if(track){
     changes1 <- data.frame(variable=names(candidate_variables[candidate_variables & !((final.NA-previous.NA) > nrow(x)*max.NA)]),
                            observation="all",
-                           original=sapply(old[,candidate_variables & !((final.NA-previous.NA) > nrow(x)*max.NA)], class),
+                           original=sapply(old[,candidate_variables & !((final.NA-previous.NA) > nrow(x)*max.NA), drop=FALSE], class),
                            new="numeric",
                            fun="fix.numerics",
                            row.names=NULL)
     changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
       observations <- which(!(old[, y] %in% x[, y]))
-      data.frame(variable=y,
-                 observation=observations,
-                 original=old[observations, y],
-                 new=x[observations, y],
-                 fun="fix.numerics")
+      tryCatch(data.frame(variable=y,
+                          observation=observations,
+                          original=old[observations, y],
+                          new=x[observations, y],
+                          fun="fix.numerics"), error = function(e) NULL)
     }))
     changes <- rbind(changes1, changes2)
     if(!is.null(changes_old)){
@@ -562,7 +562,7 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, locale="C", use.prob
   if(track){
     changes1 <- data.frame(variable=names(candidate_variables[candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs))]),
                            observation="all",
-                           original=sapply(old[,candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs))], class),
+                           original=sapply(old[,candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)), drop=FALSE], class),
                            new="Date",
                            fun="fix.dates",
                            row.names=NULL)
@@ -690,18 +690,18 @@ fix.levels <- function(data, factor_name, levels=NULL, plot=FALSE, k=ifelse(!is.
 #' mydata <- data.frame(prueba = c("", NA, "A", 4, " ", "?", "-", "+"),
 #' casa = c("", 1, 2, 3, 4, " ", 6, 7))
 #' fix.NA(mydata)
-fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$"), track=TRUE){
+fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$", "^NULL$", "^N/A$"), track=TRUE){
   changes_old <- attr(x, "changes")
   string <- paste(na.strings, collapse="|")
   output <- as.data.frame(lapply(x, function(x) {
     kk <- class(x)
     x <- gsub(string, NA, x)
-    eval(parse(text=paste("as.", kk, "(x)", sep="")))
+    tryCatch(eval(parse(text=paste("as.", kk, "(x)", sep=""))), error=function(e) as.character(x))
   }))
   if(track){
-    variables <- which(sapply(x, function(x) sum(is.na(x))) != sapply(output, function(x) sum(is.na(x))))
+    variables <- names(x)[which(sapply(x, function(x) sum(is.na(x))) != sapply(output, function(x) sum(is.na(x))))]
     changes <- do.call(rbind, lapply(variables, function(y){
-      observations <- which(!is.na(x[, y]) & is.na(output[, y]))
+      observations <- which((!is.na(x[, y]) | is.nan(x[, y])) & is.na(output[, y]))
       data.frame(variable=y,
                  observation=observations,
                  original=x[observations, y],
