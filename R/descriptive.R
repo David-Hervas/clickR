@@ -498,6 +498,10 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
   old <- x
   previous.NA<- sapply(x, function(x) sum(is.na(x)))
   candidate_variables <- apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !(is.numeric(x) | inherits(x, 'Date'))) & sapply(x, function(x) length(unique(x))>=k)
+  percent_variables <- apply(sapply(x, function(x) grepl("%", as.character(x))), 2, any)
+  x[, candidate_variables & percent_variables] <- lapply(x[, candidate_variables & percent_variables, drop=FALSE], function(x){
+    x[grepl("%", x)] <- as.numeric(gsub("%", "", x[grepl("%", x)]))/100
+    x})
   x[, candidate_variables] <- lapply(x[, candidate_variables, drop=FALSE], function(x) numeros(x))
   final.NA<-sapply(x, function(x) sum(is.na(x)))-previous.NA
   x[,(final.NA-previous.NA) > nrow(x)*max.NA] <- old[,(final.NA-previous.NA) > nrow(x)*max.NA]
