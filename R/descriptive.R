@@ -118,18 +118,17 @@ GK_assoc <- function(x, y){
 #' @examples
 #' descriptive(iris)
 #' descriptive(iris, by="Species")
-descriptive<-function(x, z=3, ignore.na=TRUE, by=NULL){
+descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL){
   #Data.frame
-  if(is.data.frame(x)==FALSE){
-    x<-data.frame(x)}
-  x<-x[,!sapply(x, function(x) all(is.na(x)))]
+  if(!is.data.frame(x)){
+    x<-data.frame(x)
+  }
+  x<-x[, !sapply(x, function(x) all(is.na(x)))]
 
-  if(!is.null(by))
-  {
-    if (by %in% names(x))
-    {
-      pos_by <- match(by,names(x))
-      by_v <- eval(parse(text=paste("x$",by,sep="")))
+  if(!is.null(by)){
+    if (by %in% names(x)){
+      pos_by <- match(by, names(x))
+      by_v <- eval(parse(text=paste("x$", by, sep="")))
       x_sin <- data.frame(x[,-pos_by])
       names(x_sin) <- names(x)[-pos_by]
       if (length(x_sin)==0)
@@ -214,6 +213,7 @@ descriptive<-function(x, z=3, ignore.na=TRUE, by=NULL){
       cat("\n")
       print(summary2, quote=FALSE)
     }
+    invisible(list(numeric=summary1, character=summary2))
   }
 }
 
@@ -285,7 +285,7 @@ mine.plot <- function(x, fun=is.na, spacing=5, sort=F, show.x=TRUE, show.y=TRUE,
     out <- fun(x[,y])
     id <- which(out)
     value <- x[,y][out]
-    if(ttrue(any(out))) data.frame(variable=variable, id=id, value=value)
+    if(ttrue(any(out))) data.frame(variable=variable, id=id, value=as.character(value))
   }))
   output2 <- sapply(x, function(x) round(sum(fun(x))/length(x), 2))
   return(list(list=output1, summary=output2))
