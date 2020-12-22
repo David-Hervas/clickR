@@ -246,10 +246,9 @@ cluster_var <- function(x, margins=c(8,1)){
 #'
 #' @description Creates a heatmap-like plot for exploring the data
 #' @param x A data.frame
-#' @param what A logical expresion that will be depicted in the plot
+#' @param fun A function that evaluates a vector and returns a logical vector
 #' @param spacing Numerical separation between lines at the y-axis
 #' @param sort If TRUE, variables are sorted according to their results
-#' @param list If TRUE, creates a vector with the results
 #' @param show.x Should the x-axis be plotted?
 #' @param show.y Should the y-axis be plotted?
 #' @param ... further arguments passed to order()
@@ -258,9 +257,8 @@ cluster_var <- function(x, margins=c(8,1)){
 #' @export
 #' @examples
 #' mine.plot(airquality)   #Displays missing data
-#' mine.plot(airquality, what="x>mean(x)+2*sd(x) | x<mean(x)-2*sd(x)")   #Shows extreme values
-mine.plot <- function(x, what="is.na(x)", spacing=5, sort=F, list=FALSE, show.x=TRUE, show.y=TRUE, ...){
-  eval(parse(text=paste("is.it<-function(x)", what)))
+#' mine.plot(airquality, fun=outliers)   #Shows extreme values
+mine.plot <- function(x, fun=is.na, spacing=5, sort=F, show.x=TRUE, show.y=TRUE, ...){
   x<-as.data.frame(x)
   if(sort){
     orden <- order(sapply(x, function(x) sum(is.it(x))), ...)
@@ -269,7 +267,7 @@ mine.plot <- function(x, what="is.na(x)", spacing=5, sort=F, list=FALSE, show.x=
   old.warn <- options(warn=-1)
   pad<- ceiling(dim(x)[2]/30)
   old.par <- par(mar=c(8, 4.5, 6, 4))
-  image(t(sapply(x, function(x) is.it(x))), xaxt="n", yaxt="n", col=colorRampPalette(c("lightcyan4", "darkred"))(2), ...)
+  image(t(sapply(x, fun)), xaxt="n", yaxt="n", col=colorRampPalette(c("lightcyan4", "darkred"))(2), ...)
   if(show.x){
     axis(1, at=seq(0, 1, length=dim(x)[2]), labels=paste(names(x), "\n", "(", sapply(x, class), ")", sep=""), las=2, lwd=0, cex.axis=0.8)
   }
@@ -278,21 +276,43 @@ mine.plot <- function(x, what="is.na(x)", spacing=5, sort=F, list=FALSE, show.x=
   }
   for(i in 1:pad){
     axis(3, at=seq(0, 1, length=dim(x)[2])[seq(0+i, dim(x)[2], by=pad)],
-         labels=sapply(x, function(x) round(100*sum(is.it(x))/length(x)))[seq(0+i, dim(x)[2], by=pad)], cex.axis=0.6, lwd=0, line=-1+i/2)
+         labels=sapply(x, function(x) round(100*sum(fun(x))/length(x)))[seq(0+i, dim(x)[2], by=pad)], cex.axis=0.6, lwd=0, line=-1+i/2)
   }
-  if(!hasArg("main")) mtext(paste("%", what), 3, line=max(pad/1.5, 2.5), cex=1.2)
+  if(!hasArg("main")) mtext(paste("%", as.character(substitute(fun))), 3, line=max(pad/1.5, 2.5), cex=1.2)
   options(old.warn)
-  if(list){
-    return(sapply(x, function(x) round(100*sum(is.it(x))/length(x))))
-  }
+  output1 <- do.call(rbind, lapply(1:ncol(x), function(y){
+    variable <- names(x)[y]
+    out <- fun(x[,y])
+    id <- which(out)
+    value <- x[,y][out]
+    if(ttrue(any(out))) data.frame(variable=variable, id=id, value=value)
+  }))
+  output2 <- sapply(x, function(x) round(sum(fun(x))/length(x), 2))
+  return(list(list=output1, summary=output2))
   par(old.par)
 }
 
-#' is.it
+#' outliers
 #'
-#' @description Internal function for mine.plot
-#' @param x logical expression
-is.it <- function(x) is.na(x)
+#' @description Function for detecting outliers based on the boxplot method
+#' @param x A vector
+#' @export
+#' @examples
+#' outliers(iris$Petal.Length)
+#' outliers(airquality$Ozone)
+outliers <- function(x){
+  if(any(c("Date", "POSIXt") %in% class(x))){
+    quantiles <- quantile(as.POSIXct(x), probs=c(0.25, 0.75), na.rm=TRUE)
+    unclass(as.POSIXct(x)) %<NA% (unclass(quantiles["25%"]) - 1.5*(unclass(quantiles["75%"])-unclass(quantiles["25%"]))) |
+      unclass(as.POSIXct(x)) %>NA% (unclass(quantiles["75%"]) + 1.5*(unclass(quantiles["75%"])-unclass(quantiles["25%"])))
+  } else{
+    if(is.numeric(x)){
+      quantiles <- quantile(x, probs=c(0.25, 0.75), na.rm=TRUE)
+      x %<NA% (quantiles["25%"] - 1.5*(quantiles["75%"]-quantiles["25%"])) |
+        x %>NA% (quantiles["75%"] + 1.5*(quantiles["75%"]-quantiles["25%"]))
+    } else rep(NA, length(x))
+  }
+}
 
 
 #' Improved boxplot
