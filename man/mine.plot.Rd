@@ -6,10 +6,9 @@
 \usage{
 mine.plot(
   x,
-  what = "is.na(x)",
+  fun = is.na,
   spacing = 5,
   sort = F,
-  list = FALSE,
   show.x = TRUE,
   show.y = TRUE,
   ...
@@ -18,13 +17,11 @@ mine.plot(
 \arguments{
 \item{x}{A data.frame}
 
-\item{what}{A logical expresion that will be depicted in the plot}
+\item{fun}{A function that evaluates a vector and returns a logical vector}
 
 \item{spacing}{Numerical separation between lines at the y-axis}
 
 \item{sort}{If TRUE, variables are sorted according to their results}
-
-\item{list}{If TRUE, creates a vector with the results}
 
 \item{show.x}{Should the x-axis be plotted?}
 
@@ -37,5 +34,5 @@ Creates a heatmap-like plot for exploring the data
 }
 \examples{
 mine.plot(airquality)   #Displays missing data
-mine.plot(airquality, what="x>mean(x)+2*sd(x) | x<mean(x)-2*sd(x)")   #Shows extreme values
+mine.plot(airquality, fun=outliers)   #Shows extreme values
 }
