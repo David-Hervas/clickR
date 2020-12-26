@@ -125,56 +125,31 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL){
   }
   x<-x[, !sapply(x, function(x) all(is.na(x)))]
 
-  if(!is.null(by)){
-    if (by %in% names(x)){
-      pos_by <- match(by, names(x))
-      by_v <- eval(parse(text=paste("x$", by, sep="")))
-      x_sin <- data.frame(x[,-pos_by])
-      names(x_sin) <- names(x)[-pos_by]
-      if (length(x_sin)==0)
-      {
-        descriptive(x,z,ignore.na,by=NULL)
-        stop("Only one variable in the data. Can't be used as grouping variable")
-      }
+  if(!is.null(by) && by %in% names(x)){
+    by_v <- x[,by]
+    x_sin <- x[,!colnames(x) == by, drop=FALSE]
+    if (length(x_sin)==0){
+      descriptive(x,z,ignore.na,by=NULL)
+      stop("Only one variable in the data. Can't be used as grouping variable")
     }
-    else{
-      pos_by<-NULL
-      by_v <- eval(parse(text=by))
-      x_sin <- x
-    }
-
-    if (length(by_v)!=dim(x_sin)[1] | is.numeric(by_v))
-    {
-      descriptive(x=x,z=z,ignore.na=ignore.na,by=NULL)
-      warning(gettextf("Variable %s does not have the same number of observations than the data or is not a factor.
-                       Summary without grouping.", by))
-    }
-    else
-    {
-      x_sin <- x_sin[!is.na(by_v),]
-      by_v <- by_v[!is.na(by_v)]
-      by_v <- factor(by_v)
-      x_sin <- data.frame(x_sin)
-      if(!is.null(pos_by)) names(x_sin) <- names(x)[-pos_by]
-      niveles <- levels(by_v)
-      cat("Summary by ", by, ":", sep="")
+    x_sin <- x_sin[!is.na(by_v),]
+    by_v <- by_v[!is.na(by_v)]
+    by_v <- factor(by_v)
+    niveles <- levels(by_v)
+    cat("Summary by ", by, ":", sep="")
+    cat("\n")
+    cat("-------------------------------")
+    cat("\n")
+    for (i in 1:length(niveles)){
+      x_g <- x_sin[by_v==niveles[i],]
+      cat("Level ", by, ": ", niveles[i], sep="")
+      cat("\n")
+      descriptive(x=x_g,z=z,ignore.na=ignore.na,by=NULL)
       cat("\n")
       cat("-------------------------------")
       cat("\n")
-      for (i in 1:length(niveles))
-      {
-        x_g <- x_sin[by_v==niveles[i],]
-        cat("Level ", by, ": ", niveles[i], sep="")
-        cat("\n")
-        descriptive(x=x_g,z=z,ignore.na=ignore.na,by=NULL)
-        cat("\n")
-        cat("-------------------------------")
-        cat("\n")
-      }
     }
-    }
-  else{
-
+  } else{
     #Splitter (Splits data.frame: Numeric and categorical part)
     nums <- sapply(x, is.numeric)
 
@@ -212,10 +187,108 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL){
       cat("Categorical variables (", dim(x)[2]-sum(nums), ")", sep="")
       cat("\n")
       print(summary2, quote=FALSE)
-    }
+    } else { summary2 <- NULL}
     invisible(list(numeric=summary1, character=summary2))
   }
 }
+# descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL){
+#   #Data.frame
+#   if(!is.data.frame(x)){
+#     x<-data.frame(x)
+#   }
+#   x<-x[, !sapply(x, function(x) all(is.na(x)))]
+#
+#   if(!is.null(by)){
+#     if (by %in% names(x)){
+#       pos_by <- match(by, names(x))
+#       by_v <- eval(parse(text=paste("x$", by, sep="")))
+#       x_sin <- data.frame(x[,-pos_by])
+#       names(x_sin) <- names(x)[-pos_by]
+#       if (length(x_sin)==0)
+#       {
+#         descriptive(x,z,ignore.na,by=NULL)
+#         stop("Only one variable in the data. Can't be used as grouping variable")
+#       }
+#     }
+#     else{
+#       pos_by<-NULL
+#       by_v <- eval(parse(text=by))
+#       x_sin <- x
+#     }
+#
+#     if (length(by_v)!=dim(x_sin)[1] | is.numeric(by_v))
+#     {
+#       descriptive(x=x,z=z,ignore.na=ignore.na,by=NULL)
+#       warning(gettextf("Variable %s does not have the same number of observations than the data or is not a factor.
+#                        Summary without grouping.", by))
+#     }
+#     else
+#     {
+#       x_sin <- x_sin[!is.na(by_v),]
+#       by_v <- by_v[!is.na(by_v)]
+#       by_v <- factor(by_v)
+#       x_sin <- data.frame(x_sin)
+#       if(!is.null(pos_by)) names(x_sin) <- names(x)[-pos_by]
+#       niveles <- levels(by_v)
+#       cat("Summary by ", by, ":", sep="")
+#       cat("\n")
+#       cat("-------------------------------")
+#       cat("\n")
+#       for (i in 1:length(niveles))
+#       {
+#         x_g <- x_sin[by_v==niveles[i],]
+#         cat("Level ", by, ": ", niveles[i], sep="")
+#         cat("\n")
+#         descriptive(x=x_g,z=z,ignore.na=ignore.na,by=NULL)
+#         cat("\n")
+#         cat("-------------------------------")
+#         cat("\n")
+#       }
+#     }
+#     }
+#   else{
+#
+#     #Splitter (Splits data.frame: Numeric and categorical part)
+#     nums <- sapply(x, is.numeric)
+#
+#     #Numeric summary
+#     resumen<-function(y){
+#       resumen1 <- round(c(min(y, na.rm=T), quantile(y, probs=0.25, na.rm=T), median(y, na.rm=T), quantile(y, probs=0.75, na.rm=T), max(y, na.rm=T), mean(y, na.rm=T), sd(y, na.rm=T), kurtosis(y), skewness(y)),z)
+#       names(resumen1) <- c("Min", "1st Q.", "Median", "3rd Q.", "Max", "Mean", "SD", "Kurtosis", "Skewness")
+#       distribution <- c("|", rep("-", 28), "|")
+#       scaled_Y <- scale_01(y)
+#       tryCatch(distribution[(nearest((resumen1["1st Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))+1):(nearest((resumen1["3rd Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))-1)]<-"#", error=function(e) NA)
+#       tryCatch(distribution[nearest((resumen1["1st Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-"[", error=function(e) NA)
+#       tryCatch(distribution[nearest((resumen1["3rd Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-"]", error=function(e) NA)
+#       tryCatch(distribution[nearest((resumen1["Median"]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-":", error=function(e) NA)
+#       return(data.frame(t(resumen1), Modes=moda_cont(y), NAs=sum(is.na(y)), Distribution=paste(distribution, collapse=""), check.names = FALSE, stringsAsFactors = FALSE))
+#     }
+#
+#     resumen2<-function(w){
+#       resumen2<-c(length(table(w)), abbreviate(paste(na.omit(names(sort(-table(w)))[1:5]), collapse="/"), minlength = min(20, nchar(paste(na.omit(names(sort(-table(w)))[1:5]), collapse="/"))), named=FALSE), moda(w), round(prop_may(w, ignore.na = ignore.na),z), antimoda(w), round(prop_min(w, ignore.na = ignore.na),z), sum(is.na(w)))
+#       names(resumen2)<- c("N. Classes", "Classes", "Mode", "Prop. mode", "Anti-mode", "Prop. Anti-mode", "NAs")
+#       data.frame(t(resumen2), check.names = FALSE, stringsAsFactors = FALSE)
+#     }
+#     #Results
+#     cat(paste("Data frame with", dim(x)[1], "observations and", dim(x)[2], "variables."))
+#     cat("\n")
+#     cat("\n")
+#     if("TRUE" %in% nums){
+#       cat("Numeric variables (", sum(nums), ")", sep="")
+#       cat("\n")
+#       summary1 <- do.call(rbind, lapply(x[,nums], resumen))
+#       print(summary1)
+#     }
+#     if("FALSE" %in% nums){
+#       summary2 <- do.call(rbind, lapply(x[,!nums, drop=FALSE], resumen2))
+#       cat("\n")
+#       cat("Categorical variables (", dim(x)[2]-sum(nums), ")", sep="")
+#       cat("\n")
+#       print(summary2, quote=FALSE)
+#     }
+#     invisible(list(numeric=summary1, character=summary2))
+#   }
+# }
 
 #' Clustering of variables
 #'
