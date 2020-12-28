@@ -725,10 +725,12 @@ fxd <- function(d, locale="C", use.probs=TRUE){
 #' @description Fixes levels of a factor
 #' @param data data.frame with the factor to fix
 #' @param factor_name Name of the factor to fix (as character)
+#' @param method Method from stringdist package to estimate distances
 #' @param levels Optional vector with the levels names
 #' @param plot Optional: Plot cluster dendrogram?
 #' @param k Number of levels for clustering
 #' @param track Keep track of changes?
+#' @param ... Further parameters passed to stringdist::stringdistmatrix function
 #' @importFrom stats hclust rect.hclust cutree
 #' @export
 #' @examples
@@ -736,30 +738,32 @@ fxd <- function(d, locale="C", use.probs=TRUE){
 #' "teatment", "contrl", "cntrol", "CONTol", "not available", "na")))
 #' fix.levels(mydata, "factor1", k=4, plot=TRUE)   #Chose k to select matching levels
 #' fix.levels(mydata, "factor1", levels=c("Control", "Treatment"), k=4)
-fix.levels <- function(data, factor_name, levels=NULL, plot=FALSE, k=ifelse(!is.null(levels), length(levels), 2), track=TRUE){
+fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, k=ifelse(!is.null(levels), length(levels), 2), track=TRUE, ...){
   changes_old <- attr(data, "changes")
   x <- data[,factor_name]
-  listado<-unique(unlist(strsplit(tolower(as.character(x)), "")))
-  simil<-sapply(strsplit(tolower(as.character(x)), ""), function(x) listado %in% x)
-  rownames(simil)<-listado
-  colnames(simil)<-as.character(x)
-  clusters<-hclust(dist(t(simil), method="binary"))
-  if(plot) {
-    clusplot<-hclust(dist(unique(t(simil)), method="binary"))
-    plot(clusplot)
-    rect.hclust(clusplot, k=k, border="red")
+  x_na <- na.omit(x)
+  if(method %in% c("osa", "lv", "dl", "hamming", "lcs", "qgram", "cosine", "jaccard", "jw", "soundex")){
+    clusters <- hclust(stringdist::stringdistmatrix(tolower(x_na), method=method, useNames=TRUE, ...))
+    if(plot){
+      clusplot <- hclust(stringdist::stringdistmatrix(unique(tolower(x_na)), method=method, useNames=TRUE, ...))
+      plot(clusplot)
+      rect.hclust(clusplot, k=k, border="red")
+    }
+  } else{
+    stop("Method should be one of 'osa', 'lv', 'dl', 'hamming', 'lcs', 'qgram', 'cosine', 'jaccard', 'jw', 'soundex'")
   }
   groups <- cutree(clusters, k=k)
   if (!is.null(levels)){
-    p<-1
-    for(i in groups[which(names(groups) %in% levels)]){
-      x[x %in% names(groups)[groups==i]]<-names(groups[which(names(groups) %in% levels)])[p]
-      p<-p+1
-    }
-    x[! x %in% levels]<-NA
-    output <- droplevels(factor(x))
+    output <- factor(as.vector(groups), levels=1:length(levels), labels=levels[order(apply(sapply(split(as.data.frame(stringdist::stringdistmatrix(x_na, levels, method=method, useNames = TRUE, ...)), groups), colMeans), 1, which.min))])
   } else{
     output <- groups
+  }
+  if(length(x) != length(x_na)){
+    ind <- which(is.na(x))
+    ind <- ind - seq(0, length(ind)-1)
+    val <- c(as.character(output), rep(NA, length(ind)))
+    final <- c(seq_along(x_na), ind-0.5)
+    output <- val[order(final)]
   }
   if(track){
     observations <- which(!(data[,factor_name] %in% output))

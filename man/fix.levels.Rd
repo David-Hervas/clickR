@@ -7,16 +7,20 @@
 fix.levels(
   data,
   factor_name,
+  method = "dl",
   levels = NULL,
   plot = FALSE,
   k = ifelse(!is.null(levels), length(levels), 2),
-  track = TRUE
+  track = TRUE,
+  ...
 )
 }
 \arguments{
 \item{data}{data.frame with the factor to fix}
 
 \item{factor_name}{Name of the factor to fix (as character)}
+
+\item{method}{Method from stringdist package to estimate distances}
 
 \item{levels}{Optional vector with the levels names}
 
@@ -25,6 +29,8 @@ fix.levels(
 \item{k}{Number of levels for clustering}
 
 \item{track}{Keep track of changes?}
+
+\item{...}{Further parameters passed to stringdist::stringdistmatrix function}
 }
 \description{
 Fixes levels of a factor
