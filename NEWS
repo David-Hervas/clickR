@@ -1,3 +1,8 @@
+clickR 0.5.38
+
+* Now fix.numerics() is able to fix numbers with thousands separators.
+
+
 clickR 0.5.27
 
 Changes:
