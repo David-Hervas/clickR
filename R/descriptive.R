@@ -742,6 +742,7 @@ fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
 #'
 #' @description Gets a data.frame with all the changes performed by the different fix functions
 #' @param x A data.frame
+#' @param subset Logical expression for subsetting the data.frame with the changes
 #' @export
 #' @examples
 #' mydata<-data.frame(Dates1=c("25/06/1983", "25-08/2014", "2001/11/01", "2008-10-01"),
@@ -750,8 +751,10 @@ fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
 #' mydata <- fix.dates(mydata)
 #' mydata
 #' track_changes(mydata)
-track_changes <- function(x){
-  attr(x, "changes")
+track_changes <- function(x, subset){
+  changes <- attr(x, "changes")
+  if(missing(subset)) f <- rep(TRUE, nrow(changes)) else f <- eval(substitute(subset), changes, baseenv())
+  changes[f,]
 }
 
 #' Restore changes

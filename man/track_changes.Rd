@@ -4,10 +4,12 @@
 \alias{track_changes}
 \title{track_changes}
 \usage{
-track_changes(x)
+track_changes(x, subset)
 }
 \arguments{
 \item{x}{A data.frame}
+
+\item{subset}{Logical expression for subsetting the data.frame with the changes}
 }
 \description{
 Gets a data.frame with all the changes performed by the different fix functions
