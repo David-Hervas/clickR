@@ -673,6 +673,8 @@ fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
     output <- factor(as.vector(groups), levels=1:length(levels), labels=levels[order(apply(sapply(split(as.data.frame(stringdist::stringdistmatrix(x_na, levels, method=method, useNames = TRUE, ...)), groups), colMeans), 1, which.min))])
   } else{
     output <- groups
+    cat("Groups of levels:\n \n")
+    print(lapply(split(names(groups), groups), function(x) unique(x)))
   }
   if(length(x) != length(x_na)){
     ind <- which(is.na(x))
@@ -696,7 +698,7 @@ fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
     }
   }
   data[, factor_name] <- output
-  return(data)
+  invisible(data)
 }
 
 #' fix.NA
