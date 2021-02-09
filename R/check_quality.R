@@ -26,10 +26,25 @@ extreme_values <- function(x, n=5, id=NULL){
 #' @description If possible, coerces values from a vector to numeric
 #' @param x A vector
 #' @return A numeric vector
-numeros <- function(x) {
-  suppressWarnings(as.numeric(gsub(paste(c(",", "\\.\\.", ",,", "\\.,", ",\\.", "\\."),
-                                         collapse = "|"), ".", gsub("[A-Za-z]", "", iconv(gsub("^ *|(?<= ) | *$", "",
-                                                                                               tolower(as.character(x)), perl = TRUE), to = "ASCII//TRANSLIT")))))
+numeros <- function(x){
+  suppressWarnings(
+    as.numeric(
+      gsub(
+        paste(c(",", "\\.\\.", ",,", "\\.,", ",\\.", "\\."),
+              collapse = "|"),
+        ".",
+        gsub(
+          "[A-Za-z]",
+          "",
+          iconv(
+            gsub(
+              "^ *|(?<= ) | *$",
+              "",
+              gsub("\\$|€|£",
+                   "",
+                   tolower(as.character(x))),
+              perl = TRUE),
+            to = "ASCII//TRANSLIT")))))
 }
 
 #' True TRUE
