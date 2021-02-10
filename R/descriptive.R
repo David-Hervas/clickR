@@ -755,8 +755,12 @@ fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
 #' track_changes(mydata)
 track_changes <- function(x, subset){
   changes <- attr(x, "changes")
-  if(missing(subset)) f <- rep(TRUE, nrow(changes)) else f <- eval(substitute(subset), changes, baseenv())
-  changes[f,]
+  if(is.null(changes)){
+    changes
+  } else{
+    if(missing(subset)) f <- rep(TRUE, nrow(changes)) else f <- eval(substitute(subset), changes, baseenv())
+    changes[f,]
+  }
 }
 
 #' Restore changes
