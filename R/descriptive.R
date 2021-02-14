@@ -494,10 +494,15 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
   previous.NA<- sapply(x, function(x) sum(is.na(x)))
   candidate_variables <- apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !(is.numeric(x) | inherits(x, 'Date'))) & sapply(x, function(x) length(unique(x))>=k)
   percent_variables <- apply(sapply(x, function(x) grepl("%", as.character(x))), 2, any)
+  sci_notation_variables <- apply(sapply(x, function(x) grepl("[0-9](e|E)([0-9]|-[0-9]|\\+[0-9])", as.character(x))), 2, any)
   thousand_separators <- apply(sapply(x, function(x) grepl(".\\..{3},", x) | grepl(".,.{3}\\.", x) | grepl(".\\..{3}\\.", x) | grepl(".\\,.{3}\\,", x)), 2, any)
   x[, candidate_variables & percent_variables] <- lapply(x[, candidate_variables & percent_variables, drop=FALSE], function(x){
     x[grepl("%", x)] <- numeros(gsub("%", "", x[grepl("%", x)]))/100
     x})
+  x[, candidate_variables & sci_notation_variables] <- lapply(x[, candidate_variables & sci_notation_variables, drop=FALSE], function(x){
+    x[grepl("[0-9](e|E)([0-9]|-[0-9]|\\+[0-9])", x)] <- format(as.numeric(x[grepl("[0-9](e|E)([0-9]|-[0-9]|\\+[0-9])", x)]), scientific = FALSE)
+    x
+  })
   x[, thousand_separators & candidate_variables] <- lapply(x[, candidate_variables & thousand_separators, drop=FALSE], function(x){
     point_thousands <- sum(grepl("\\..*,", x) | grepl("\\..{3}\\.", x))
     comma_thousands <- sum(grepl(",.*\\.", x) | grepl(",.{3},", x))
