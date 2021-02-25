@@ -750,6 +750,41 @@ fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
   return(output)
 }
 
+#' fix.concat
+#'
+#' @description Fixes concatenated values in a variable
+#' @param x A data.frame
+#' @param varname Variable name
+#' @param sep Separator for the different values
+#' @param track Track changes?
+#' @export
+#' @examples
+#' mydata <- data.frame(concat=c("a", "b", "a b" , "a b, c", "a; c"),
+#' numeric = c(1, 2, 3, 4, 5))
+#' fix.concat(mydata, "concat")
+fix.concat <- function(x, varname, sep=", |; | ", track=TRUE){
+  changes_old <- attr(x, "changes")
+  old <- x
+  new_vars <- sapply(unique(unlist(strsplit(x[,varname], sep))), function(y) as.numeric(grepl(y, x[,varname])))
+  colnames(new_vars) <- paste(varname, colnames(new_vars), sep="_")
+  x <- data.frame(x, new_vars)
+  if(!identical(old, x)){
+    if(track){
+      changes <- data.frame(variable=colnames(new_vars),
+                            observation="all",
+                            original=NA,
+                            new="logical",
+                            fun="fix.concat", row.names=NULL)
+      if(!is.null(changes_old)){
+        attr(x, "changes") <- rbind(changes_old, changes)
+      } else {
+        attr(x, "changes") <- changes
+      }
+    }
+    return(x)
+  } else return(old)
+}
+
 #' track_changes
 #'
 #' @description Gets a data.frame with all the changes performed by the different fix functions
