@@ -499,10 +499,13 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
   x[, candidate_variables & percent_variables] <- lapply(x[, candidate_variables & percent_variables, drop=FALSE], function(x){
     x[grepl("%", x)] <- numeros(gsub("%", "", x[grepl("%", x)]))/100
     x})
-  x[, candidate_variables & sci_notation_variables] <- lapply(x[, candidate_variables & sci_notation_variables, drop=FALSE], function(x){
-    x[grepl("[0-9](e|E)([0-9]|-[0-9]|\\+[0-9])", x)] <- format(as.numeric(x[grepl("[0-9](e|E)([0-9]|-[0-9]|\\+[0-9])", x)]), scientific = FALSE)
-    x
-  })
+  x[, candidate_variables & sci_notation_variables] <- lapply(x[, candidate_variables & sci_notation_variables, drop = FALSE],
+                                                              function(x){
+                                                                mult_factor <- sapply(strsplit(x, "e|E"), function(x) 10^as.numeric(x[2]))
+                                                                mult_factor[is.na(mult_factor)] <- 1
+                                                                base <- sapply(strsplit(x, "e|E"), function(x) x[1])
+                                                                numeros(base)*mult_factor
+                                                              })
   x[, thousand_separators & candidate_variables] <- lapply(x[, candidate_variables & thousand_separators, drop=FALSE], function(x){
     point_thousands <- sum(grepl("\\..*,", x) | grepl("\\..{3}\\.", x))
     comma_thousands <- sum(grepl(",.*\\.", x) | grepl(",.{3},", x))
