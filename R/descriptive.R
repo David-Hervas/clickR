@@ -450,7 +450,7 @@ mtapply <- function(x, group, fun){
 #' report(fix.factors(mtcars))
 fix.factors<-function(x, k=5, drop=TRUE, track=TRUE){
   changes_old <- attr(x, "changes")
-  if(track) old <- x
+  old <- x
   candidate_variables <- (sapply(x, function(x) (is.numeric(x) |
                                                    is.character(x)) &
                                    length(unique(x))<=k)) |
@@ -460,7 +460,8 @@ fix.factors<-function(x, k=5, drop=TRUE, track=TRUE){
                                        if(drop) {factor(iconv(droplevels(as.factor(gsub("^ *|(?<= ) | *$", "", tolower(as.character(x)), perl=TRUE))), to="ASCII//TRANSLIT"))
                                        } else factor(x)
                                      })
-  if(track){
+  if(!identical(old, x)){
+    if(track){
     changes <- data.frame(variable=names(candidate_variables)[candidate_variables],
                           observation="all",
                           original=sapply(old[,candidate_variables], class),
@@ -473,6 +474,7 @@ fix.factors<-function(x, k=5, drop=TRUE, track=TRUE){
     }
   }
   return(x)
+  } else return(old)
 }
 
 #' Fix numeric data
