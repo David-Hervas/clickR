@@ -4,10 +4,12 @@
 \alias{nice_names}
 \title{Nice names}
 \usage{
-nice_names(dat)
+nice_names(x, track = TRUE)
 }
 \arguments{
-\item{dat}{A data.frame}
+\item{x}{A data.frame}
+
+\item{track}{Track changes?}
 }
 \description{
 Changes names of a data frame to ease work with them

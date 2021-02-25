@@ -464,7 +464,7 @@ fix.factors<-function(x, k=5, drop=TRUE, track=TRUE){
     if(track){
     changes <- data.frame(variable=names(candidate_variables)[candidate_variables],
                           observation="all",
-                          original=sapply(old[,candidate_variables], class),
+                          original=sapply(old[,candidate_variables, drop=FALSE], class),
                           new="factor",
                           fun="fix.factors", row.names=NULL)
     if(!is.null(changes_old)){
@@ -835,14 +835,17 @@ peek <- function(x, n=10, which=1:ncol(x)){
 #' Nice names
 #'
 #' @description Changes names of a data frame to ease work with them
-#' @param dat A data.frame
+#' @param x A data.frame
+#' @param track Track changes?
 #' @export
 #' @examples
 #' d <- data.frame('Variable 1'=NA, '% Response'=NA, ' Variable     3'=NA,check.names=FALSE)
 #' names(d)
 #' names(nice_names(d))
-nice_names<-function (dat){
-  old_names <- names(dat)
+nice_names <- function(x, track=TRUE){
+  changes_old <- attr(x, "changes")
+  old <- x
+  old_names <- names(x)
   new_names <- gsub("x_","",gsub("_$", "",tolower(gsub("[_]+", "_",gsub("[.]+", "_",make.names(
     gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", old_names)))))))))))
   dupe_count <- sapply(1:length(new_names), function(i) {
@@ -851,7 +854,22 @@ nice_names<-function (dat){
   new_names[dupe_count > 1] <- paste(new_names[dupe_count >
                                                  1], dupe_count[dupe_count > 1], sep = "_")
   new_names <- iconv(new_names, to = "ASCII//TRANSLIT")
-  stats::setNames(dat, new_names)
+  x <- stats::setNames(x, new_names)
+  if(!identical(old_names, new_names)){
+    if(track){
+      changes <- data.frame(variable=new_names[old_names != new_names],
+                            observation="varname",
+                            original=old_names[old_names != new_names],
+                            new=new_names[old_names != new_names],
+                            fun="nice_names", row.names=NULL)
+      if(!is.null(changes_old)){
+        attr(x, "changes") <- rbind(changes_old, changes)
+      } else {
+        attr(x, "changes") <- changes
+      }
+    }
+    return(x)
+  } else return(old)
 }
 
 
