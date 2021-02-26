@@ -869,6 +869,7 @@ track_changes <- function(x, subset){
 #' mydata
 restore_changes <- function(x, var.names){
   changes <- track_changes(x)
+  if(!all(changes$fun[changes$variable == var.names] %in% c("fix.numerics", "fix.factors", "fix.dates", "fix.levels"))) stop("Variable(s) changed by ", paste(changes$fun[changes$variable == var.names], sep=", "), ". Currently, restore_changes() only works for changes performed by fix.numerics, fix.factors, fix.dates and fix.levels functions", sep="")
   x[, var.names] <- lapply(var.names, function(y){
     changes.y <- changes[changes$variable == y,]
     old.class <- changes.y$original[changes.y$observation == "all"][1]
