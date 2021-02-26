@@ -658,8 +658,8 @@ fxd <- function(d, use.probs=TRUE){
   final_dates <- do.call("c", lapply(1:length(d), function(y) na.omit(do.call("c", lapply(co, function(x) x[y])))[1]))
   years <- as.numeric(substr(final_dates, 1, 4))
   median_year <- median(years, na.rm=TRUE)
-  final_dates[abs(years - median_year) %>NA% abs(years-100 - median_year)] <- do.call(c, lapply(final_dates[abs(years - median_year) %>NA% abs(years-100 - median_year)], function(x) tryCatch(seq(x, length=2, by="-100 years")[2], error=function(e) NA)))
-  final_dates[abs(years - median_year) %>NA% abs(years+100 - median_year)] <- do.call(c, lapply(final_dates[abs(years - median_year) %>NA% abs(years+100 - median_year)], function(x) tryCatch(seq(x, length=2, by="100 years")[2], error=function(e) NA)))
+  final_dates[(abs(years - median_year) %>NA% abs(years-100 - median_year)) & nchar(d)<=8] <- do.call(c, lapply(final_dates[(abs(years - median_year) %>NA% abs(years-100 - median_year)) & nchar(d)<=8], function(x) tryCatch(seq(x, length=2, by="-100 years")[2], error=function(e) NA)))
+  final_dates[(abs(years - median_year) %>NA% abs(years+100 - median_year)) & nchar(d)<=8] <- do.call(c, lapply(final_dates[(abs(years - median_year) %>NA% abs(years+100 - median_year)) & nchar(d)<=8], function(x) tryCatch(seq(x, length=2, by="100 years")[2], error=function(e) NA)))
   return(final_dates)
 }
 
