@@ -620,6 +620,7 @@ text_date <- function(date){
                                     "octubre","noviembre","diciembre"),
                           english=c(tolower(month.abb),
                                     tolower(month.name)))
+  month_abb <- tolower(paste(month.abb, collapse="|"))
   date <- tolower(date)
   month_t <- sapply(translate$spanish, function(x) grepl(x, date))
   if(sum(month_t)>0) date <- gsub(names(month_t[month_t])[sum(month_t)], translate$english[month_t][sum(month_t)], date)
