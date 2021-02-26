@@ -785,6 +785,51 @@ fix.concat <- function(x, varname, sep=", |; | ", track=TRUE){
   } else return(old)
 }
 
+#' remove_empty
+#'
+#' @description Removes empty rows or columns from data.frames
+#' @param x A data.frame
+#' @param track Track changes?
+#' @export
+#' @examples
+#' mydata <- data.frame(a = c(NA, NA, NA, NA, NA), b = c(1, NA, 3, 4, 5),
+#' c=c(NA, NA, NA, NA, NA), d=c(4, NA, 5, 6, 3))
+#' remove_empty(mydata)
+remove_empty <- function(x, track=TRUE){
+  changes_old <- attr(x, "changes")
+  old <- x
+  empty_rows <- apply(x, 1, function(x) all(is.na(x)))
+  empty_cols <- apply(x, 2, function(x) all(is.na(x)))
+  x <- x[!empty_rows, !empty_cols]
+  if(!identical(old, x)){
+    if(track){
+      if(sum(empty_cols)>0){
+        changes_col <- data.frame(variable=names(old)[!names(old) %in% names(x)],
+                                  observation="all",
+                                  original=NA,
+                                  new="removed",
+                                  fun="remove_empty", row.names=NULL)
+      } else changes_col <- NULL
+      if(sum(empty_rows)>0){
+        changes_row <- data.frame(variable="all",
+                                  observation=paste(which(empty_rows), "*", sep=""),
+                                  original=NA,
+                                  new="removed",
+                                  fun="remove_empty",
+                                  row.names=NULL)
+      } else changes_row <- NULL
+      changes <- rbind(changes_col, changes_row)
+      if(!is.null(changes_old)){
+        attr(x, "changes") <- rbind(changes_old, changes)
+      } else {
+        attr(x, "changes") <- changes
+      }
+    }
+    return(x)
+  } else return(old)
+}
+
+
 #' track_changes
 #'
 #' @description Gets a data.frame with all the changes performed by the different fix functions
