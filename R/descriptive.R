@@ -829,6 +829,28 @@ remove_empty <- function(x, track=TRUE){
   } else return(old)
 }
 
+#' fix.all
+#'
+#' @description Tries to fix all problems in the data.frame
+#' @param x A data.frame
+#' @param track Track changes?
+#' @export
+fix.all <- function(x, track=TRUE){
+  x <- fix.numerics(
+    fix.factors(
+      fix.dates(
+        remove_empty(
+          fix.NA(
+            nice_names(x,
+                       track=track),
+            track=track),
+          track=track),
+        track=track),
+      track=track),
+    track=track)
+  x
+}
+
 
 #' track_changes
 #'
