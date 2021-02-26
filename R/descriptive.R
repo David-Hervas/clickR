@@ -236,7 +236,7 @@ cluster_var <- function(x, margins=c(8,1)){
 mine.plot <- function(x, fun=is.na, spacing=5, sort=F, show.x=TRUE, show.y=TRUE, ...){
   x<-as.data.frame(x)
   if(sort){
-    orden <- order(sapply(x, function(x) sum(is.it(x))), ...)
+    orden <- order(sapply(x, function(x) sum(fun(x))), ...)
     x <- x[,orden]
   }
   old.warn <- options(warn=-1)

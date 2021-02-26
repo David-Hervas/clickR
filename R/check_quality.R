@@ -40,7 +40,7 @@ numeros <- function(x){
             gsub(
               "^ *|(?<= ) | *$",
               "",
-              gsub("\\$|€|£",
+              gsub("\\$|\u20ac|\u00A3",
                    "",
                    tolower(as.character(x))),
               perl = TRUE),

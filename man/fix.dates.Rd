@@ -8,7 +8,6 @@ fix.dates(
   x,
   max.NA = 0.8,
   min.obs = nrow(x) * 0.05,
-  locale = "C",
   use.probs = TRUE,
   track = TRUE
 )
@@ -19,8 +18,6 @@ fix.dates(
 \item{max.NA}{Maximum allowed proportion of NA values created by coercion}
 
 \item{min.obs}{Minimum number of non-NA observations allowed per variable}
-
-\item{locale}{Locale to be used for month names}
 
 \item{use.probs}{Solve ambiguities by similarity to the most frequent formats}
 
