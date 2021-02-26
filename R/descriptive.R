@@ -560,7 +560,6 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
 #' @param x A data.frame
 #' @param max.NA Maximum allowed proportion of NA values created by coercion
 #' @param min.obs Minimum number of non-NA observations allowed per variable
-#' @param locale Locale to be used for month names
 #' @param use.probs Solve ambiguities by similarity to the most frequent formats
 #' @param track Track changes?
 #' @export
@@ -569,7 +568,7 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
 #'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", NA),
 #'                    Numeric1=rnorm(4))
 #' fix.dates(mydata)
-fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, locale="C", use.probs=TRUE, track=TRUE){
+fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
   x<-kill.factors(x)
@@ -577,7 +576,7 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, locale="C", use.prob
   previous.NA <- sapply(x, function(x) sum(is.na(x)))
   previous.minobs <- sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
   candidate_variables <- apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any)
-  x[, candidate_variables] <- lapply(x[, candidate_variables, drop = FALSE], function(x) fxd(x, locale=locale, use.probs=use.probs))
+  x[, candidate_variables] <- lapply(x[, candidate_variables, drop = FALSE], function(x) fxd(x, use.probs=use.probs))
   final.NA <- sapply(x, function(x) sum(is.na(x))) - previous.NA
   final.minobs<-sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
   x[,((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)]<-x.old[,((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)]
@@ -610,21 +609,39 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, locale="C", use.prob
   return(x)
 }
 
+#' Internal function for dates with text
+#'
+#' @description Function to transform text into dates
+#' @param date A date
+text_date <- function(date){
+  translate <- data.frame(spanish=c("ene","feb","mar","abr","may","jun","jul","ago",
+                                    "sep","oct","nov","dic","enero","febrero","marzo",
+                                    "abril","mayo","junio","julio","agosto","septiembre",
+                                    "octubre","noviembre","diciembre"),
+                          english=c(tolower(month.abb),
+                                    tolower(month.name)))
+  date <- tolower(date)
+  month_t <- sapply(translate$spanish, function(x) grepl(x, date))
+  if(sum(month_t)>0) date <- gsub(names(month_t[month_t])[sum(month_t)], translate$english[month_t][sum(month_t)], date)
+  x <- gregexpr("[0-9]+", date)
+  y <- gregexpr(month_abb, date)
+  day_year <- unlist(regmatches(date, x))
+  day_year <- day_year[order(nchar(day_year))]
+  month <- unlist(regmatches(date, y))
+  as.Date(paste(paste(day_year, collapse="/"), month), format="%d/%Y %b")
+}
+
 #' Internal function to fix.dates
 #'
 #' @description Function to format dates
 #' @param d A character vector
-#' @param locale Locale to be used for month names
 #' @param use.probs Solve ambiguities by similarity to the most frequent formats
-fxd <- function(d, locale="C", use.probs=TRUE){
+fxd <- function(d, use.probs=TRUE){
   formats <- c("%d-%m-%Y", "%d-%m-%y", "%Y-%m-%d", "%m-%d-%Y", "%m-%d-%y", "%d-%b-%Y", "%d-%B-%Y", "%d-%b-%y", "%d-%B-%y",
                "%d%m%Y", "%d%m%y", "%Y%m%d", "%m%d%Y", "%m%d%y", "%d%b%Y", "%d%B%Y", "%d%b%y", "%d%B%y")
-  d[grep("ene", d)]<-gsub("ene", "jan", d[grep("ene", d)])
-  d[grep("abr", d)]<-gsub("abr", "apr", d[grep("abr", d)])
-  d[grep("ago", d)]<-gsub("ago", "aug", d[grep("ago", d)])
-  d[grep("dic", d)]<-gsub("dic", "dec", d[grep("dic", d)])
-  Sys.setlocale("LC_TIME", locale)
   prueba <- lapply(formats, function(x) as.Date(tolower(gsub("--", "-", gsub('[[:punct:]]','-',d))), format=x))
+  text_dates <- do.call(c, lapply(d, text_date))
+  prueba[[19]] <- text_dates
   co <-lapply(prueba, function(x) {
     x[format.Date(x, "%Y")<100]<-NA
     return(x)
@@ -643,7 +660,6 @@ fxd <- function(d, locale="C", use.probs=TRUE){
   final_dates[abs(years - median_year) %>NA% abs(years-100 - median_year)] <- do.call(c, lapply(final_dates[abs(years - median_year) %>NA% abs(years-100 - median_year)], function(x) tryCatch(seq(x, length=2, by="-100 years")[2], error=function(e) NA)))
   final_dates[abs(years - median_year) %>NA% abs(years+100 - median_year)] <- do.call(c, lapply(final_dates[abs(years - median_year) %>NA% abs(years+100 - median_year)], function(x) tryCatch(seq(x, length=2, by="100 years")[2], error=function(e) NA)))
   return(final_dates)
-  Sys.setlocale("LC_TIME", "")
 }
 
 #' Fix levels

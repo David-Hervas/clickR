@@ -4,12 +4,10 @@
 \alias{fxd}
 \title{Internal function to fix.dates}
 \usage{
-fxd(d, locale = "C", use.probs = TRUE)
+fxd(d, use.probs = TRUE)
 }
 \arguments{
 \item{d}{A character vector}
-
-\item{locale}{Locale to be used for month names}
 
 \item{use.probs}{Solve ambiguities by similarity to the most frequent formats}
 }
