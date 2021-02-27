@@ -613,7 +613,7 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
 #'
 #' @description Function to transform text into dates
 #' @param date A date
-text_date <- function(date){
+text_date <- function(date, format="%d/%Y %b"){
   translate <- data.frame(spanish=c("ene","feb","mar","abr","may","jun","jul","ago",
                                     "sep","oct","nov","dic","enero","febrero","marzo",
                                     "abril","mayo","junio","julio","agosto","septiembre",
@@ -629,7 +629,7 @@ text_date <- function(date){
   day_year <- unlist(regmatches(date, x))
   day_year <- day_year[order(nchar(day_year))]
   month <- unlist(regmatches(date, y))
-  as.Date(paste(paste(day_year, collapse="/"), month), format="%d/%Y %b")
+  as.Date(paste(paste(day_year, collapse="/"), month), format=format)
 }
 
 #' Internal function to fix.dates
@@ -641,9 +641,15 @@ fxd <- function(d, use.probs=TRUE){
   formats <- c("%d-%m-%Y", "%d-%m-%y", "%Y-%m-%d", "%m-%d-%Y", "%m-%d-%y", "%d-%b-%Y", "%d-%B-%Y", "%d-%b-%y", "%d-%B-%y",
                "%d%m%Y", "%d%m%y", "%Y%m%d", "%m%d%Y", "%m%d%y", "%d%b%Y", "%d%B%Y", "%d%b%y", "%d%B%y")
   Sys.setlocale("LC_TIME", "C")
-  prueba <- lapply(formats, function(x) as.Date(tolower(gsub("--", "-", gsub('[[:punct:]]','-',d))), format=x))
+  prueba <- lapply(formats, function(x) as.Date(tolower(gsub("--", "-", gsub("[[:punct:]]", "-", gsub("[[:space:]]+", "", d)))), format=x))
   text_dates <- do.call(c, lapply(d, text_date))
+  text_dates2 <- do.call(c, lapply(d, function(x){
+    if(any(as.numeric(unlist(regmatches(x, gregexpr("[0-9]+", x)))) >= 32)){
+      text_date(x, format="%d/%y %b")
+    } else NA
+  }))
   prueba[[19]] <- text_dates
+  prueba[[20]] <- text_dates2
   co <-lapply(prueba, function(x) {
     x[format.Date(x, "%Y")<100]<-NA
     return(x)
