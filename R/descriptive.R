@@ -627,7 +627,7 @@ text_date <- function(date, format="%d/%Y %b"){
   x <- gregexpr("[0-9]+", date)
   y <- gregexpr(month_abb, date)
   day_year <- unlist(regmatches(date, x))
-  day_year <- day_year[order(nchar(day_year))]
+  day_year <- day_year[order(as.numeric(day_year))]
   month <- unlist(regmatches(date, y))
   as.Date(paste(paste(day_year, collapse="/"), month), format=format)
 }
