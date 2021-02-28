@@ -4,7 +4,7 @@
 \alias{text_date}
 \title{Internal function for dates with text}
 \usage{
-text_date(date)
+text_date(date, format = "\%d/\%Y \%b")
 }
 \arguments{
 \item{date}{A date}
