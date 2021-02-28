@@ -931,10 +931,10 @@ restore_changes <- function(tracking){
     warning("Cannot recover previous position of deleted variables. Appending at the end of the data.frame")
   }
   if(any(tracking$fun == "fix.concat")) data <- data[,!names(data) %in% tracking$variable[tracking$fun == "fix.concat"]]
-  tracking <- tracking[!tracking$fun %in% c("nice_names", "remove_empty", "fix.concat"),]
-  variables <- unique(tracking$variable)
+  trackingf <- tracking[!tracking$fun %in% c("nice_names", "remove_empty", "fix.concat"),]
+  variables <- unique(trackingf$variable)
   data[, variables] <- lapply(variables, function(y){
-    changes.y <- tracking[tracking$variable == y,]
+    changes.y <- trackingf[trackingf$variable == y,]
     old.class <- changes.y$original[changes.y$observation == "all"][1]
     if(!is.na(old.class)) class(data[, y]) <- old.class else data[, y] <- as.character(data[, y])
     data[, y][as.numeric(changes.y$observation[changes.y$observation != "all"])] <- changes.y$original[changes.y$observation != "all"]
