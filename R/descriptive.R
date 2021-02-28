@@ -837,7 +837,7 @@ remove_empty <- function(x, track=TRUE){
       } else changes_col <- NULL
       if(sum(empty_rows)>0){
         changes_row <- data.frame(variable="all",
-                                  observation=rownames(x)[empty_rows],
+                                  observation=rownames(old)[empty_rows],
                                   original=NA,
                                   new="removed",
                                   fun="remove_empty",
