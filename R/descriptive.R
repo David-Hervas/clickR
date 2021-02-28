@@ -535,7 +535,7 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
                              fun="fix.numerics",
                              row.names=NULL)
       changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
-        observations <- which(!(old[, y] %in% x[, y]))
+        observations <- rownames(x)[which(!(old[, y] %in% x[, y]))]
         tryCatch(data.frame(variable=y,
                             observation=observations,
                             original=old[observations, y],
@@ -592,7 +592,7 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
                            fun="fix.dates",
                            row.names=NULL)
     changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
-      observations <- which(!(old[, y] %in% x[, y]))
+      observations <- rownames(x)[which(!(old[, y] %in% x[, y]))]
       tryCatch(data.frame(variable=y,
                           observation=observations,
                           original=old[observations, y],
@@ -719,11 +719,11 @@ fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
     output <- val[order(final)]
   }
   if(track){
-    observations <- which(!(data[,factor_name] %in% output))
+    observations <- rownames(data)[which(!(data[,factor_name] %in% output))]
     changes <- data.frame(variable=factor_name,
                           observation=observations,
                           original=data[observations, factor_name],
-                          new=output[observations],
+                          new=output[which(!(data[,factor_name] %in% output))],
                           fun="fix.levels",
                           row.names=NULL)
     if(!is.null(changes_old)){
@@ -758,7 +758,7 @@ fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
   if(track){
     variables <- names(x)[which(sapply(x, function(x) sum(is.na(x))) != sapply(output, function(x) sum(is.na(x))))]
     changes <- do.call(rbind, lapply(variables, function(y){
-      observations <- which((!is.na(x[, y]) | is.nan(x[, y])) & is.na(output[, y]))
+      observations <- rownames(output)[which((!is.na(x[, y]) | is.nan(x[, y])) & is.na(output[, y]))]
       data.frame(variable=y,
                  observation=observations,
                  original=x[observations, y],
@@ -837,7 +837,7 @@ remove_empty <- function(x, track=TRUE){
       } else changes_col <- NULL
       if(sum(empty_rows)>0){
         changes_row <- data.frame(variable="all",
-                                  observation=paste(which(empty_rows), "*", sep=""),
+                                  observation=rownames(x)[empty_rows],
                                   original=NA,
                                   new="removed",
                                   fun="remove_empty",
