@@ -521,7 +521,7 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
     }
     x
   })
-  x[, candidate_variables] <- lapply(x[, candidate_variables, drop=FALSE], function(x) numeros(x))
+  x[, candidate_variables & !sci_notation_variables] <- lapply(x[, candidate_variables & !sci_notation_variables, drop=FALSE], function(x) numeros(x))
   final.NA<-sapply(x, function(x) sum(is.na(x)))-previous.NA
   x[,(final.NA-previous.NA) > nrow(x)*max.NA] <- old[,(final.NA-previous.NA) > nrow(x)*max.NA]
   print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
@@ -941,7 +941,7 @@ restore_changes <- function(tracking){
     data[, y]
   })
   if(nrow(varnames)>0){
-    names(data)[names(data) %in% varnames$variable] <- varnames$original[match(names(data), varnames$new)]
+    names(data)[names(data) %in% varnames$variable] <- na.omit(varnames$original[match(names(data), varnames$new)])
     old_changes$variable[old_changes$variable != "all"] <- old_changes$original[old_changes$fun == "nice_names"][match(old_changes$variable[old_changes$variable!="all"], old_changes$new[old_changes$fun == "nice_names"])]
     old_changes <- old_changes[!(old_changes$variable %in% varnames$original & old_changes$fun == "remove_empty"),]
   }
