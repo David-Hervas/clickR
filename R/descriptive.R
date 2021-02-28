@@ -919,8 +919,8 @@ restore_changes <- function(tracking){
   data <- get(attr(tracking, "data"))
   old_changes <- attr(data, "changes")
   varnames <- tracking[tracking$fun == "nice_names",]
-  create_rows <- tracking$observation[!tracking$observation %in% rownames(data)]
-  create_vars <- tracking$variable[!tracking$variable %in% names(data)]
+  create_rows <- tracking$observation[!tracking$observation %in% rownames(data) & !tracking$observation %in% c("varname", "all")]
+  create_vars <- tracking$variable[!tracking$variable %in% names(data) & !tracking$variable %in% "all"]
   if(length(create_rows)>0){
     data <- rbind(data, setNames(data.frame(matrix(NA, nrow=length(create_rows), ncol=ncol(data))), names(data)))
     rownames(data)[(nrow(data)-(length(create_rows)-1)):nrow(data)] <- create_rows
