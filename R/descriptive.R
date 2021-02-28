@@ -942,6 +942,7 @@ restore_changes <- function(tracking){
   })
   names(data)[names(data) %in% varnames$variable] <- varnames$original
   changes <- old_changes[! apply(old_changes, 1, function(x) paste(x, collapse="")) %in% apply(tracking, 1, function(x) paste(x, collapse="")), ]
+  changes <- changes[!changes$observation %in% create_rows,]
   attr(data, "changes") <- changes
   data
 }
