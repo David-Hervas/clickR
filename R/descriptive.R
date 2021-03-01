@@ -936,7 +936,8 @@ restore_changes <- function(tracking){
   data[, variables] <- lapply(variables, function(y){
     changes.y <- trackingf[trackingf$variable == y,]
     old.class <- changes.y$original[changes.y$observation == "all"][1]
-    if(!is.na(old.class)) class(data[, y]) <- old.class else data[, y] <- as.character(data[, y])
+    data[, y] <- as.character(data[, y])
+    if(!is.na(old.class)) class(data[, y]) <- old.class
     data[, y][as.numeric(changes.y$observation[changes.y$observation != "all"])] <- changes.y$original[changes.y$observation != "all"]
     data[, y]
   })
