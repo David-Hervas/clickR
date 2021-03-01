@@ -592,7 +592,7 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
                            fun="fix.dates",
                            row.names=NULL)
     changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
-      observations <- rownames(x)[which(!(old[, y] %in% x[, y]))]
+      observations <- rownames(x)[which(!(old[, y] %in% as.character(x[, y])))]
       tryCatch(data.frame(variable=y,
                           observation=observations,
                           original=old[observations, y],
