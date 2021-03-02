@@ -8,6 +8,8 @@ text_date(date, format = "\%d/\%Y \%b")
 }
 \arguments{
 \item{date}{A date}
+
+\item{format}{Format of the date}
 }
 \description{
 Function to transform text into dates

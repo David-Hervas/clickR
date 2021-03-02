@@ -575,7 +575,8 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
   x.old<-x
   previous.NA <- sapply(x, function(x) sum(is.na(x)))
   previous.minobs <- sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
-  candidate_variables <- apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any)
+  candidate_variables <- apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any) &
+    sapply(x, function(x) class(x)!="Date")
   x[, candidate_variables] <- lapply(x[, candidate_variables, drop = FALSE], function(x) fxd(x, use.probs=use.probs))
   final.NA <- sapply(x, function(x) sum(is.na(x))) - previous.NA
   final.minobs<-sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
@@ -592,7 +593,7 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
                            fun="fix.dates",
                            row.names=NULL)
     changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
-      observations <- rownames(x)[which(!(old[, y] %in% as.character(x[, y])))]
+      observations <- rownames(x)[which(!(as.character(old[, y]) %in% as.character(x[, y])))]
       tryCatch(data.frame(variable=y,
                           observation=observations,
                           original=old[observations, y],
@@ -613,6 +614,7 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
 #'
 #' @description Function to transform text into dates
 #' @param date A date
+#' @param format Format of the date
 text_date <- function(date, format="%d/%Y %b"){
   translate <- data.frame(spanish=c("ene","feb","mar","abr","may","jun","jul","ago",
                                     "sep","oct","nov","dic","enero","febrero","marzo",
@@ -938,7 +940,7 @@ restore_changes <- function(tracking){
     old.class <- changes.y$original[changes.y$observation == "all"][1]
     data[, y] <- as.character(data[, y])
     if(!is.na(old.class)) class(data[, y]) <- old.class
-    data[, y][as.numeric(changes.y$observation[changes.y$observation != "all"])] <- changes.y$original[changes.y$observation != "all"]
+    data[changes.y$observation[changes.y$observation != "all"], y] <- changes.y$original[changes.y$observation != "all"]
     data[, y]
   })
   if(nrow(varnames)>0){
