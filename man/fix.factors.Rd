@@ -22,7 +22,7 @@ them into factors. When \code{drop=TRUE} (by default) it detects multiple versio
 of the same levels due to different capitalization, whitespaces or non-ASCII characters.
 }
 \examples{
-# \code{mtcars} data has all variables encoded as numeric, even the factor variables.
+# mtcars data has all variables encoded as numeric, even the factor variables.
 report(mtcars)
 # After using fix.factors, factor variables are recognized as such.
 report(fix.factors(mtcars))
