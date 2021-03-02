@@ -10,7 +10,7 @@
 #' @param track Keep track of changes?
 #' @export
 #' @examples
-#' # \code{mtcars} data has all variables encoded as numeric, even the factor variables.
+#' # mtcars data has all variables encoded as numeric, even the factor variables.
 #' report(mtcars)
 #' # After using fix.factors, factor variables are recognized as such.
 #' report(fix.factors(mtcars))
