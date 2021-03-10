@@ -576,3 +576,36 @@ restore_changes <- function(tracking){
   attr(data, "changes") <- changes
   data
 }
+
+#' Tracked manual fixes to data
+#'
+#' @description Tracks manual fixes performed on a variable in a data.frame
+#' @param data A data.frame
+#' @param variable A character string with the name of the variable to be fixed
+#' @param subset A logical expression for selecting the cases to be fixed
+#' @param newvalues New value or values that will take the cases selected by \code{subset} parameter.
+#' @export
+#' @examples
+#' iris2 <- manual_fix(iris, "Petal.Length", Petal.Length < 1.2, 0)
+#' track_changes(iris2)
+manual_fix <- function(data, variable, subset, newvalues=NULL){
+  old_data <- data
+  changes_old <- attr(data, "changes")
+  f <- eval(substitute(subset), data, baseenv())
+  if(!is.null(newvalues)){
+    data[f, variable] <- newvalues
+    observations <- rownames(data)[which(f)]
+    changes <- data.frame(variable=variable,
+                          observation=observations,
+                          original=old_data[observations, variable],
+                          new=data[observations, variable],
+                          fun="tracked_fix",
+                          row.names=NULL)
+    if(!is.null(changes_old)){
+      attr(data, "changes") <- rbind(changes_old, changes)
+    } else {
+      attr(data, "changes") <- changes
+    }
+    data
+  } else data[f, variable]
+}
