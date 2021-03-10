@@ -591,7 +591,7 @@ restore_changes <- function(tracking){
 manual_fix <- function(data, variable, subset, newvalues=NULL){
   old_data <- data
   changes_old <- attr(data, "changes")
-  f <- eval(substitute(subset), data, baseenv())
+  f <- eval(substitute(subset), data, .GlobalEnv)
   if(!is.null(newvalues)){
     data[f, variable] <- newvalues
     observations <- rownames(data)[which(f)]
