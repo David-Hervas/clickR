@@ -1,3 +1,44 @@
+#' Nice names
+#'
+#' @description Changes names of a data frame to ease work with them
+#' @param x A data.frame
+#' @param track Track changes?
+#' @export
+#' @examples
+#' d <- data.frame('Variable 1'=NA, '% Response'=NA, ' Variable     3'=NA,check.names=FALSE)
+#' names(d)
+#' names(nice_names(d))
+nice_names <- function(x, track=TRUE){
+  changes_old <- attr(x, "changes")
+  old <- x
+  old_names <- names(x)
+  new_names <- gsub("x_","",gsub("_$", "",tolower(gsub("[_]+", "_",gsub("[.]+", "_",make.names(
+    gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", old_names)))))))))))
+  dupe_count <- sapply(1:length(new_names), function(i) {
+    sum(new_names[i] == new_names[1:i])
+  })
+  new_names[dupe_count > 1] <- paste(new_names[dupe_count >
+                                                 1], dupe_count[dupe_count > 1], sep = "_")
+  new_names <- iconv(new_names, to = "ASCII//TRANSLIT")
+  x <- stats::setNames(x, new_names)
+  if(!identical(old_names, new_names)){
+    if(track){
+      changes <- data.frame(variable=new_names[old_names != new_names],
+                            observation="varname",
+                            original=old_names[old_names != new_names],
+                            new=new_names[old_names != new_names],
+                            fun="nice_names", row.names=NULL)
+      if(!is.null(changes_old)){
+        changes_old$variable <- changes$new[match(changes_old$variable, changes$original)]
+        attr(x, "changes") <- rbind(changes_old, changes)
+      } else {
+        attr(x, "changes") <- changes
+      }
+    }
+    return(x)
+  } else return(old)
+}
+
 #' Fix factors imported as numerics
 #'
 #' @description Fixes factors imported as numerics. It is usual in some fields to encode
@@ -525,7 +566,7 @@ restore_changes <- function(tracking){
   })
   if(nrow(varnames)>0){
     names(data)[names(data) %in% varnames$variable] <- na.omit(varnames$original[match(names(data), varnames$new)])
-    old_changes$variable[old_changes$variable != "all"] <- old_changes$original[old_changes$fun == "nice_names"][match(old_changes$variable[old_changes$variable!="all"], old_changes$new[old_changes$fun == "nice_names"])]
+    old_changes$variable[old_changes$variable != "all"  & !is.na(old_changes$variable)] <- old_changes$original[old_changes$fun == "nice_names"][match(old_changes$variable[old_changes$variable!="all"  & !is.na(old_changes$variable)], old_changes$new[old_changes$fun == "nice_names"])]
     old_changes <- old_changes[!(old_changes$variable %in% varnames$original & old_changes$fun == "remove_empty"),]
   }
   changes <- old_changes[! apply(old_changes[,-1], 1, function(x) paste(x, collapse="")) %in% apply(tracking[,-1], 1, function(x) paste(x, collapse="")), ]

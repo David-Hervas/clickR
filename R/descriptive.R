@@ -468,47 +468,6 @@ peek <- function(x, n=10, which=1:ncol(x)){
   print(output, quote = FALSE)
 }
 
-#' Nice names
-#'
-#' @description Changes names of a data frame to ease work with them
-#' @param x A data.frame
-#' @param track Track changes?
-#' @export
-#' @examples
-#' d <- data.frame('Variable 1'=NA, '% Response'=NA, ' Variable     3'=NA,check.names=FALSE)
-#' names(d)
-#' names(nice_names(d))
-nice_names <- function(x, track=TRUE){
-  changes_old <- attr(x, "changes")
-  old <- x
-  old_names <- names(x)
-  new_names <- gsub("x_","",gsub("_$", "",tolower(gsub("[_]+", "_",gsub("[.]+", "_",make.names(
-    gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", old_names)))))))))))
-  dupe_count <- sapply(1:length(new_names), function(i) {
-    sum(new_names[i] == new_names[1:i])
-  })
-  new_names[dupe_count > 1] <- paste(new_names[dupe_count >
-                                                 1], dupe_count[dupe_count > 1], sep = "_")
-  new_names <- iconv(new_names, to = "ASCII//TRANSLIT")
-  x <- stats::setNames(x, new_names)
-  if(!identical(old_names, new_names)){
-    if(track){
-      changes <- data.frame(variable=new_names[old_names != new_names],
-                            observation="varname",
-                            original=old_names[old_names != new_names],
-                            new=new_names[old_names != new_names],
-                            fun="nice_names", row.names=NULL)
-      if(!is.null(changes_old)){
-        attr(x, "changes") <- rbind(changes_old, changes)
-      } else {
-        attr(x, "changes") <- changes
-      }
-    }
-    return(x)
-  } else return(old)
-}
-
-
 #' Kill factors
 #'
 #' @description Changes factor variables to character
@@ -525,7 +484,6 @@ kill.factors <- function(dat, k=10){
   dat[filter] <- lapply(dat[filter], as.character)
   return(dat)
 }
-
 
 #' Good to go
 #'
@@ -545,8 +503,6 @@ good2go <- function(path=getwd(), info=TRUE, load=TRUE){
   if(load) lapply(p_list, function(x) require(x, character.only = TRUE, quietly=TRUE))
   if(info) print(paste("Packages:", paste(p_list, collapse=", ")), quote=FALSE)
 }
-
-
 
 #' Forge
 #'
@@ -632,7 +588,6 @@ unforge <- function(data, origin, variables, prefix=origin){
   out_data
 }
 
-
 #' Search scripts
 #'
 #' @description Searches for strings in R script files
@@ -650,4 +605,3 @@ search_scripts <- function(string, path=getwd(), recursive=TRUE){
   names(listado) <- files
   listado[sapply(listado, length) != 0]
 }
-
