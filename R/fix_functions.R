@@ -320,7 +320,8 @@ fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
     clusters <- hclust(stringdist::stringdistmatrix(tolower(x_na), method=method, useNames=TRUE, ...))
     if(plot){
       clusplot <- hclust(stringdist::stringdistmatrix(unique(tolower(x_na)), method=method, useNames=TRUE, ...))
-      plot(clusplot)
+      plot(clusplot, ann=FALSE)
+      mtext("Height", 2, line=2.5)
       rect.hclust(clusplot, k=k, border="red")
     }
   } else{
