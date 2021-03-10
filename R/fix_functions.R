@@ -599,7 +599,7 @@ manual_fix <- function(data, variable, subset, newvalues=NULL){
                           observation=observations,
                           original=old_data[observations, variable],
                           new=data[observations, variable],
-                          fun="tracked_fix",
+                          fun="manual_fix",
                           row.names=NULL)
     if(!is.null(changes_old)){
       attr(data, "changes") <- rbind(changes_old, changes)
