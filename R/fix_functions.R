@@ -328,7 +328,8 @@ fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
   }
   groups <- cutree(clusters, k=k)
   if (!is.null(levels)){
-    output <- factor(as.vector(groups), levels=1:length(levels), labels=levels[order(apply(sapply(split(as.data.frame(stringdist::stringdistmatrix(x_na, levels, method=method, useNames = TRUE, ...)), groups), colMeans), 1, which.min))])
+    if(length(levels) == 1 && levels == "auto") levels <- sapply(split(names(groups), groups), function(x) unique(x)[1])
+    output <- factor(as.vector(groups), levels=1:length(levels), labels=levels[order(apply(sapply(split(as.data.frame(stringdist::stringdistmatrix(tolower(x_na), tolower(levels), method=method, useNames = TRUE, ...)), groups), colMeans), 1, which.min))])
   } else{
     output <- groups
     cat("Groups of levels:\n \n")
