@@ -450,15 +450,9 @@ mtapply <- function(x, group, fun){
 peek <- function(x, n=10, which=1:ncol(x)){
   class <- sapply(x[,which], class)
   range <- paste("(", sapply(x[,which], function(x) {
-    if(class(x) %in% c("character", "factor")){
-      length(unique(x))
-    }
-    else if(is.numeric(x)){
-      paste(round(range(x, na.rm=TRUE),2), collapse="-")
-    }
-    else {
-      ""
-    }
+    ifelse(class(x) %in% c("character", "factor"), length(unique(x)),
+           ifelse(class(x) %in% c("Date") | is.numeric(x), paste(round(range(x, na.rm=TRUE),2), collapse="; "),
+                  ""))
   }
   ), ")", sep="")
   blank <- rep("", length=length(class))
