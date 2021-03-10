@@ -180,7 +180,7 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL){
       cat("\n")
       summary1 <- do.call(rbind, lapply(x[,nums], resumen))
       print(summary1)
-    }
+    } else { summary1 <- NULL}
     if("FALSE" %in% nums){
       summary2 <- do.call(rbind, lapply(x[,!nums, drop=FALSE], resumen2))
       cat("\n")
