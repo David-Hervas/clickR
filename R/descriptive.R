@@ -345,6 +345,7 @@ report.data.frame<-function(x, by=NULL, file=NULL, type="word", digits=2, digits
   if(is.data.frame(x)==F){
     x<-data.frame(x)}
   x<-x[,!sapply(x, function(x) sum(is.na(x))/length(x))==1 & sapply(x, function(x) is.numeric(x) | is.factor(x)), drop=FALSE]
+  if(ncol(x) == 0) stop("Data frame has no numeric or factor variables to describe")
   x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))]<-lapply(x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))], factor)
   if(length(by)>1){
     x.int <- data.frame(x, by=interaction(x[, match(unlist(by), names(x))]))

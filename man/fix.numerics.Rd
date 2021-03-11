@@ -26,6 +26,6 @@ making them numeric again.
 \examples{
 mydata<-data.frame(Numeric1=c(7.8, 9.2, "5.4e+2", 3.3, "6,8", "3..3"),
                    Numeric2=c(3.1, 1.2, "3.4s", "48,500.04 $", 7, "$  6.4"))
-report(mydata)
-report(fix.numerics(mydata, k=5))
+descriptive(mydata)
+descriptive(fix.numerics(mydata, k=5))
 }

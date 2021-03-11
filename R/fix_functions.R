@@ -100,8 +100,8 @@ fix.factors<-function(x, k=5, drop=TRUE, track=TRUE){
 #' @examples
 #' mydata<-data.frame(Numeric1=c(7.8, 9.2, "5.4e+2", 3.3, "6,8", "3..3"),
 #'                    Numeric2=c(3.1, 1.2, "3.4s", "48,500.04 $", 7, "$  6.4"))
-#' report(mydata)
-#' report(fix.numerics(mydata, k=5))
+#' descriptive(mydata)
+#' descriptive(fix.numerics(mydata, k=5))
 fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
@@ -581,7 +581,7 @@ restore_changes <- function(tracking){
   changes <- old_changes[! apply(old_changes[,-1], 1, function(x) paste(x, collapse="")) %in% apply(tracking[,-1], 1, function(x) paste(x, collapse="")), ]
   changes <- changes[!changes$observation %in% create_rows & !changes$variable %in% create_vars,]
   attr(data, "changes") <- changes
-  if(all(clickR:::may.numeric(rownames(data)))) data[order(as.numeric(rownames(data))),] else data
+  if(all(may.numeric(rownames(data)))) data[order(as.numeric(rownames(data))),] else data
 }
 
 #' Tracked manual fixes to data
