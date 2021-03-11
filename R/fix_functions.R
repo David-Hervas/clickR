@@ -300,7 +300,7 @@ fxd <- function(d, use.probs=TRUE){
 #' @param data data.frame with the factor to fix
 #' @param factor_name Name of the factor to fix (as character)
 #' @param method Method from stringdist package to estimate distances
-#' @param levels Optional vector with the levels names
+#' @param levels Optional vector with the levels names. If "auto", levels are assigned based on frequency
 #' @param plot Optional: Plot cluster dendrogram?
 #' @param k Number of levels for clustering
 #' @param track Keep track of changes?
@@ -329,7 +329,7 @@ fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
   }
   groups <- cutree(clusters, k=k)
   if (!is.null(levels)){
-    if(length(levels) == 1 && levels == "auto") levels <- sapply(split(names(groups), groups), function(x) unique(x)[1])
+    if(length(levels) == 1 && levels == "auto") levels <- sapply(split(names(groups), groups), function(x) names(sort(table(x), decreasing=TRUE))[1])
     output <- factor(as.vector(groups), levels=1:length(levels), labels=levels[order(apply(sapply(split(as.data.frame(stringdist::stringdistmatrix(tolower(x_na), tolower(levels), method=method, useNames = TRUE, ...)), groups), colMeans), 1, which.min))])
   } else{
     output <- groups

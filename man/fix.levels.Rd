@@ -22,7 +22,7 @@ fix.levels(
 
 \item{method}{Method from stringdist package to estimate distances}
 
-\item{levels}{Optional vector with the levels names}
+\item{levels}{Optional vector with the levels names. If "auto", levels are assigned based on frequency}
 
 \item{plot}{Optional: Plot cluster dendrogram?}
 
