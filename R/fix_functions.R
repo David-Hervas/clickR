@@ -543,6 +543,13 @@ track_changes <- function(x, subset){
 restore_changes <- function(tracking){
   data <- get(attr(tracking, "data"))
   old_changes <- attr(data, "changes")
+  track_id <- paste(tracking$variable[tracking$fun != "manual_fix"], tracking$observation[tracking$fun!= "manual_fix"], sep=", ")
+  old_track_id <- paste(old_changes$variable, old_changes$observation, sep=", ")
+  conflict_tracks <- old_changes[old_track_id %in% track_id[track_id %in% old_track_id[old_changes$fun=="manual_fix"]],]
+  if(nrow(conflict_tracks) > 1) {
+    print(conflict_tracks)
+    stop("Cannot restore changes applied to observations before a manual fix. \n Please restore the manual fix first.")
+  }
   varnames <- tracking[tracking$fun == "nice_names",]
   create_rows <- unique(tracking$observation[!tracking$observation %in% rownames(data) & !tracking$observation %in% c("varname", "all")])
   create_vars <- unique(tracking$variable[!tracking$variable %in% names(data) & !tracking$variable %in% "all"])
@@ -574,7 +581,7 @@ restore_changes <- function(tracking){
   changes <- old_changes[! apply(old_changes[,-1], 1, function(x) paste(x, collapse="")) %in% apply(tracking[,-1], 1, function(x) paste(x, collapse="")), ]
   changes <- changes[!changes$observation %in% create_rows & !changes$variable %in% create_vars,]
   attr(data, "changes") <- changes
-  data
+  if(all(clickR:::may.numeric(rownames(data)))) data[order(as.numeric(rownames(data))),] else data
 }
 
 #' Tracked manual fixes to data
