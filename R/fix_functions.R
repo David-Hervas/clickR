@@ -57,7 +57,7 @@ nice_names <- function(x, track=TRUE){
 #' report(fix_factors(mtcars))
 fix_factors<-function(x, k=5, drop=TRUE, track=TRUE){
   if (as.character(match.call()[[1]]) == "fix.factors") {
-    warning("please use fix_factors() instead of fix.factors()", call. = FALSE)
+    warning("fix.factors will be removed in next version of the package. Please use fix_factors() instead", call. = FALSE)
   }
   changes_old <- attr(x, "changes")
   old <- x
@@ -111,7 +111,7 @@ fix.factors <- fix_factors
 #' descriptive(fix_numerics(mydata, k=5))
 fix_numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
   if (as.character(match.call()[[1]]) == "fix.numerics") {
-    warning("please use fix_numerics() instead of fix.numerics()", call. = FALSE)
+    warning("fix.numerics will be removed in next version of the package. Please use fix_numerics() instead", call. = FALSE)
   }
   changes_old <- attr(x, "changes")
   old <- x
@@ -205,7 +205,7 @@ fix.numerics <- fix_numerics
 #' fix_dates(mydata)
 fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, track=TRUE){
   if (as.character(match.call()[[1]]) == "fix.dates") {
-    warning("please use fix_dates() instead of fix.dates()", call. = FALSE)
+    warning("fix.dates will be removed in next version of the package. Please use fix_dates() instead", call. = FALSE)
   }
   changes_old <- attr(x, "changes")
   old <- x
@@ -335,7 +335,7 @@ fxd <- function(d, use.probs=TRUE){
 #' fix_levels(mydata, "factor1", levels=c("Control", "Treatment"), k=4)
 fix_levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, k=ifelse(!is.null(levels), length(levels), 2), track=TRUE, ...){
   if (as.character(match.call()[[1]]) == "fix.levels") {
-    warning("please use fix_levels() instead of fix.levels()", call. = FALSE)
+    warning("fix.levels will be removed in next version of the package. Please use fix_levels() instead", call. = FALSE)
   }
   changes_old <- attr(data, "changes")
   x <- data[,factor_name]
@@ -403,7 +403,7 @@ fix.levels <- fix_levels
 #' fix_NA(mydata)
 fix_NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$", "^NULL$", "^N/A$"), track=TRUE){
   if (as.character(match.call()[[1]]) == "fix.NA") {
-    warning("please use fix_NA() instead of fix.NA()", call. = FALSE)
+    warning("fix.NA will be removed in next version of the package. Please use fix_NA() instead", call. = FALSE)
   }
   changes_old <- attr(x, "changes")
   string <- paste(na.strings, collapse="|")
@@ -449,9 +449,6 @@ fix.NA <- fix_NA
 #' numeric = c(1, 2, 3, 4, 5))
 #' fix_concat(mydata, "concat")
 fix_concat <- function(x, varname, sep=", |; | ", track=TRUE){
-  if (as.character(match.call()[[1]]) == "fix.concat") {
-    warning("please use fix_concat() instead of fix.concat()", call. = FALSE)
-  }
   changes_old <- attr(x, "changes")
   old <- x
   new_vars <- sapply(unique(unlist(strsplit(x[,varname], sep))), function(y) as.numeric(grepl(y, x[,varname])))
