@@ -52,9 +52,9 @@ nice_names <- function(x, track=TRUE){
 #' @export
 #' @examples
 #' # mtcars data has all variables encoded as numeric, even the factor variables.
-#' report(mtcars)
+#' descriptive(mtcars)
 #' # After using fix_factors, factor variables are recognized as such.
-#' report(fix_factors(mtcars))
+#' descriptive(fix_factors(mtcars))
 fix_factors<-function(x, k=5, drop=TRUE, track=TRUE){
   if (as.character(match.call()[[1]]) == "fix.factors") {
     warning("fix.factors will be removed in next version of the package. Please use fix_factors() instead", call. = FALSE)

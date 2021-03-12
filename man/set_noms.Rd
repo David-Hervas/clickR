@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{set_noms}
 \alias{set_noms}
-\title{Set header names for word tables}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 set_noms(x, args)
 }
@@ -15,5 +15,9 @@ set_noms(x, args)
 A flextable object with assigned header names
 }
 \description{
-Internal function for make_word_table
+Internal function for make_word_table. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Set header names for word tables
 }

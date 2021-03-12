@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{report.rlm}
 \alias{report.rlm}
-\title{Report from robust linear model (rlm)}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 \method{report}{rlm}(
   x,
@@ -36,5 +36,9 @@
 A data frame with the report table
 }
 \description{
-Creates a report table from a robust linear model
+Creates a report table from a robust linear model. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Report from robust linear model (rlm)
 }

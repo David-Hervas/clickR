@@ -1,6 +1,8 @@
 #' Report from linear model
 #'
-#' @description Creates a report table from a linear model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a linear model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A linear model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -13,6 +15,7 @@
 #' @importFrom stats confint getCall
 #' @export
 report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.lm' will be removed in the next version of the package. See help('clickR-deprecated')")
   sx <- summary(x)
   ci <- confint(x)
   obj <- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1],
@@ -36,7 +39,9 @@ report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
 
 #' Report from generalized linear model
 #'
-#' @description Creates a report table from a generalized linear model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a generalized linear model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A generalized linear model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -49,6 +54,7 @@ report.lm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
 #' @importFrom stats getCall
 #' @export
 report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.glm' will be removed in the next version of the package. See help('clickR-deprecated')")
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
@@ -83,7 +89,9 @@ report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 
 #' Report from cox regression model
 #'
-#' @description Creates a report table from a cox model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a cox model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A cox model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -96,6 +104,7 @@ report.glm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 #' @importFrom stats AIC getCall
 #' @export
 report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.coxph' will be removed in the next version of the package. See help('clickR-deprecated')")
   sx<-summary(x)
   obj <- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,3], hr=sx$conf.int[,1],
               lwr.int=sx$conf.int[,3], upper.int=sx$conf.int[,4], pvalues=sx$coefficients[,5], aic=AIC(x))
@@ -115,11 +124,11 @@ report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=
   invisible(obj)
 }
 
-
-
 #' Report from linear mixed model with pvalues
 #'
-#' @description Creates a report table from a linear mixed model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a linear mixed model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A linear mixed model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -133,6 +142,7 @@ report.coxph<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=
 #' @importFrom methods loadMethod
 #' @export
 report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.merModLmerTest' will be removed in the next version of the package. See help('clickR-deprecated')")
   #loadNamespace("lmerTest")
   loadMethod("summary", "summary.lmerModLmerTest", envir="lmerTest")
   sx <- summary(x)
@@ -167,7 +177,9 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
 
 #' Report from linear mixed model
 #'
-#' @description Creates a report table from a linear mixed model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a linear mixed model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A linear mixed model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -180,13 +192,16 @@ report.merModLmerTest<-function(x, file=NULL, type="word", digits=3, digitspvals
 #' @importFrom stats getCall
 #' @export
 report.lmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.lmerMod' will be removed in the next version of the package. See help('clickR-deprecated')")
   x<-lmerTest::lmer(x@call,data=x@frame)
   report.merModLmerTest(x, file, type, digits, digitspvals, info=info, ...)
 }
 
 #' Report from generalized linear mixed model
 #'
-#' @description Creates a report table from a generalized linear mixed model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a generalized linear mixed model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A generalized linear mixed model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -199,6 +214,7 @@ report.lmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, inf
 #' @importFrom stats getCall
 #' @export
 report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.glmerMod' will be removed in the next version of the package. See help('clickR-deprecated')")
   compute.exp<-x@resp$family$link %in% c("logit", "log")
   sx<-summary(x)
   cor<-as.data.frame(lme4::VarCorr(x))
@@ -242,7 +258,9 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, in
 
 #' Report from quantile mixed model
 #'
-#' @description Creates a report table from a quantile mixed model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a quantile mixed model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A quantile model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -255,6 +273,7 @@ report.glmerMod<-function(x, file=NULL, type="word", digits=3, digitspvals=3, in
 #' @importFrom stats getCall
 #' @export
 report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.lqmm' will be removed in the next version of the package. See help('clickR-deprecated')")
   sx<-summary(x, ...)
   obj<-list(coefficients=setNames(sx$tTable[,1], rownames(sx$tTable)), se=sx$tTable[,2], lwr.int=sx$tTable[,3], upper.int=sx$tTable[,4],
             pvalues=sx$tTable[,5], aic=sx$aic, random=round(VarCorr(x),2))
@@ -279,7 +298,9 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
 
 #' Report from ordinal model
 #'
-#' @description Creates a report table from an ordinal model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from an ordinal model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x An ordinal model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -292,7 +313,7 @@ report.lqmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
 #' @importFrom stats getCall
 #' @export
 report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
-
+  .Deprecated(package="clickR", msg = "'report.clm' will be removed in the next version of the package. See help('clickR-deprecated')")
   compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
@@ -327,7 +348,9 @@ report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 
 #' Report from ordinal mixed model
 #'
-#' @description Creates a report table from an ordinal mixed model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from an ordinal mixed model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x An ordinal model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -340,6 +363,7 @@ report.clm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 #' @importFrom stats getCall
 #' @export
 report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.clmm' will be removed in the next version of the package. See help('clickR-deprecated')")
   compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
@@ -379,7 +403,9 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
 
 #' Report from quantile regression model
 #'
-#' @description Creates a report table from a quantile regression model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a quantile regression model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A quantreg model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -392,6 +418,7 @@ report.clmm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=T
 #' @importFrom stats getCall
 #' @export
 report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.rq' will be removed in the next version of the package. See help('clickR-deprecated')")
   sx<-summary(x, se="rank")
   sx2<-summary(x, covariance=TRUE)
   obj<-list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx2$coefficients[,2], lwr.int=sx$coefficients[,2],
@@ -416,7 +443,9 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
 
 #' Report from beta regression model
 #'
-#' @description Creates a report table from a beta regression model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a beta regression model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A betareg model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -429,6 +458,7 @@ report.rq<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRU
 #' @importFrom stats getCall
 #' @export
 report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.betareg' will be removed in the next version of the package. See help('clickR-deprecated')")
   compute.exp<-x$link$mean$name %in% c("logit", "log")
   sx<-summary(x)
   ci<-confint(x)
@@ -465,7 +495,9 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3, inf
 
 #' Report models from brms package
 #'
-#' @description Creates a report table from model fitted by brms
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from model fitted by brms. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A brms model object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -477,6 +509,7 @@ report.betareg<-function(x, file=NULL, type="word", digits=3, digitspvals=3, inf
 #' @importFrom stats getCall
 #' @export
 report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.brmsfit' will be removed in the next version of the package. See help('clickR-deprecated')")
   compute.exp<-x$family$link %in% c("logit", "log")
   sx<-summary(x)
   WC<-eval(parse(text="brms::WAIC(x)"))
@@ -513,7 +546,9 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, print=T
 
 #' Report models from glmnet package
 #'
-#' @description Creates a report table from models fitted by glmnet
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from models fitted by glmnet. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A glmnet model object
 #' @param s Value of lambda for estimating the coefficients
 #' @param gamma Value of gamma for estimating the coefficients (only used in relaxed fits)
@@ -528,6 +563,7 @@ report.brmsfit<-function(x, file=NULL, type="word", digits=3, info=TRUE, print=T
 #' @importFrom stats coef getCall
 #' @export
 report.glmnet<-function(x, s, gamma=1, drop.zero=TRUE, file=NULL, type="word", digits=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.glmnet' will be removed in the next version of the package. See help('clickR-deprecated')")
   compute.exp<- any(grepl("binomial|cox", x$call))
   if("relaxed" %in% class(x)){
     coefs <- coef(x, s=s, gamma=gamma)
@@ -569,7 +605,9 @@ report.glmnet<-function(x, s, gamma=1, drop.zero=TRUE, file=NULL, type="word", d
 
 #' Report from robust linear model (rlm)
 #'
-#' @description Creates a report table from a robust linear model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a robust linear model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A rlm object
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -582,6 +620,7 @@ report.glmnet<-function(x, s, gamma=1, drop.zero=TRUE, file=NULL, type="word", d
 #' @importFrom stats getCall
 #' @export
 report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.rlm' will be removed in the next version of the package. See help('clickR-deprecated')")
   sx <- summary(x, method = "XtWX")
   ci <- rob.ci(x, ...)
   obj <- list(coefficients=setNames(sx$coefficients[,1], rownames(sx$coefficients)), se=sx$coefficients[,2], lwr.int=ci[,1],
@@ -605,7 +644,9 @@ report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 
 #' Report from generalized linear mixed model from ADMB
 #'
-#' @description Creates a report table from a glmmadmb model
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table from a glmmadmb model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A generalized linear mixed model object (glmmabmb)
 #' @param file Name of the file to export the table
 #' @param type Format of the file
@@ -618,6 +659,7 @@ report.rlm<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TR
 #' @importFrom stats getCall
 #' @export
 report.glmmadmb<-function(x, file=NULL, type="word", digits=3, digitspvals=3, info=TRUE, print=TRUE, ...){
+  .Deprecated(package="clickR", msg = "'report.glmmadmb' will be removed in the next version of the package. See help('clickR-deprecated')")
   compute.exp<-x$link %in% c("logit", "log")
   sx<-summary(x)
   cor<-sqrt(cbind(unlist(lapply(x$S, function(x) diag(x)))))
@@ -659,12 +701,15 @@ report.glmmadmb<-function(x, file=NULL, type="word", digits=3, digitspvals=3, in
 
 #' Function to compute p-values for robust linear regression models
 #'
-#' @description Estimates p-values for rlm models
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Estimates p-values for rlm models. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A rlm object
 #' @return A vector of p-values
 #' @importFrom stats pf
 #' @export
 rob.pvals <- function(x){
+  .Deprecated(package="clickR", msg = "'rob.pvals' will be removed in the next version of the package. See help('clickR-deprecated')")
   coefs <- x$coef
   sx<-summary(x, method = "XtWX")
   covs<-diag(sx$cov.unscaled)*sx$stddev^2
@@ -674,7 +719,9 @@ rob.pvals <- function(x){
 
 #' Function to compute bootstrap confidence intervals for robust linear regression models
 #'
-#' @description Estimates confidence intervals for rlm models
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Estimates confidence intervals for rlm models. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A rlm object
 #' @param level Confidence level for the interval
 #' @param maxit Maximum number of iterations per fit
@@ -683,7 +730,8 @@ rob.pvals <- function(x){
 #' @importFrom stats formula
 #' @export
 rob.ci <- function(x, level=0.95, maxit=200, R=2000){
-  coefb <- function(object, data, indices){      #Función para extraer el R2 de un modelo
+  .Deprecated(package="clickR", msg = "'rob.ci' will be removed in the next version of the package. See help('clickR-deprecated')")
+  coefb <- function(object, data, indices){      #Function to extract R2
     d <- data[indices,]
     object$call$data <- as.name("d")
     object$call$maxit <- maxit
@@ -696,7 +744,9 @@ rob.ci <- function(x, level=0.95, maxit=200, R=2000){
 
 #' Export a table to word
 #'
-#' @description Exports a table to Word
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Exports a table to Word. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A data.frame object
 #' @param file Name of the file
 #' @param info Footer for the table
@@ -704,6 +754,7 @@ rob.ci <- function(x, level=0.95, maxit=200, R=2000){
 #' @return Creates a word file with the table
 #' @export
 make_word_table <- function(x, file, info=NULL, use.rownames=TRUE){
+  .Deprecated(package="clickR", msg = "'make_word_table' will be removed in the next version of the package. See help('clickR-deprecated')")
   mydoc <- officer::read_docx()
   dataf <- data.frame(x)
   if(use.rownames) dataf <- data.frame(Variables=rownames(dataf), dataf)
@@ -724,18 +775,23 @@ make_word_table <- function(x, file, info=NULL, use.rownames=TRUE){
 
 #' Export a table to latex
 #'
-#' @description Exports a table to latex
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Exports a table to latex. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A data.frame object
 #' @param file Name of the file
 #' @return Creates a .txt file with latex code for the table
 #' @export
 make_latex_table <- function(x, file){
+  .Deprecated(package="clickR", msg = "'make_latex_table' will be removed in the next version of the package. See help('clickR-deprecated')")
   print(xtable::xtable(x), file=paste(file, ".txt", sep=""))
 }
 
 #' Export a table to excel
 #'
-#' @description Exports a table to Excel
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Exports a table to Excel. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A data.frame object
 #' @param file Name of the file
 #' @param info Footer for the table
@@ -743,6 +799,7 @@ make_latex_table <- function(x, file){
 #' @return Creates a .csv file with the table
 #' @export
 make_csv_table <- function(x, file, info){
+  .Deprecated(package="clickR", msg = "'make_csv_table' will be removed in the next version of the package. See help('clickR-deprecated')")
   write.csv2(data.frame(rbind(x, c(info, rep("", ncol(x)-1))), check.names=FALSE,
                         stringsAsFactors=FALSE), paste(file, ".csv", sep=""),
              row.names=TRUE)
@@ -751,7 +808,9 @@ make_csv_table <- function(x, file, info){
 
 #' Make a table from report
 #'
-#' @description Auxiliary function to create tables
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Auxiliary function to create tables. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A data.frame object
 #' @param file Name of the file
 #' @param type Type of file
@@ -760,17 +819,54 @@ make_csv_table <- function(x, file, info){
 #' @return Creates a file with the table
 #' @export
 make_table<-function(x, file, type, info=NULL, ...){
+  .Deprecated(package="clickR", msg = "'make_table' will be removed in the next version of the package. See help('clickR-deprecated')")
   if(type=="csv") {make_csv_table(x, file, info)}
   if(type=="latex") {make_latex_table(x, file)}
   if(is.null(type) | type=="word") {make_word_table(x, file, info, ...)}
   message(paste0("Exported table as ", file))
 }
 
-
-#' Generic function for reporting of models
+#' Generic VarCorr function
 #'
-#' @description Generic function for reporting of models
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Extract Variance-Covariance Matrix. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A model object
+#' @param sigma Optional value used as a multiplier for the standard deviations
+#' @param ... Further arguments passed to VarrCorr methods
+#' @return A Variance-Covariance Matrix
+#' @export
+VarCorr<-function (x, sigma = 1, ...){
+  .Deprecated(package="clickR", msg = "'VarCorr' will be removed in the next version of the package. See help('clickR-deprecated')")
+  UseMethod("VarCorr")
+}
+
+#' Set header names for word tables
+#'
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Internal function for make_word_table. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+#' @param x A flextable object
+#' @param args A names list with the header names
+#' @importFrom utils tail
+#' @return A flextable object with assigned header names
+set_noms<-function (x, args){
+  .Deprecated(package="clickR", msg = "'set_noms' will be removed in the next version of the package. See help('clickR-deprecated')")
+  header_ <- x$header$dataset
+  values <- as.list(tail(x$header$dataset, n = 1))
+  args <- args[is.element(names(args), x$col_keys)]
+  values[names(args)] <- args
+  x$header$dataset <- rbind(header_[-nrow(header_), ], as.data.frame(values,
+             stringsAsFactors = FALSE, check.names = FALSE))
+  x
+}
+
+#' Generic function for creating reporting tables
+#'
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Generic function for creating reporting tables. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+#' @param x An compatibleobject that can be summarized
 #' @param ... further arguments passed to make_table
 #' @return A data frame with the report table
 #' @export
@@ -779,71 +875,234 @@ make_table<-function(x, file, type, info=NULL, ...){
 #' lm1 <- lm(Petal.Length ~ Sepal.Width + Species, data=iris)
 #' report(lm1)   #Report of model
 report<-function(x, ...){
+  .Deprecated(package="clickR", msg = "'report' will be removed in the next version of the package. See help('clickR-deprecated')")
   UseMethod("report")
-}
-
-#' Generic VarCorr function
-#'
-#' @description Extract Variance-Covariance Matrix
-#' @param x A model object
-#' @param sigma Optional value used as a multiplier for the standard deviations
-#' @param ... Further arguments passed to VarrCorr methods
-#' @return A Variance-Covariance Matrix
-#' @export
-VarCorr<-function (x, sigma = 1, ...){
-  UseMethod("VarCorr")
 }
 
 #' Default function for report
 #'
-#' @description This is a default function for calling summary(x) on non-implemented classes
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description This is a default function for calling summary(x) on non-implemented classes. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x Any object without specific report function
 #' @param ... further arguments passed to summary
 #' @return A summary of the object
 #' @export
 report.default<-function(x, ...){
+  .Deprecated(package="clickR", msg = "'report.default' will be removed in the next version of the package. See help('clickR-deprecated')")
   warning(paste("Non-recognized class for report(). Returning summary(", deparse1(substitute(x)), ")", sep=""))
   return(summary(x, ...))
 }
 
-
 #' Report from numeric variable
 #'
-#' @description Creates a report table
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A numeric variable
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @export
 report.numeric<-function(x,...){
+  .Deprecated(package="clickR", msg = "'report.numeric' will be removed in the next version of the package. See help('clickR-deprecated')")
   report(data.frame(x), ...)
 }
 
 #' Report from categorical variable
 #'
-#' @description Creates a report table
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
 #' @param x A categorical variable
 #' @param ... Further arguments passed to make_table
 #' @return A data frame with the report table
 #' @export
 report.factor<-function(x,...){
+  .Deprecated(package="clickR", msg = "'report.factor' will be removed in the next version of the package. See help('clickR-deprecated')")
   report(data.frame(x), ...)
 }
 
-
-#' Set header names for word tables
+#' Report tables of summary data
 #'
-#' @description Internal function for make_word_table
-#' @param x A flextable object
-#' @param args A names list with the header names
-#' @importFrom utils tail
-#' @return A flextable object with assigned header names
-set_noms<-function (x, args)
-{
-  header_ <- x$header$dataset
-  values <- as.list(tail(x$header$dataset, n = 1))
-  args <- args[is.element(names(args), x$col_keys)]
-  values[names(args)] <- args
-  x$header$dataset <- rbind(header_[-nrow(header_), ], as.data.frame(values,
-             stringsAsFactors = FALSE, check.names = FALSE))
-  x
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a report table ready for publication. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+#' @param x A data.frame object
+#' @param by Grouping variable for the report
+#' @param file Name of the file to export the table
+#' @param type Format of the file
+#' @param digits Number of decimal places
+#' @param digitscat Number of decimal places for categorical variables (if different to digits)
+#' @param print Should the report table be printed on screen?
+#' @param ... further arguments passed to make_table()
+#' @export
+#' @examples
+#' report(iris)
+#' (reporTable<-report(iris, by="Species"))
+#' class(reporTable)
+report.data.frame<-function(x, by=NULL, file=NULL, type="word", digits=2, digitscat=digits, print=TRUE, ...){
+  if(is.data.frame(x)==F){
+    x<-data.frame(x)}
+  x<-x[,!sapply(x, function(x) sum(is.na(x))/length(x))==1 & sapply(x, function(x) is.numeric(x) | is.factor(x)), drop=FALSE]
+  if(ncol(x) == 0) stop("Data frame has no numeric or factor variables to describe")
+  x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))]<-lapply(x[sapply(x, is.factor) & sapply(x, function(x) !all(levels(x) %in% unique(na.omit(x))))], factor)
+  if(length(by)>1){
+    x.int <- data.frame(x, by=interaction(x[, match(unlist(by), names(x))]))
+    report(x.int[,-match(unlist(by), names(x.int))], by="by", file=file, type=type, digits=digits, digitscat=digitscat, ...)
+  }
+  else{
+    by_v <- factor(rep("", nrow(x)))
+    if(!is.null(by)){
+      pos_by<-match(by, names(x))
+      by_v<-factor(eval(parse(text=paste("x$", by, sep=""))))
+      x<-x[,-pos_by, drop=FALSE]
+    }
+
+    #Numeric part
+    nums <- sapply(x, is.numeric)
+    if(any(nums==TRUE)){
+      estruct<-matrix(nrow=2, ncol=length(unique(na.omit(by_v)))+1)
+      estruct[1:2,1]<-c("", "")
+      estruct[1, -1]<-paste("Mean (SD)", ifelse(any(nums==FALSE), " / n(%)", ""), sep="")
+      estruct[2,-1]<-"Median (1st, 3rd Q.)"
+      cont<-character(2*length(x[nums==T]))
+      cont[seq(1,length(cont), 2)]<-colnames(x[,nums==T, drop=FALSE])
+      if(ncol(x[,nums==T, drop=FALSE])>1){
+        A<-matrixPaste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(mean(x, na.rm=TRUE),digits)))), function(x) t(x)), " (",
+                       sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(sd(x, na.rm=TRUE),digits)))), function(x) t(x)),")", sep=rep("", 3))
+
+        B<-matrixPaste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(median(x, na.rm=TRUE),digits)))), function(x) t(x)),
+                       " (",
+                       sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.25, na.rm=TRUE),digits)))), function(x) t(x)),
+                       ", ",
+                       sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.75, na.rm=TRUE),digits)))), function(x) t(x)),
+                       ")", sep=rep("", 5))
+      }
+      else {
+        A<-paste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(mean(x, na.rm=TRUE),digits)))), function(x) t(x)), " (",
+                 sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(sd(x, na.rm=TRUE),digits)))), function(x) t(x)),")", sep=rep(""))
+        B<-paste(sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(median(x, na.rm=TRUE),digits)))), function(x) t(x)),
+                 " (",
+                 sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.25, na.rm=TRUE),digits)))), function(x) t(x)),
+                 ", ",
+                 sapply(by(x, by_v, function(x) sapply(x[nums==T],function(x) as.character(round(quantile(x, 0.75, na.rm=TRUE),digits)))), function(x) t(x)),
+                 ")", sep=rep(""))
+      }
+
+      AB<-matrix(nrow=nrow(rbind(A, B)), ncol=ncol(rbind(A,B))+1)
+      AB[seq(1, dim(rbind(A, B))[1], 2),-1]<-A
+      AB[-c(seq(1, dim(rbind(A, B))[1], 2)),-1]<-B
+      AB[,1]<-cont
+    }
+    else{
+      AB<-NULL
+      estruct<-matrix(nrow=1, ncol=length(unique(na.omit(by_v)))+1)
+      estruct[1,1]<-""
+      estruct[1, -1]<-"n (%)"
+    }
+
+    #Categorical part
+    cats<-matrix(data="", ncol=length(levels(by_v))+1, nrow=suppressWarnings(length(na.omit(unlist(sapply(x[nums==F], function(x) na.omit(unique(x)))))))+length(x[nums==F]))
+    pos<-sapply(sapply(x[nums==F], function(x) na.omit(unique(x)), simplify=FALSE), function(x) length(x))
+    cats[rev(rev(cumsum(c(1,pos)))[-1])+rev(rev((0:(dim(x[nums==F])[2])))[-1]),1]<-colnames(x[nums==F])
+    cats[-(rev(rev(cumsum(c(1,pos)))[-1])+rev(rev((0:(dim(x[nums==F])[2])))[-1])),1]<-paste("  ", suppressWarnings(na.omit(unlist(sapply(x[nums==F], function(x) levels(as.factor(x)))))), sep="")
+    if(any(nums==FALSE)){
+      x[nums==F] <- lapply(x[nums==F],as.factor)
+      C<-matrixPaste(sapply(by(x[nums==F], by_v, function(x) sapply(x, function(x) as.character(table(x)))), function(x) unlist(x)), " (",
+                     sapply(by(x[nums==F], by_v, function(x) sapply(x, function(x) as.character(round(100*(table(x)/sum(table(x))),digitscat)))), function(x) unlist(x)),"%)", sep=rep("", 3))
+      cats[-(rev(rev(cumsum(c(1,pos)))[-1])+rev(rev((0:(dim(x[nums==F])[2])))[-1])),-1]<-C
+    }
+
+    #Matrix binding
+    output<-rbind(estruct, AB, cats)
+    colnames(output)<-c("Variable", paste(by, levels(by_v), sep=" ", "n =", as.vector(table(by_v))))
+    if(!is.null(file)) make_table(output, file, type, use.rownames=FALSE)
+    output <- data.frame(output, check.names=FALSE, stringsAsFactors=FALSE)
+    if(print) print(output, row.names=FALSE, right=FALSE)
+    invisible(output)
+  }
+}
+
+#' Auxiliary matrix paste function
+#' @description Internal function for report.table
+#' @param ... Matrices to paste
+#' @param sep Separator for the paste function
+matrixPaste<-function (..., sep = rep(" ", length(list(...)) - 1)){
+  theDots <- list(...)
+  if (any(unlist(lapply(theDots, function(x) !is.character(x)))))
+    stop("all matrices must be character")
+  numRows <- unlist(lapply(theDots, nrow))
+  numCols <- unlist(lapply(theDots, ncol))
+  if (length(unique(numRows)) > 1 | length(unique(numCols)) >
+      1)
+    stop("all matrices must have the same dim")
+  for (i in seq(along = theDots)) out <- if (i == 1)
+    theDots[[i]]
+  else paste(out, theDots[[i]], sep = sep[i - 1])
+  matrix(out, nrow = numRows[1])
+}
+
+#' Plot of the coefficients of a model
+#'
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a plot of the coefficients of a model. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+#' @param coefs A vector with each coefficient
+#' @param lwr.int A vector with the lower end of the CI
+#' @param upper.int A vector with the upper end of the CI
+#' @param offset Y-axis offset for the coefficients
+#' @param coefnames Name for each variable
+#' @param abline.pos Position for the vertical reference line
+#' @param sorted Should the coefficients be sorted from highest to lowest?
+#' @param reverse Should the order be reversed?
+#' @param pch Type of point
+#' @param xlim Limits of the X-axis
+#' @param ylim Limits of the Y-axis
+#' @param color Color for the points
+#' @param ... Further arguments passed to axis()
+#' @return A plot of the coefficients with their CI
+#' @importFrom graphics abline lines plot.new plot.window points axis
+#' @export
+#' @examples
+#' lm1 <- lm(Petal.Length ~ Sepal.Width + Species, data=iris)
+#' a<-report(lm1)
+#' par(mar=c(4, 10, 3, 2))
+#' #Coefplot calling plot.reportmodel
+#' plot(a)
+#' #Manual coefplot
+#' coefplot(coefs=c(1, 2, 3), lwr.int=c(0, 1, 2), upper.int=c(5, 6, 7), coefnames=c("A", "B", "C"))
+coefplot <- function(coefs, lwr.int=coefs, upper.int=coefs, offset=0, coefnames=names(coefs), abline.pos=0, sorted=FALSE, reverse=FALSE, pch=16, xlim=c(min(lwr.int, na.rm=TRUE), max(upper.int, na.rm=TRUE)), ylim=c(1, length(coefs)), color="black", ...){
+  .Deprecated(package="clickR", msg = "'coefplot' will be removed in the next version of the package. See help('clickR-deprecated')")
+  color <- as.character(data.frame(color, coefs)[,1])
+  if(is.null(coefnames)) coefnames <- 1:length(coefs)
+  dat <- data.frame(coefs, lwr.int, upper.int, coefnames)
+  if(sorted) dat <- dat[order(dat$coefs),]
+  if(reverse) dat <- dat[(dim(dat)[1]):1,]
+  plot.new()
+  plot.window(xlim=xlim, ylim=ylim)
+  axis(3, ...)
+  axis(2, at=c(1:length(coefs)), las=1, labels=dat$coefnames, lwd=0)
+  abline(v=abline.pos, lty=2)
+  points(dat$coefs, (1:length(coefs))+offset, pch=pch, col=color)
+  for(i in 1:length(coefs)){
+    lines(x=c(dat$lwr.int[i], dat$upper.int[i]), y=c(i, i)+offset, col=color[i])
+  }
+}
+
+#' Coefplot for reportmodel objects
+#'
+#' @title Deprecated functions in package \sQuote{clickR}
+#' @description Creates a coefplot from the reportmodel object. This function will be
+#' defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+#' @param x A reportmodel object
+#' @param ... Further arguments passed to coefplot
+#' @export
+#' @examples
+#' lm1 <- lm(Petal.Length ~ Sepal.Width + Species, data=iris)
+#' a<-report(lm1)
+#' par(mar=c(4, 10, 3, 2))
+#' plot(a)   #Coefplot calling plot.reportmodel
+plot.reportmodel<-function(x, ...){
+  .Deprecated(package="clickR", msg = "'plot.reportmodel' will be removed in the next version of the package. See help('clickR-deprecated')")
+  coefplot(x$coefficients, x$lwr.int, x$upper.int, ...)
 }

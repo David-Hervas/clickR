@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{make_table}
 \alias{make_table}
-\title{Make a table from report}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 make_table(x, file, type, info = NULL, ...)
 }
@@ -21,5 +21,9 @@ make_table(x, file, type, info = NULL, ...)
 Creates a file with the table
 }
 \description{
-Auxiliary function to create tables
+Auxiliary function to create tables. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Make a table from report
 }

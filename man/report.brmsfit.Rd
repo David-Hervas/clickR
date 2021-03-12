@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{report.brmsfit}
 \alias{report.brmsfit}
-\title{Report models from brms package}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 \method{report}{brmsfit}(
   x,
@@ -33,5 +33,9 @@
 A data frame with the report table
 }
 \description{
-Creates a report table from model fitted by brms
+Creates a report table from model fitted by brms. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Report models from brms package
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{make_latex_table}
 \alias{make_latex_table}
-\title{Export a table to latex}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 make_latex_table(x, file)
 }
@@ -15,5 +15,9 @@ make_latex_table(x, file)
 Creates a .txt file with latex code for the table
 }
 \description{
-Exports a table to latex
+Exports a table to latex. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Export a table to latex
 }

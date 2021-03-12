@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{report.default}
 \alias{report.default}
-\title{Default function for report}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 \method{report}{default}(x, ...)
 }
@@ -15,5 +15,9 @@
 A summary of the object
 }
 \description{
-This is a default function for calling summary(x) on non-implemented classes
+This is a default function for calling summary(x) on non-implemented classes. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Default function for report
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{report.glmnet}
 \alias{report.glmnet}
-\title{Report models from glmnet package}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 \method{report}{glmnet}(
   x,
@@ -42,5 +42,9 @@
 A data frame with the report table
 }
 \description{
-Creates a report table from models fitted by glmnet
+Creates a report table from models fitted by glmnet. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Report models from glmnet package
 }

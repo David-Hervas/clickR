@@ -26,7 +26,7 @@ of the same levels due to different capitalization, whitespaces or non-ASCII cha
 }
 \examples{
 # mtcars data has all variables encoded as numeric, even the factor variables.
-report(mtcars)
+descriptive(mtcars)
 # After using fix_factors, factor variables are recognized as such.
-report(fix_factors(mtcars))
+descriptive(fix_factors(mtcars))
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{VarCorr}
 \alias{VarCorr}
-\title{Generic VarCorr function}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 VarCorr(x, sigma = 1, ...)
 }
@@ -17,5 +17,9 @@ VarCorr(x, sigma = 1, ...)
 A Variance-Covariance Matrix
 }
 \description{
-Extract Variance-Covariance Matrix
+Extract Variance-Covariance Matrix. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Generic VarCorr function
 }

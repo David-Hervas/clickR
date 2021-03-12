@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{report.lqmm}
 \alias{report.lqmm}
-\title{Report from quantile mixed model}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 \method{report}{lqmm}(
   x,
@@ -36,5 +36,9 @@
 A data frame with the report table
 }
 \description{
-Creates a report table from a quantile mixed model
+Creates a report table from a quantile mixed model. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Report from quantile mixed model
 }

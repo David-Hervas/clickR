@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{report.clm}
 \alias{report.clm}
-\title{Report from ordinal model}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 \method{report}{clm}(
   x,
@@ -36,5 +36,9 @@
 A data frame with the report table
 }
 \description{
-Creates a report table from an ordinal model
+Creates a report table from an ordinal model. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Report from ordinal model
 }

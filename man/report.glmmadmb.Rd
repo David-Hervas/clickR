@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{report.glmmadmb}
 \alias{report.glmmadmb}
-\title{Report from generalized linear mixed model from ADMB}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 \method{report}{glmmadmb}(
   x,
@@ -36,5 +36,9 @@
 A data frame with the report table
 }
 \description{
-Creates a report table from a glmmadmb model
+Creates a report table from a glmmadmb model. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Report from generalized linear mixed model from ADMB
 }

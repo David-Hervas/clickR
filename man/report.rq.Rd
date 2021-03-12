@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{report.rq}
 \alias{report.rq}
-\title{Report from quantile regression model}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 \method{report}{rq}(
   x,
@@ -36,5 +36,9 @@
 A data frame with the report table
 }
 \description{
-Creates a report table from a quantile regression model
+Creates a report table from a quantile regression model. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Report from quantile regression model
 }

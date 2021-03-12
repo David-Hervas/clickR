@@ -2,7 +2,7 @@
 % Please edit documentation in R/report_model.R
 \name{report.merModLmerTest}
 \alias{report.merModLmerTest}
-\title{Report from linear mixed model with pvalues}
+\title{Deprecated functions in package \sQuote{clickR}}
 \usage{
 \method{report}{merModLmerTest}(
   x,
@@ -36,5 +36,9 @@
 A data frame with the report table
 }
 \description{
-Creates a report table from a linear mixed model
+Creates a report table from a linear mixed model. This function will be
+defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+}
+\details{
+Report from linear mixed model with pvalues
 }
