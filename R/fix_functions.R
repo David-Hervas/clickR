@@ -53,9 +53,12 @@ nice_names <- function(x, track=TRUE){
 #' @examples
 #' # mtcars data has all variables encoded as numeric, even the factor variables.
 #' report(mtcars)
-#' # After using fix.factors, factor variables are recognized as such.
-#' report(fix.factors(mtcars))
-fix.factors<-function(x, k=5, drop=TRUE, track=TRUE){
+#' # After using fix_factors, factor variables are recognized as such.
+#' report(fix_factors(mtcars))
+fix_factors<-function(x, k=5, drop=TRUE, track=TRUE){
+  if (as.character(match.call()[[1]]) == "fix.factors") {
+    warning("please use fix_factors() instead of fix.factors()", call. = FALSE)
+  }
   changes_old <- attr(x, "changes")
   old <- x
   candidate_variables <- (sapply(x, function(x) (is.numeric(x) |
@@ -73,7 +76,7 @@ fix.factors<-function(x, k=5, drop=TRUE, track=TRUE){
                             observation="all",
                             original=sapply(old[,candidate_variables, drop=FALSE], class),
                             new="factor",
-                            fun="fix.factors", row.names=NULL)
+                            fun="fix_factors", row.names=NULL)
       if(!is.null(changes_old)){
         attr(x, "changes") <- rbind(changes_old, changes)
       } else {
@@ -84,11 +87,15 @@ fix.factors<-function(x, k=5, drop=TRUE, track=TRUE){
   } else return(old)
 }
 
+#' @export
+#' @rdname fix_factors
+fix.factors <- fix_factors
+
 #' Fix numeric data
 #'
 #' @description Fixes numeric data. In may cases, numeric data are not recognized by R
 #' because there are data inconsistencies (wrong decimal separator, whitespaces, typos,
-#' thousand separator, etc.). \code{fix.numerics} detects and corrects these variables,
+#' thousand separator, etc.). \code{fix_numerics} detects and corrects these variables,
 #' making them numeric again.
 #' @param x A data.frame
 #' @param k Minimum number of different values a variable has to have to be considered numerical
@@ -101,8 +108,11 @@ fix.factors<-function(x, k=5, drop=TRUE, track=TRUE){
 #' mydata<-data.frame(Numeric1=c(7.8, 9.2, "5.4e+2", 3.3, "6,8", "3..3"),
 #'                    Numeric2=c(3.1, 1.2, "3.4s", "48,500.04 $", 7, "$  6.4"))
 #' descriptive(mydata)
-#' descriptive(fix.numerics(mydata, k=5))
-fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
+#' descriptive(fix_numerics(mydata, k=5))
+fix_numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
+  if (as.character(match.call()[[1]]) == "fix.numerics") {
+    warning("please use fix_numerics() instead of fix.numerics()", call. = FALSE)
+  }
   changes_old <- attr(x, "changes")
   old <- x
   previous.NA<- sapply(x, function(x) sum(is.na(x)))
@@ -144,7 +154,7 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
                              observation="all",
                              original=sapply(old[,candidate_variables & !((final.NA-previous.NA) > nrow(x)*max.NA), drop=FALSE], class),
                              new="numeric",
-                             fun="fix.numerics",
+                             fun="fix_numerics",
                              row.names=NULL)
       changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
         observations <- rownames(x)[which(!(old[, y] %in% x[, y]))]
@@ -152,7 +162,7 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
                             observation=observations,
                             original=old[observations, y],
                             new=x[observations, y],
-                            fun="fix.numerics"), error = function(e) NULL)
+                            fun="fix_numerics"), error = function(e) NULL)
       }))
       changes <- rbind(changes1, changes2)
       if(!is.null(changes_old)){
@@ -164,6 +174,10 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
     return(x)
   } else return(old)
 }
+
+#' @export
+#' @rdname fix_numerics
+fix.numerics <- fix_numerics
 
 
 #' Fix dates
@@ -188,8 +202,11 @@ fix.numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
 #' mydata<-data.frame(Dates1=c("25/06/1983", "25-08/2014", "2001/11/01", "2008-10-01"),
 #'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", "September 24, 2020"),
 #'                    Numeric1=rnorm(4))
-#' fix.dates(mydata)
-fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, track=TRUE){
+#' fix_dates(mydata)
+fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, track=TRUE){
+  if (as.character(match.call()[[1]]) == "fix.dates") {
+    warning("please use fix_dates() instead of fix.dates()", call. = FALSE)
+  }
   changes_old <- attr(x, "changes")
   old <- x
   x<-kill.factors(x)
@@ -211,7 +228,7 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
                            observation="all",
                            original=sapply(old[,final_variables, drop=FALSE], class),
                            new="Date",
-                           fun="fix.dates",
+                           fun="fix_dates",
                            row.names=NULL)
     changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
       observations <- rownames(x)[which(!(as.character(old[, y]) %in% as.character(x[, y])))]
@@ -219,7 +236,7 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
                           observation=observations,
                           original=old[observations, y],
                           new=as.character(x[observations, y]),
-                          fun="fix.dates"), error = function(e) NULL)
+                          fun="fix_dates"), error = function(e) NULL)
     }))
     changes <- rbind(changes1, changes2)
     if(!is.null(changes_old)){
@@ -230,6 +247,10 @@ fix.dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
   }
   return(x)
 }
+
+#' @export
+#' @rdname fix_dates
+fix.dates <- fix_dates
 
 #' Internal function for dates with text
 #'
@@ -255,7 +276,7 @@ text_date <- function(date, format="%d/%Y %b"){
   as.Date(paste(paste(day_year, collapse="/"), month), format=format)
 }
 
-#' Internal function to fix.dates
+#' Internal function to fix_dates
 #'
 #' @description Function to format dates
 #' @param d A character vector
@@ -310,9 +331,12 @@ fxd <- function(d, use.probs=TRUE){
 #' @examples
 #' mydata <- data.frame(factor1=factor(c("Control", "Treatment", "Tretament", "Tratment", "treatment",
 #' "teatment", "contrl", "cntrol", "CONTol", "not available", "na")))
-#' fix.levels(mydata, "factor1", k=4, plot=TRUE)   #Chose k to select matching levels
-#' fix.levels(mydata, "factor1", levels=c("Control", "Treatment"), k=4)
-fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, k=ifelse(!is.null(levels), length(levels), 2), track=TRUE, ...){
+#' fix_levels(mydata, "factor1", k=4, plot=TRUE)   #Chose k to select matching levels
+#' fix_levels(mydata, "factor1", levels=c("Control", "Treatment"), k=4)
+fix_levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, k=ifelse(!is.null(levels), length(levels), 2), track=TRUE, ...){
+  if (as.character(match.call()[[1]]) == "fix.levels") {
+    warning("please use fix_levels() instead of fix.levels()", call. = FALSE)
+  }
   changes_old <- attr(data, "changes")
   x <- data[,factor_name]
   x_na <- na.omit(x)
@@ -350,7 +374,7 @@ fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
                           observation=observations,
                           original=data[observations, factor_name],
                           new=output[which(!(data[,factor_name] %in% output))],
-                          fun="fix.levels",
+                          fun="fix_levels",
                           row.names=NULL)
     if(!is.null(changes_old)){
       attr(data, "changes") <- rbind(changes_old, changes)
@@ -362,7 +386,11 @@ fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
   invisible(data)
 }
 
-#' fix.NA
+#' @export
+#' @rdname fix_levels
+fix.levels <- fix_levels
+
+#' fix_NA
 #'
 #' @description Fixes miscoded missing values
 #' @param x A data.frame
@@ -372,8 +400,11 @@ fix.levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
 #' @examples
 #' mydata <- data.frame(prueba = c("", NA, "A", 4, " ", "?", "-", "+"),
 #' casa = c("", 1, 2, 3, 4, " ", 6, 7))
-#' fix.NA(mydata)
-fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$", "^NULL$", "^N/A$"), track=TRUE){
+#' fix_NA(mydata)
+fix_NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$", "^NULL$", "^N/A$"), track=TRUE){
+  if (as.character(match.call()[[1]]) == "fix.NA") {
+    warning("please use fix_NA() instead of fix.NA()", call. = FALSE)
+  }
   changes_old <- attr(x, "changes")
   string <- paste(na.strings, collapse="|")
   output <- as.data.frame(lapply(x, function(x) {
@@ -389,7 +420,7 @@ fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
                  observation=observations,
                  original=x[observations, y],
                  new=output[observations, y],
-                 fun="fix.NA",
+                 fun="fix_NA",
                  row.names=NULL)
     }))
     if(!is.null(changes_old)){
@@ -401,7 +432,11 @@ fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
   return(output)
 }
 
-#' fix.concat
+#' @export
+#' @rdname fix_NA
+fix.NA <- fix_NA
+
+#' fix_concat
 #'
 #' @description Fixes concatenated values in a variable
 #' @param x A data.frame
@@ -412,8 +447,11 @@ fix.NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
 #' @examples
 #' mydata <- data.frame(concat=c("a", "b", "a b" , "a b, c", "a; c"),
 #' numeric = c(1, 2, 3, 4, 5))
-#' fix.concat(mydata, "concat")
-fix.concat <- function(x, varname, sep=", |; | ", track=TRUE){
+#' fix_concat(mydata, "concat")
+fix_concat <- function(x, varname, sep=", |; | ", track=TRUE){
+  if (as.character(match.call()[[1]]) == "fix.concat") {
+    warning("please use fix_concat() instead of fix.concat()", call. = FALSE)
+  }
   changes_old <- attr(x, "changes")
   old <- x
   new_vars <- sapply(unique(unlist(strsplit(x[,varname], sep))), function(y) as.numeric(grepl(y, x[,varname])))
@@ -425,7 +463,7 @@ fix.concat <- function(x, varname, sep=", |; | ", track=TRUE){
                             observation="all",
                             original=NA,
                             new="logical",
-                            fun="fix.concat", row.names=NULL)
+                            fun="fix_concat", row.names=NULL)
       if(!is.null(changes_old)){
         attr(x, "changes") <- rbind(changes_old, changes)
       } else {
@@ -480,13 +518,13 @@ remove_empty <- function(x, track=TRUE){
   } else return(old)
 }
 
-#' fix.all
+#' fix_all
 #'
-#' @description Tries to fix all problems in the data.frame
+#' @description Tries to automatically fix all problems in the data.frame
 #' @param x A data.frame
 #' @param track Track changes?
 #' @export
-fix.all <- function(x, track=TRUE){
+fix_all <- function(x, track=TRUE){
   x <- fix.numerics(
     fix.factors(
       fix.dates(
@@ -501,7 +539,6 @@ fix.all <- function(x, track=TRUE){
     track=track)
   x
 }
-
 
 #' track_changes
 #'

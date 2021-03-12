@@ -2,7 +2,7 @@
 % Please edit documentation in R/fix_functions.R
 \name{fxd}
 \alias{fxd}
-\title{Internal function to fix.dates}
+\title{Internal function to fix_dates}
 \usage{
 fxd(d, use.probs = TRUE)
 }
