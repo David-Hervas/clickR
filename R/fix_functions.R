@@ -608,12 +608,14 @@ restore_changes <- function(tracking){
   #   data[changes.y$observation[changes.y$observation != "all"], y] <- changes.y$original[changes.y$observation != "all"]
   #   data[, y]
   # })
-  data[, variables] <- sapply(variables, function(y){
+  data[, variables] <- lapply(variables, function(y){
     changes.y <- trackingf[trackingf$variable == y,]
     old.class <- changes.y$original[changes.y$observation == "all"][1]
     data_n <- as.character(data[, y])
     if(!is.na(old.class)) class(data_n) <- old.class
-    data_n[rownames(data) %in% changes.y$observation[changes.y$observation != "all"]] <- changes.y$original[changes.y$observation != "all"]
+    #data_n[rownames(data) %in% changes.y$observation[changes.y$observation != "all"]] <- changes.y$original[changes.y$observation != "all"]
+    data_n[rownames(data) %in% changes.y$observation[changes.y$observation != "all"]] <- changes.y$original[changes.y$observation != "all"][match(
+      rownames(data)[rownames(data) %in% changes.y$observation[changes.y$observation != "all"]], changes.y$observation[changes.y$observation != "all"])]
     data_n
   })
   if(nrow(varnames)>0){
