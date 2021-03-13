@@ -600,20 +600,29 @@ restore_changes <- function(tracking){
   if(any(tracking$fun == "fix.concat")) data <- data[,!names(data) %in% tracking$variable[tracking$fun == "fix.concat"]]
   trackingf <- tracking[!tracking$fun %in% c("nice_names", "remove_empty", "fix.concat"),]
   variables <- unique(trackingf$variable)
-  data[, variables] <- lapply(variables, function(y){
+  # data[, variables] <- lapply(variables, function(y){
+  #   changes.y <- trackingf[trackingf$variable == y,]
+  #   old.class <- changes.y$original[changes.y$observation == "all"][1]
+  #   data[, y] <- as.character(data[, y])
+  #   if(!is.na(old.class)) class(data[, y]) <- old.class
+  #   data[changes.y$observation[changes.y$observation != "all"], y] <- changes.y$original[changes.y$observation != "all"]
+  #   data[, y]
+  # })
+  data[, variables] <- sapply(variables, function(y){
     changes.y <- trackingf[trackingf$variable == y,]
     old.class <- changes.y$original[changes.y$observation == "all"][1]
-    data[, y] <- as.character(data[, y])
-    if(!is.na(old.class)) class(data[, y]) <- old.class
-    data[changes.y$observation[changes.y$observation != "all"], y] <- changes.y$original[changes.y$observation != "all"]
-    data[, y]
+    data_n <- as.character(data[, y])
+    if(!is.na(old.class)) class(data_n) <- old.class
+    data_n[rownames(data) %in% changes.y$observation[changes.y$observation != "all"]] <- changes.y$original[changes.y$observation != "all"]
+    data_n
   })
   if(nrow(varnames)>0){
     names(data)[names(data) %in% varnames$variable] <- na.omit(varnames$original[match(names(data), varnames$new)])
     old_changes$variable[old_changes$variable != "all"  & !is.na(old_changes$variable)] <- old_changes$original[old_changes$fun == "nice_names"][match(old_changes$variable[old_changes$variable!="all"  & !is.na(old_changes$variable)], old_changes$new[old_changes$fun == "nice_names"])]
     old_changes <- old_changes[!(old_changes$variable %in% varnames$original & old_changes$fun == "remove_empty"),]
   }
-  changes <- old_changes[! apply(old_changes[,-1], 1, function(x) paste(x, collapse="")) %in% apply(tracking[,-1], 1, function(x) paste(x, collapse="")), ]
+  #changes <- old_changes[! apply(old_changes[,-1], 1, function(x) paste(x, collapse="")) %in% apply(tracking[,-1], 1, function(x) paste(x, collapse="")), ]
+  changes <- old_changes[! apply(old_changes, 1, function(x) paste(x, collapse="")) %in% apply(tracking, 1, function(x) paste(x, collapse="")), ]
   changes <- changes[!changes$observation %in% create_rows & !changes$variable %in% create_vars,]
   attr(data, "changes") <- changes
   if(all(may.numeric(rownames(data)))) data[order(as.numeric(rownames(data))),] else data
