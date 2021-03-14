@@ -453,6 +453,8 @@ fix_concat <- function(x, varname, sep=", |; | ", track=TRUE){
   old <- x
   new_vars <- sapply(unique(unlist(strsplit(as.character(x[,varname]), sep))), function(y) as.numeric(grepl(y, x[,varname])))
   colnames(new_vars) <- paste(varname, colnames(new_vars), sep="_")
+  colnames(new_vars) <- iconv(gsub("x_","",gsub("_$", "",tolower(gsub("[_]+", "_",gsub("[.]+", "_",make.names(
+    gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", colnames(new_vars)))))))))))), to = "ASCII//TRANSLIT")
   x <- data.frame(x, new_vars)
   if(!identical(old, x)){
     if(track){
