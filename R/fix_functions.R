@@ -451,7 +451,7 @@ fix.NA <- fix_NA
 fix_concat <- function(x, varname, sep=", |; | ", track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
-  new_vars <- sapply(unique(unlist(strsplit(x[,varname], sep))), function(y) as.numeric(grepl(y, x[,varname])))
+  new_vars <- sapply(unique(unlist(strsplit(as.character(x[,varname]), sep))), function(y) as.numeric(grepl(y, x[,varname])))
   colnames(new_vars) <- paste(varname, colnames(new_vars), sep="_")
   x <- data.frame(x, new_vars)
   if(!identical(old, x)){
@@ -597,8 +597,8 @@ restore_changes <- function(tracking){
     data <- cbind(data, setNames(data.frame(matrix(NA, nrow=nrow(data), ncol=length(create_vars))), create_vars))
     warning("Cannot recover previous position of deleted variables. Appending at the end of the data.frame")
   }
-  if(any(tracking$fun == "fix.concat")) data <- data[,!names(data) %in% tracking$variable[tracking$fun == "fix.concat"]]
-  trackingf <- tracking[!tracking$fun %in% c("nice_names", "remove_empty", "fix.concat"),]
+  if(any(tracking$fun == "fix_concat")) data <- data[,!names(data) %in% tracking$variable[tracking$fun == "fix_concat"]]
+  trackingf <- tracking[!tracking$fun %in% c("nice_names", "remove_empty", "fix_concat"),]
   variables <- unique(trackingf$variable)
   # data[, variables] <- lapply(variables, function(y){
   #   changes.y <- trackingf[trackingf$variable == y,]
