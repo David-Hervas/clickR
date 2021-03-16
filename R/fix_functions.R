@@ -559,7 +559,7 @@ track_changes <- function(x, subset){
   } else{
     attr(changes, "data") <- as.character(match.call()$x)
     if(missing(subset)) f <- rep(TRUE, nrow(changes)) else f <- eval(substitute(subset), changes, baseenv())
-    changes[f,]
+    print(changes[f,], row.names=FALSE)
   }
 }
 
