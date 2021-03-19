@@ -6,6 +6,9 @@
 \usage{
 coefplot(...)
 }
+\arguments{
+\item{...}{Not used}
+}
 \description{
 Creates a plot of the coefficients of a model. This function has been
 removed from the package. Updated functions are available in \sQuote{repmod} package.

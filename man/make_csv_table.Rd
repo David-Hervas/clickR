@@ -6,6 +6,9 @@
 \usage{
 make_csv_table(...)
 }
+\arguments{
+\item{...}{Not used}
+}
 \description{
 Exports a table to Excel. This function has been
 removed from the package. Updated functions are available in \sQuote{repmod} package.

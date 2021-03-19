@@ -6,6 +6,9 @@
 \usage{
 make_word_table(...)
 }
+\arguments{
+\item{...}{Not used}
+}
 \description{
 Exports a table to Word. This function has been
 removed from the package. Updated functions are available in \sQuote{repmod} package.

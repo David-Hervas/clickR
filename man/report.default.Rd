@@ -6,6 +6,9 @@
 \usage{
 report.default(...)
 }
+\arguments{
+\item{...}{Not used}
+}
 \description{
 This is a default function for calling summary(x) on non-implemented classes. This function has been
 removed from the package. Updated functions are available in \sQuote{repmod} package.

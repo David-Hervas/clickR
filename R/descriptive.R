@@ -227,7 +227,7 @@ cluster_var <- function(x, margins=c(8,1)){
 #' @param show.x Should the x-axis be plotted?
 #' @param show.y Should the y-axis be plotted?
 #' @param ... further arguments passed to order()
-#' @importFrom graphics par image mtext
+#' @importFrom graphics par image mtext axis
 #' @importFrom methods hasArg
 #' @export
 #' @examples

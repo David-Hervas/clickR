@@ -488,11 +488,11 @@ remove_empty <- function(x, track=TRUE){
 #' @param track Track changes?
 #' @export
 fix_all <- function(x, track=TRUE){
-  x <- fix.numerics(
-    fix.factors(
-      fix.dates(
+  x <- fix_numerics(
+    fix_factors(
+      fix_dates(
         remove_empty(
-          fix.NA(
+          fix_NA(
             nice_names(x,
                        track=track),
             track=track),
@@ -513,7 +513,7 @@ fix_all <- function(x, track=TRUE){
 #' mydata<-data.frame(Dates1=c("25/06/1983", "25-08/2014", "2001/11/01", "2008-10-01"),
 #'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", NA),
 #'                    Numeric1=rnorm(4))
-#' mydata <- fix.dates(mydata)
+#' mydata <- fix_dates(mydata)
 #' mydata
 #' track_changes(mydata)
 track_changes <- function(x, subset){
@@ -536,7 +536,7 @@ track_changes <- function(x, subset){
 #' mydata<-data.frame(Dates1=c("25/06/1983", "25-08/2014", "2001/11/01", "2008-10-01"),
 #'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", NA),
 #'                    Numeric1=rnorm(4))
-#' mydata <- fix.dates(mydata)
+#' mydata <- fix_dates(mydata)
 #' mydata
 #' tracking <- track_changes(mydata)
 #' mydata_r <- restore_changes(tracking)

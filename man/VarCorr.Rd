@@ -6,6 +6,9 @@
 \usage{
 VarCorr(...)
 }
+\arguments{
+\item{...}{Not used}
+}
 \description{
 Extract Variance-Covariance Matrix. This function has been
 removed from the package. Updated functions are available in \sQuote{repmod} package.

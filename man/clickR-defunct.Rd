@@ -8,36 +8,6 @@ These functions are defunct, please use the package repmod to find their updated
 }
 \details{
 \itemize{
- \item \code{\link{report.lm}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.glm}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.coxph}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.merModLmerTest}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.lmerMod}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.glmerMod}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.lqmm}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.clm}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.clmm}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.rq}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.betareg}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.brmsfit}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.glmnet}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.rlm}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.glmmadmb}}: This function is defunct, and will
- be removed in the next version of this package.
  \item \code{\link{rob.pvals}}: This function is defunct, and will
  be removed in the next version of this package.
  \item \code{\link{rob.ci}}: This function is defunct, and will
@@ -52,13 +22,9 @@ These functions are defunct, please use the package repmod to find their updated
  be removed in the next version of this package.
  \item \code{\link{VarCorr}}: This function is defunct, and will
  be removed in the next version of this package.
- \item \code{\link{set_noms}}: This function is defunct, and will
- be removed in the next version of this package.
  \item \code{\link{plot.reportmodel}}: This function is defunct, and will
  be removed in the next version of this package.
  \item \code{\link{coefplot}}: This function is defunct, and will
- be removed in the next version of this package.
- \item \code{\link{report.data.frame}}: This function is defunct, and will
  be removed in the next version of this package.
 }
 }

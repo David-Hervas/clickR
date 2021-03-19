@@ -4,7 +4,10 @@
 \alias{plot.reportmodel}
 \title{Defunct functions in package \sQuote{clickR}}
 \usage{
-\method{plot}{reportmodel}(x, ...)
+\method{plot}{reportmodel}(...)
+}
+\arguments{
+\item{...}{Not used}
 }
 \description{
 Creates a coefplot from the reportmodel object. This function has been

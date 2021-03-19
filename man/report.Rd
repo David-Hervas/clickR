@@ -6,6 +6,9 @@
 \usage{
 report(...)
 }
+\arguments{
+\item{...}{Not used}
+}
 \description{
 Generic function for creating reporting tables. This function has been
 removed from the package. Updated functions are available in \sQuote{repmod} package.

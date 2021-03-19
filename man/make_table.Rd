@@ -6,6 +6,9 @@
 \usage{
 make_table(...)
 }
+\arguments{
+\item{...}{Not used}
+}
 \description{
 Auxiliary function to create tables. This function has been
 removed from the package. Updated functions are available in \sQuote{repmod} package.
