@@ -5,4 +5,4 @@
 [![](http://cranlogs.r-pkg.org/badges/grand-total/clickR)](https://CRAN.R-project.org/package=clickR)
 
 # clickR
-Performs data exploration, fixes errors in numerical, factor and date variables, checks data quality and performs report tables from models and summaries.
+Tools for assessing data quality, performing exploratory analysis, and semi-automatic preprocessing of messy data with change tracking for integral dataset cleaning.
