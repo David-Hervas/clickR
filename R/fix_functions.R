@@ -56,9 +56,6 @@ nice_names <- function(x, track=TRUE){
 #' # After using fix_factors, factor variables are recognized as such.
 #' descriptive(fix_factors(mtcars))
 fix_factors<-function(x, k=5, drop=TRUE, track=TRUE){
-  if (as.character(match.call()[[1]]) == "fix.factors") {
-    warning("fix.factors will be removed in next version of the package. Please use fix_factors() instead", call. = FALSE)
-  }
   changes_old <- attr(x, "changes")
   old <- x
   candidate_variables <- (sapply(x, function(x) (is.numeric(x) |
@@ -87,13 +84,9 @@ fix_factors<-function(x, k=5, drop=TRUE, track=TRUE){
   } else return(old)
 }
 
-#' @export
-#' @rdname fix_factors
-fix.factors <- fix_factors
-
 #' Fix numeric data
 #'
-#' @description Fixes numeric data. In may cases, numeric data are not recognized by R
+#' @description Fixes numeric data. In many cases, numeric data are not recognized by R
 #' because there are data inconsistencies (wrong decimal separator, whitespaces, typos,
 #' thousand separator, etc.). \code{fix_numerics} detects and corrects these variables,
 #' making them numeric again.
@@ -110,9 +103,6 @@ fix.factors <- fix_factors
 #' descriptive(mydata)
 #' descriptive(fix_numerics(mydata, k=5))
 fix_numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
-  if (as.character(match.call()[[1]]) == "fix.numerics") {
-    warning("fix.numerics will be removed in next version of the package. Please use fix_numerics() instead", call. = FALSE)
-  }
   changes_old <- attr(x, "changes")
   old <- x
   previous.NA<- sapply(x, function(x) sum(is.na(x)))
@@ -175,11 +165,6 @@ fix_numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
   } else return(old)
 }
 
-#' @export
-#' @rdname fix_numerics
-fix.numerics <- fix_numerics
-
-
 #' Fix dates
 #'
 #' @description Fixes dates. Dates can be recorded in numerous formats depending on the
@@ -204,9 +189,6 @@ fix.numerics <- fix_numerics
 #'                    Numeric1=rnorm(4))
 #' fix_dates(mydata)
 fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, track=TRUE){
-  if (as.character(match.call()[[1]]) == "fix.dates") {
-    warning("fix.dates will be removed in next version of the package. Please use fix_dates() instead", call. = FALSE)
-  }
   changes_old <- attr(x, "changes")
   old <- x
   x<-kill.factors(x)
@@ -247,10 +229,6 @@ fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
   }
   return(x)
 }
-
-#' @export
-#' @rdname fix_dates
-fix.dates <- fix_dates
 
 #' Internal function for dates with text
 #'
@@ -334,9 +312,6 @@ fxd <- function(d, use.probs=TRUE){
 #' fix_levels(mydata, "factor1", k=4, plot=TRUE)   #Chose k to select matching levels
 #' fix_levels(mydata, "factor1", levels=c("Control", "Treatment"), k=4)
 fix_levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, k=ifelse(!is.null(levels), length(levels), 2), track=TRUE, ...){
-  if (as.character(match.call()[[1]]) == "fix.levels") {
-    warning("fix.levels will be removed in next version of the package. Please use fix_levels() instead", call. = FALSE)
-  }
   changes_old <- attr(data, "changes")
   x <- data[,factor_name]
   x_na <- na.omit(x)
@@ -386,10 +361,6 @@ fix_levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
   invisible(data)
 }
 
-#' @export
-#' @rdname fix_levels
-fix.levels <- fix_levels
-
 #' fix_NA
 #'
 #' @description Fixes miscoded missing values
@@ -402,9 +373,6 @@ fix.levels <- fix_levels
 #' casa = c("", 1, 2, 3, 4, " ", 6, 7))
 #' fix_NA(mydata)
 fix_NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$", "^NULL$", "^N/A$"), track=TRUE){
-  if (as.character(match.call()[[1]]) == "fix.NA") {
-    warning("fix.NA will be removed in next version of the package. Please use fix_NA() instead", call. = FALSE)
-  }
   changes_old <- attr(x, "changes")
   string <- paste(na.strings, collapse="|")
   output <- as.data.frame(lapply(x, function(x) {
@@ -431,10 +399,6 @@ fix_NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
   }
   return(output)
 }
-
-#' @export
-#' @rdname fix_NA
-fix.NA <- fix_NA
 
 #' fix_concat
 #'

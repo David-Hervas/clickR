@@ -2,21 +2,13 @@
 % Please edit documentation in R/report_model.R
 \name{report.default}
 \alias{report.default}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-\method{report}{default}(x, ...)
-}
-\arguments{
-\item{x}{Any object without specific report function}
-
-\item{...}{further arguments passed to summary}
-}
-\value{
-A summary of the object
+report.default(...)
 }
 \description{
-This is a default function for calling summary(x) on non-implemented classes. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+This is a default function for calling summary(x) on non-implemented classes. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Default function for report

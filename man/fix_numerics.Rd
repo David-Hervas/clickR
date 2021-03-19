@@ -2,12 +2,9 @@
 % Please edit documentation in R/fix_functions.R
 \name{fix_numerics}
 \alias{fix_numerics}
-\alias{fix.numerics}
 \title{Fix numeric data}
 \usage{
 fix_numerics(x, k = 8, max.NA = 0.2, track = TRUE)
-
-fix.numerics(x, k = 8, max.NA = 0.2, track = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
@@ -21,7 +18,7 @@ changes will be reverted and the variable will remain unchanged.}
 \item{track}{Keep track of changes?}
 }
 \description{
-Fixes numeric data. In may cases, numeric data are not recognized by R
+Fixes numeric data. In many cases, numeric data are not recognized by R
 because there are data inconsistencies (wrong decimal separator, whitespaces, typos,
 thousand separator, etc.). \code{fix_numerics} detects and corrects these variables,
 making them numeric again.

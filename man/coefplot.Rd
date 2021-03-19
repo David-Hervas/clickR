@@ -2,67 +2,14 @@
 % Please edit documentation in R/report_model.R
 \name{coefplot}
 \alias{coefplot}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-coefplot(
-  coefs,
-  lwr.int = coefs,
-  upper.int = coefs,
-  offset = 0,
-  coefnames = names(coefs),
-  abline.pos = 0,
-  sorted = FALSE,
-  reverse = FALSE,
-  pch = 16,
-  xlim = c(min(lwr.int, na.rm = TRUE), max(upper.int, na.rm = TRUE)),
-  ylim = c(1, length(coefs)),
-  color = "black",
-  ...
-)
-}
-\arguments{
-\item{coefs}{A vector with each coefficient}
-
-\item{lwr.int}{A vector with the lower end of the CI}
-
-\item{upper.int}{A vector with the upper end of the CI}
-
-\item{offset}{Y-axis offset for the coefficients}
-
-\item{coefnames}{Name for each variable}
-
-\item{abline.pos}{Position for the vertical reference line}
-
-\item{sorted}{Should the coefficients be sorted from highest to lowest?}
-
-\item{reverse}{Should the order be reversed?}
-
-\item{pch}{Type of point}
-
-\item{xlim}{Limits of the X-axis}
-
-\item{ylim}{Limits of the Y-axis}
-
-\item{color}{Color for the points}
-
-\item{...}{Further arguments passed to axis()}
-}
-\value{
-A plot of the coefficients with their CI
+coefplot(...)
 }
 \description{
-Creates a plot of the coefficients of a model. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Creates a plot of the coefficients of a model. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Plot of the coefficients of a model
-}
-\examples{
-lm1 <- lm(Petal.Length ~ Sepal.Width + Species, data=iris)
-a<-report(lm1)
-par(mar=c(4, 10, 3, 2))
-#Coefplot calling plot.reportmodel
-plot(a)
-#Manual coefplot
-coefplot(coefs=c(1, 2, 3), lwr.int=c(0, 1, 2), upper.int=c(5, 6, 7), coefnames=c("A", "B", "C"))
 }

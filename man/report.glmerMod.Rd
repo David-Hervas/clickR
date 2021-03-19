@@ -2,42 +2,13 @@
 % Please edit documentation in R/report_model.R
 \name{report.glmerMod}
 \alias{report.glmerMod}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-\method{report}{glmerMod}(
-  x,
-  file = NULL,
-  type = "word",
-  digits = 3,
-  digitspvals = 3,
-  info = TRUE,
-  print = TRUE,
-  ...
-)
-}
-\arguments{
-\item{x}{A generalized linear mixed model object}
-
-\item{file}{Name of the file to export the table}
-
-\item{type}{Format of the file}
-
-\item{digits}{Number of decimals}
-
-\item{digitspvals}{Number of decimals for p-values}
-
-\item{info}{If TRUE, include call in the exported table}
-
-\item{print}{Should the report table be printed on screen?}
-
-\item{...}{Further arguments passed to make_table}
-}
-\value{
-A data frame with the report table
+report.glmerMod(...)
 }
 \description{
-Creates a report table from a generalized linear mixed model. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Creates a report table from a generalized linear mixed model. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Report from generalized linear mixed model

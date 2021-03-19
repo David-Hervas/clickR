@@ -2,19 +2,13 @@
 % Please edit documentation in R/report_model.R
 \name{rob.pvals}
 \alias{rob.pvals}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-rob.pvals(x)
-}
-\arguments{
-\item{x}{A rlm object}
-}
-\value{
-A vector of p-values
+rob.pvals(...)
 }
 \description{
-Estimates p-values for rlm models. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Estimates p-values for rlm models. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Function to compute p-values for robust linear regression models

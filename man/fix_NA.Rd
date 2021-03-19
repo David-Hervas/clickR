@@ -2,16 +2,9 @@
 % Please edit documentation in R/fix_functions.R
 \name{fix_NA}
 \alias{fix_NA}
-\alias{fix.NA}
 \title{fix_NA}
 \usage{
 fix_NA(
-  x,
-  na.strings = c("^$", "^ $", "^\\\\?$", "^-$", "^\\\\.$", "^NaN$", "^NULL$", "^N/A$"),
-  track = TRUE
-)
-
-fix.NA(
   x,
   na.strings = c("^$", "^ $", "^\\\\?$", "^-$", "^\\\\.$", "^NaN$", "^NULL$", "^N/A$"),
   track = TRUE

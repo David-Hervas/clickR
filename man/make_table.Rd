@@ -2,27 +2,13 @@
 % Please edit documentation in R/report_model.R
 \name{make_table}
 \alias{make_table}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-make_table(x, file, type, info = NULL, ...)
-}
-\arguments{
-\item{x}{A data.frame object}
-
-\item{file}{Name of the file}
-
-\item{type}{Type of file}
-
-\item{info}{Footer for the table}
-
-\item{...}{Additional parameters passed to make_word_table}
-}
-\value{
-Creates a file with the table
+make_table(...)
 }
 \description{
-Auxiliary function to create tables. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Auxiliary function to create tables. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Make a table from report

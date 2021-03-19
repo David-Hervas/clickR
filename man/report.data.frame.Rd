@@ -2,45 +2,14 @@
 % Please edit documentation in R/report_model.R
 \name{report.data.frame}
 \alias{report.data.frame}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-\method{report}{data.frame}(
-  x,
-  by = NULL,
-  file = NULL,
-  type = "word",
-  digits = 2,
-  digitscat = digits,
-  print = TRUE,
-  ...
-)
-}
-\arguments{
-\item{x}{A data.frame object}
-
-\item{by}{Grouping variable for the report}
-
-\item{file}{Name of the file to export the table}
-
-\item{type}{Format of the file}
-
-\item{digits}{Number of decimal places}
-
-\item{digitscat}{Number of decimal places for categorical variables (if different to digits)}
-
-\item{print}{Should the report table be printed on screen?}
-
-\item{...}{further arguments passed to make_table()}
+report.data.frame(...)
 }
 \description{
-Creates a report table ready for publication. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Creates a report table ready for publication. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Report tables of summary data
-}
-\examples{
-report(iris)
-(reporTable<-report(iris, by="Species"))
-class(reporTable)
 }

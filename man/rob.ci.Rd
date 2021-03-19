@@ -2,25 +2,13 @@
 % Please edit documentation in R/report_model.R
 \name{rob.ci}
 \alias{rob.ci}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-rob.ci(x, level = 0.95, maxit = 200, R = 2000)
-}
-\arguments{
-\item{x}{A rlm object}
-
-\item{level}{Confidence level for the interval}
-
-\item{maxit}{Maximum number of iterations per fit}
-
-\item{R}{Number of boostrap samples}
-}
-\value{
-A matrix with bootstrap confidence intervals for each variable in the model
+rob.ci(...)
 }
 \description{
-Estimates confidence intervals for rlm models. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Estimates confidence intervals for rlm models. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Function to compute bootstrap confidence intervals for robust linear regression models

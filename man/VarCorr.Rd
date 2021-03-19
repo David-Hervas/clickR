@@ -2,23 +2,13 @@
 % Please edit documentation in R/report_model.R
 \name{VarCorr}
 \alias{VarCorr}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-VarCorr(x, sigma = 1, ...)
-}
-\arguments{
-\item{x}{A model object}
-
-\item{sigma}{Optional value used as a multiplier for the standard deviations}
-
-\item{...}{Further arguments passed to VarrCorr methods}
-}
-\value{
-A Variance-Covariance Matrix
+VarCorr(...)
 }
 \description{
-Extract Variance-Covariance Matrix. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Extract Variance-Covariance Matrix. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Generic VarCorr function

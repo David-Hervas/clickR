@@ -2,23 +2,13 @@
 % Please edit documentation in R/report_model.R
 \name{make_csv_table}
 \alias{make_csv_table}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-make_csv_table(x, file, info)
-}
-\arguments{
-\item{x}{A data.frame object}
-
-\item{file}{Name of the file}
-
-\item{info}{Footer for the table}
-}
-\value{
-Creates a .csv file with the table
+make_csv_table(...)
 }
 \description{
-Exports a table to Excel. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Exports a table to Excel. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Export a table to excel

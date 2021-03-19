@@ -2,18 +2,9 @@
 % Please edit documentation in R/fix_functions.R
 \name{fix_dates}
 \alias{fix_dates}
-\alias{fix.dates}
 \title{Fix dates}
 \usage{
 fix_dates(
-  x,
-  max.NA = 0.8,
-  min.obs = nrow(x) * 0.05,
-  use.probs = TRUE,
-  track = TRUE
-)
-
-fix.dates(
   x,
   max.NA = 0.8,
   min.obs = nrow(x) * 0.05,

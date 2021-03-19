@@ -2,21 +2,9 @@
 % Please edit documentation in R/fix_functions.R
 \name{fix_levels}
 \alias{fix_levels}
-\alias{fix.levels}
 \title{Fix levels}
 \usage{
 fix_levels(
-  data,
-  factor_name,
-  method = "dl",
-  levels = NULL,
-  plot = FALSE,
-  k = ifelse(!is.null(levels), length(levels), 2),
-  track = TRUE,
-  ...
-)
-
-fix.levels(
   data,
   factor_name,
   method = "dl",

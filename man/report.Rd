@@ -2,27 +2,14 @@
 % Please edit documentation in R/report_model.R
 \name{report}
 \alias{report}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-report(x, ...)
-}
-\arguments{
-\item{x}{An compatibleobject that can be summarized}
-
-\item{...}{further arguments passed to make_table}
-}
-\value{
-A data frame with the report table
+report(...)
 }
 \description{
-Generic function for creating reporting tables. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Generic function for creating reporting tables. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Generic function for creating reporting tables
-}
-\examples{
-report(iris)  #Report of descriptive statistics
-lm1 <- lm(Petal.Length ~ Sepal.Width + Species, data=iris)
-report(lm1)   #Report of model
 }

@@ -2,12 +2,9 @@
 % Please edit documentation in R/fix_functions.R
 \name{fix_factors}
 \alias{fix_factors}
-\alias{fix.factors}
 \title{Fix factors imported as numerics}
 \usage{
 fix_factors(x, k = 5, drop = TRUE, track = TRUE)
-
-fix.factors(x, k = 5, drop = TRUE, track = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}

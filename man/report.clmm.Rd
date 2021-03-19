@@ -2,42 +2,13 @@
 % Please edit documentation in R/report_model.R
 \name{report.clmm}
 \alias{report.clmm}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-\method{report}{clmm}(
-  x,
-  file = NULL,
-  type = "word",
-  digits = 3,
-  digitspvals = 3,
-  info = TRUE,
-  print = TRUE,
-  ...
-)
-}
-\arguments{
-\item{x}{An ordinal model object}
-
-\item{file}{Name of the file to export the table}
-
-\item{type}{Format of the file}
-
-\item{digits}{Number of decimals}
-
-\item{digitspvals}{Number of decimals for p-values}
-
-\item{info}{If TRUE, include call in the exported table}
-
-\item{print}{Should the report table be printed on screen?}
-
-\item{...}{Further arguments passed to make_table}
-}
-\value{
-A data frame with the report table
+report.clmm(...)
 }
 \description{
-Creates a report table from an ordinal mixed model. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Creates a report table from an ordinal mixed model. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Report from ordinal mixed model

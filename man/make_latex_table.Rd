@@ -2,21 +2,13 @@
 % Please edit documentation in R/report_model.R
 \name{make_latex_table}
 \alias{make_latex_table}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-make_latex_table(x, file)
-}
-\arguments{
-\item{x}{A data.frame object}
-
-\item{file}{Name of the file}
-}
-\value{
-Creates a .txt file with latex code for the table
+make_latex_table(...)
 }
 \description{
-Exports a table to latex. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Exports a table to latex. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Export a table to latex

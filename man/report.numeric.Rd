@@ -2,21 +2,13 @@
 % Please edit documentation in R/report_model.R
 \name{report.numeric}
 \alias{report.numeric}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
-\method{report}{numeric}(x, ...)
-}
-\arguments{
-\item{x}{A numeric variable}
-
-\item{...}{Further arguments passed to make_table}
-}
-\value{
-A data frame with the report table
+report.numeric(...)
 }
 \description{
-Creates a report table. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Creates a report table. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Report from numeric variable

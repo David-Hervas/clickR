@@ -2,25 +2,14 @@
 % Please edit documentation in R/report_model.R
 \name{plot.reportmodel}
 \alias{plot.reportmodel}
-\title{Deprecated functions in package \sQuote{clickR}}
+\title{Defunct functions in package \sQuote{clickR}}
 \usage{
 \method{plot}{reportmodel}(x, ...)
 }
-\arguments{
-\item{x}{A reportmodel object}
-
-\item{...}{Further arguments passed to coefplot}
-}
 \description{
-Creates a coefplot from the reportmodel object. This function will be
-defunct in the next version. Updated functions are available in \sQuote{repmod} package.
+Creates a coefplot from the reportmodel object. This function has been
+removed from the package. Updated functions are available in \sQuote{repmod} package.
 }
 \details{
 Coefplot for reportmodel objects
-}
-\examples{
-lm1 <- lm(Petal.Length ~ Sepal.Width + Species, data=iris)
-a<-report(lm1)
-par(mar=c(4, 10, 3, 2))
-plot(a)   #Coefplot calling plot.reportmodel
 }
