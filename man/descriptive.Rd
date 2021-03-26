@@ -4,7 +4,7 @@
 \alias{descriptive}
 \title{Detailed summary of the data}
 \usage{
-descriptive(x, z = 3, ignore.na = TRUE, by = NULL)
+descriptive(x, z = 3, ignore.na = TRUE, by = NULL, print = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
@@ -14,6 +14,8 @@ descriptive(x, z = 3, ignore.na = TRUE, by = NULL)
 \item{ignore.na}{If TRUE NA values will not count for relative frequencies calculations}
 
 \item{by}{Factor variable definining groups for the summary}
+
+\item{print}{Should results be printed?}
 }
 \value{
 Summary of the data

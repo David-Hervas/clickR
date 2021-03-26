@@ -112,13 +112,14 @@ GK_assoc <- function(x, y){
 #' @param z Number of decimal places
 #' @param ignore.na If TRUE NA values will not count for relative frequencies calculations
 #' @param by Factor variable definining groups for the summary
+#' @param print Should results be printed?
 #' @return Summary of the data
 #' @importFrom stats density dist family median na.omit quantile sd var
 #' @export
 #' @examples
 #' descriptive(iris)
 #' descriptive(iris, by="Species")
-descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL){
+descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
   #Data.frame
   if(!is.data.frame(x)){
     x<-data.frame(x)
@@ -151,11 +152,19 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL){
     }
   } else{
     #Splitter (Splits data.frame: Numeric and categorical part)
-    nums <- sapply(x, is.numeric)
+    nums <- sapply(x, class)
 
     #Numeric summary
     resumen<-function(y){
-      resumen1 <- round(c(min(y, na.rm=T), quantile(y, probs=0.25, na.rm=T), median(y, na.rm=T), quantile(y, probs=0.75, na.rm=T), max(y, na.rm=T), mean(y, na.rm=T), sd(y, na.rm=T), kurtosis(y), skewness(y)),z)
+      resumen1 <- round(c(min(y, na.rm=TRUE),
+                          quantile(y, probs=0.25, na.rm=TRUE),
+                          median(y, na.rm=TRUE),
+                          quantile(y, probs=0.75, na.rm=T),
+                          max(y, na.rm=TRUE),
+                          mean(y, na.rm=TRUE),
+                          sd(y, na.rm=TRUE),
+                          kurtosis(y),
+                          skewness(y)),z)
       names(resumen1) <- c("Min", "1st Q.", "Median", "3rd Q.", "Max", "Mean", "SD", "Kurtosis", "Skewness")
       distribution <- c("|", rep("-", 28), "|")
       scaled_Y <- scale_01(y)
@@ -165,30 +174,69 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL){
       tryCatch(distribution[nearest((resumen1["Median"]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-":", error=function(e) NA)
       return(data.frame(t(resumen1), Modes=moda_cont(y), NAs=sum(is.na(y)), Distribution=paste(distribution, collapse=""), check.names = FALSE, stringsAsFactors = FALSE))
     }
-
+    #Character and factor summary
     resumen2<-function(w){
       resumen2<-c(length(table(w)), abbreviate(paste(na.omit(names(sort(-table(w)))[1:5]), collapse="/"), minlength = min(20, nchar(paste(na.omit(names(sort(-table(w)))[1:5]), collapse="/"))), named=FALSE), moda(w), round(prop_may(w, ignore.na = ignore.na),z), antimoda(w), round(prop_min(w, ignore.na = ignore.na),z), sum(is.na(w)))
       names(resumen2)<- c("N. Classes", "Classes", "Mode", "Prop. mode", "Anti-mode", "Prop. Anti-mode", "NAs")
       data.frame(t(resumen2), check.names = FALSE, stringsAsFactors = FALSE)
     }
+    #Date summary
+    resumen3<-function(y){
+      resumen3 <- c(as.character(min(y, na.rm=TRUE)),
+                    as.character(as.Date(quantile(as.numeric(y), probs=0.25, na.rm=TRUE), origin=as.Date("1970-01-01"))),
+                    as.character(median(y, na.rm=TRUE)),
+                    as.character(as.Date(quantile(as.numeric(y), probs=0.75, na.rm=TRUE), origin=as.Date("1970-01-01"))),
+                    as.character(max(y, na.rm=TRUE)),
+                    as.character(mean(y, na.rm=TRUE)),
+                    round(sd(y, na.rm=TRUE), z),
+                    round(kurtosis(as.numeric(y)), z),
+                    round(skewness(as.numeric(y)), z))
+      names(resumen3) <- c("Min", "1st Q.", "Median", "3rd Q.", "Max", "Mean", "SD", "Kurtosis", "Skewness")
+      distribution <- c("|", rep("-", 28), "|")
+      scaled_Y <- scale_01(as.numeric(y))
+      tryCatch(distribution[(nearest((as.numeric(as.Date(resumen3["1st Q."]))-as.numeric(as.Date(resumen3["Min"])))/(as.numeric(as.Date(resumen3["Max"]))-as.numeric(as.Date(resumen3["Min"]))))+1):(nearest((as.numeric(as.Date(resumen3["3rd Q."]))-as.numeric(as.Date(resumen3["Min"])))/(as.numeric(as.Date(resumen3["Max"]))-as.numeric(as.Date(resumen3["Min"]))))-1)]<-"#", error=function(e) NA)
+      tryCatch(distribution[nearest((as.numeric(as.Date(resumen3["1st Q."]))-as.numeric(as.Date(resumen3["Min"])))/(as.numeric(as.Date(resumen3["Max"]))-as.numeric(as.Date(resumen3["Min"]))))]<-"[", error=function(e) NA)
+      tryCatch(distribution[nearest((as.numeric(as.Date(resumen3["3rd Q."]))-as.numeric(as.Date(resumen3["Min"])))/(as.numeric(as.Date(resumen3["Max"]))-as.numeric(as.Date(resumen3["Min"]))))]<-"]", error=function(e) NA)
+      tryCatch(distribution[nearest((as.numeric(as.Date(resumen3["Median"]))-as.numeric(as.Date(resumen3["Min"])))/(as.numeric(as.Date(resumen3["Max"]))-as.numeric(as.Date(resumen3["Min"]))))]<-":", error=function(e) NA)
+      return(data.frame(t(resumen3), NAs=sum(is.na(y)), Distribution=paste(distribution, collapse=""), check.names = FALSE, stringsAsFactors = FALSE))
+    }
+
     #Results
+    if(print){
     cat(paste("Data frame with", dim(x)[1], "observations and", dim(x)[2], "variables."))
     cat("\n")
     cat("\n")
-    if("TRUE" %in% nums){
-      cat("Numeric variables (", sum(nums), ")", sep="")
-      cat("\n")
-      summary1 <- do.call(rbind, lapply(x[,nums], resumen))
-      print(summary1)
+    }
+    if(any(nums %in% c("numeric", "integer"))){
+      summary1 <- do.call(rbind, lapply(x[,nums %in% c("numeric", "integer"), drop=FALSE], resumen))
+      if(print){
+        cat("Numeric variables (", sum(nums %in% c("numeric", "integer")), ")", sep="")
+        cat("\n")
+        print(summary1)
+      }
     } else { summary1 <- NULL}
-    if("FALSE" %in% nums){
-      summary2 <- do.call(rbind, lapply(x[,!nums, drop=FALSE], resumen2))
-      cat("\n")
-      cat("Categorical variables (", dim(x)[2]-sum(nums), ")", sep="")
-      cat("\n")
-      print(summary2, quote=FALSE)
+
+    if(any(nums %in% c("factor", "character", "logical"))){
+      summary2 <- do.call(rbind, lapply(x[, nums %in% c("factor", "character", "logical"), drop=FALSE], resumen2))
+      if(print){
+        cat("\n")
+        cat("Categorical variables (", sum(nums %in% c("factor", "character", "logical")), ")", sep="")
+        cat("\n")
+        print(summary2, quote=FALSE)
+      }
     } else { summary2 <- NULL}
-    invisible(list(numeric=summary1, character=summary2))
+
+    if(any(nums %in% c("Date"))){
+      summary3 <- do.call(rbind, lapply(x[,nums %in% c("Date"), drop=FALSE], resumen3))
+      if(print){
+        cat("\n")
+        cat("Date variables (", sum(nums %in% c("Date")), ")", sep="")
+        cat("\n")
+        print(summary3, quote=FALSE)
+      }
+    } else { summary3 <- NULL}
+
+    invisible(list(numeric=summary1, character=summary2, date=summary3))
   }
 }
 

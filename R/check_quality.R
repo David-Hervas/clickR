@@ -18,7 +18,7 @@ extreme_values <- function(x, n=5, id=NULL){
   if(!is.null(id)){
     h<- matrix(id[order(x)][c(1:n, (length(na.omit(x))-(n-1)):length(na.omit(x)))], nrow=2, byrow=TRUE)
   }
-  return(list(Values=t(m), IDs=t(h)))
+  return(list(Values=setNames(data.frame(t(m)), c("Low", "High")), IDs=setNames(data.frame(t(h)), c("Low", "High"))))
 }
 
 #' Brute numeric coercion
