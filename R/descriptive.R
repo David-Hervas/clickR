@@ -123,7 +123,7 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL){
   if(!is.data.frame(x)){
     x<-data.frame(x)
   }
-  x<-x[, !sapply(x, function(x) all(is.na(x)))]
+  x<-x[, !sapply(x, function(x) all(is.na(x))), drop=FALSE]
 
   if(!is.null(by) && by %in% names(x)){
     by_v <- x[,by]

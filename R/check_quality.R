@@ -14,9 +14,9 @@ may.numeric <- function(x) suppressWarnings(!is.na(numeros(x)))
 #' @return A matrix with the lowest and highest values from a vector
 extreme_values <- function(x, n=5, id=NULL){
   h<-matrix(rep("", n*2), ncol=n)
-  m<-matrix(sort(na.omit(numeros(x)))[c(1:n, (length(na.omit(numeros(x)))-(n-1)):length(na.omit(numeros(x))))], nrow=2, byrow=TRUE)
+  m<-matrix(sort(na.omit(x))[c(1:n, (length(na.omit(x))-(n-1)):length(na.omit(x)))], nrow=2, byrow=TRUE)
   if(!is.null(id)){
-    h<- matrix(id[order(numeros(x))][c(1:n, (length(na.omit(numeros(x)))-(n-1)):length(na.omit(numeros(x))))], nrow=2, byrow=TRUE)
+    h<- matrix(id[order(x)][c(1:n, (length(na.omit(x))-(n-1)):length(na.omit(x)))], nrow=2, byrow=TRUE)
   }
   return(list(Values=t(m), IDs=t(h)))
 }
@@ -49,7 +49,7 @@ numeros <- function(x){
 
 #' True TRUE
 #'
-#' @description Makes possible logical comparisons against NULL and NA values
+#' @description Makes possible vectorized logical comparisons against NULL and NA values
 #' @param x A logical vector
 #' @return A logical vector
 #' @export
@@ -134,7 +134,7 @@ check_quality <- function(x, id=1:length(x), plot=TRUE, numeric=NULL, n=ifelse(i
       n<-max(c(n, 5*!call_n))} else num <- FALSE
   }
   if(num & !is.numeric(x)){
-    warning("Numeric variable encoded as a factor. Use fix.numerics() to amend", call.=FALSE)
+    warning("Numeric variable encoded as a factor. Use fix_numerics() to amend", call.=FALSE)
     off<-table(x)[is.na(numeros(names(table(x))))]
     offending_values<-paste(paste(names(off), " (", off, ")", sep=""), collapse="; ", sep="")
   }
