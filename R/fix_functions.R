@@ -3,6 +3,7 @@
 #' @description Changes names of a data frame to ease work with them
 #' @param x A data.frame
 #' @param track Track changes?
+#' @return The input data.frame \code{x} with the fixed names
 #' @export
 #' @examples
 #' d <- data.frame('Variable 1'=NA, '% Response'=NA, ' Variable     3'=NA,check.names=FALSE)
