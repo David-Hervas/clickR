@@ -280,7 +280,7 @@ fxd <- function (d, use.probs = TRUE){
   prueba[[13]] <- text_dates
   prueba[[14]] <- text_dates2
   co <- lapply(prueba, function(x){
-    x[nchar(gsub("[^\\d]+", "", d, perl=TRUE)) == 8 & format.Date(x, "%Y") < 100] <- NA
+    x[nchar(gsub("[^\\d]+", "", d, perl=TRUE)) == 8 & as.numeric(format(x, "%Y")) < 100] <- NA
     x
   })
   if (use.probs) {
@@ -292,12 +292,12 @@ fxd <- function (d, use.probs = TRUE){
   ))
   median_year <- median(as.numeric(format(final_dates, "%Y")), na.rm = TRUE)
   final_dates[as.numeric(format(final_dates, "%Y")) < 100 & !is.na(final_dates)] <- do.call("c", lapply(final_dates[as.numeric(format(final_dates, "%Y")) < 100 & !is.na(final_dates)], function(x){
-    years <- as.numeric(substr(x, 1, 4))
+    years <- as.numeric(format(x, "%Y"))
     posibles <- (years + ((median_year%/%100)+c(-1, 0, 1))*100)
     seq.Date(x, by=paste((posibles - years)[which.min(abs(median_year - posibles))], "years"), length.out=2)[2]
   }))
   Sys.setlocale("LC_TIME", "")
-  return(final_dates)
+  final_dates
 }
 
 #' Fix levels
