@@ -11,6 +11,9 @@ nice_names(x, track = TRUE)
 
 \item{track}{Track changes?}
 }
+\value{
+The input data.frame \code{x} with the fixed names
+}
 \description{
 Changes names of a data frame to ease work with them
 }

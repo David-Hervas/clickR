@@ -15,7 +15,7 @@ GK_assoc(x, y)
 Goodman and Kruskal's tau
 }
 \description{
-Returns Goodman and Kruskal's tay measure of association between two categorical variables
+Returns Goodman and Kruskal's tau measure of association between two categorical variables
 }
 \examples{
 data(infert)

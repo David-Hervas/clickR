@@ -87,7 +87,7 @@ prop_min <- function(x, ignore.na=TRUE){sort(table(x))[1]/(length(x)-ignore.na*s
 
 #' Computes Goodman and Kruskal's tau
 #'
-#' @description Returns Goodman and Kruskal's tay measure of association between two categorical variables
+#' @description Returns Goodman and Kruskal's tau measure of association between two categorical variables
 #' @param x A categorical variable
 #' @param y A categorical variable
 #' @return Goodman and Kruskal's tau
@@ -127,13 +127,13 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
   x<-x[, !sapply(x, function(x) all(is.na(x))), drop=FALSE]
 
   if(!is.null(by) && by %in% names(x)){
-    by_v <- x[,by]
-    x_sin <- x[,!colnames(x) == by, drop=FALSE]
-    if (length(x_sin)==0){
-      descriptive(x,z,ignore.na,by=NULL)
+    by_v <- x[, by]
+    x_sin <- x[, !colnames(x) == by, drop=FALSE]
+    if (length(x_sin) == 0){
+      descriptive(x, z, ignore.na, by=NULL)
       stop("Only one variable in the data. Can't be used as grouping variable")
     }
-    x_sin <- x_sin[!is.na(by_v),]
+    x_sin <- x_sin[!is.na(by_v), ]
     by_v <- by_v[!is.na(by_v)]
     by_v <- factor(by_v)
     niveles <- levels(by_v)
@@ -142,10 +142,10 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
     cat("-------------------------------")
     cat("\n")
     for (i in 1:length(niveles)){
-      x_g <- x_sin[by_v==niveles[i],]
+      x_g <- x_sin[by_v == niveles[i], ]
       cat("Level ", by, ": ", niveles[i], sep="")
       cat("\n")
-      descriptive(x=x_g,z=z,ignore.na=ignore.na,by=NULL)
+      descriptive(x=x_g, z=z, ignore.na=ignore.na, by=NULL)
       cat("\n")
       cat("-------------------------------")
       cat("\n")
@@ -155,7 +155,7 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
     nums <- sapply(x, class)
 
     #Numeric summary
-    resumen<-function(y){
+    resumen <- function(y){
       resumen1 <- round(c(min(y, na.rm=TRUE),
                           quantile(y, probs=0.25, na.rm=TRUE),
                           median(y, na.rm=TRUE),
@@ -168,24 +168,38 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
       names(resumen1) <- c("Min", "1st Q.", "Median", "3rd Q.", "Max", "Mean", "SD", "Kurtosis", "Skewness")
       distribution <- c("|", rep("-", 28), "|")
       scaled_Y <- scale_01(y)
-      tryCatch(distribution[(nearest((resumen1["1st Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))+1):(nearest((resumen1["3rd Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))-1)]<-"#", error=function(e) NA)
-      tryCatch(distribution[nearest((resumen1["1st Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-"[", error=function(e) NA)
-      tryCatch(distribution[nearest((resumen1["3rd Q."]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-"]", error=function(e) NA)
-      tryCatch(distribution[nearest((resumen1["Median"]-resumen1["Min"])/(resumen1["Max"]-resumen1["Min"]))]<-":", error=function(e) NA)
-      return(data.frame(t(resumen1), Modes=moda_cont(y), NAs=sum(is.na(y)), Distribution=paste(distribution, collapse=""), check.names = FALSE, stringsAsFactors = FALSE))
+      tryCatch(distribution[(nearest((resumen1["1st Q."] - resumen1["Min"])/
+                                       (resumen1["Max"] - resumen1["Min"]))+1):
+                              (nearest((resumen1["3rd Q."] - resumen1["Min"])/
+                                         (resumen1["Max"] - resumen1["Min"]))-1)] <- "#", error = function(e) NA)
+      tryCatch(distribution[nearest((resumen1["1st Q."] - resumen1["Min"])/
+                                      (resumen1["Max"] - resumen1["Min"]))] <- "[", error = function(e) NA)
+      tryCatch(distribution[nearest((resumen1["3rd Q."] - resumen1["Min"])/
+                                      (resumen1["Max"] - resumen1["Min"]))] <- "]", error = function(e) NA)
+      tryCatch(distribution[nearest((resumen1["Median"] - resumen1["Min"])/
+                                      (resumen1["Max"] - resumen1["Min"]))] <- ":", error = function(e) NA)
+      return(data.frame(t(resumen1), Modes=moda_cont(y), NAs=sum(is.na(y)),
+                        Distribution = paste(distribution, collapse=""), check.names = FALSE, stringsAsFactors = FALSE))
     }
     #Character and factor summary
-    resumen2<-function(w){
-      resumen2<-c(length(table(w)), abbreviate(paste(na.omit(names(sort(-table(w)))[1:5]), collapse="/"), minlength = min(20, nchar(paste(na.omit(names(sort(-table(w)))[1:5]), collapse="/"))), named=FALSE), moda(w), round(prop_may(w, ignore.na = ignore.na),z), antimoda(w), round(prop_min(w, ignore.na = ignore.na),z), sum(is.na(w)))
+    resumen2 <- function(w){
+      resumen2 <- c(length(table(w)),
+                    abbreviate(paste(na.omit(names(sort(-table(w)))[1:5]), collapse="/"),
+                               minlength = min(20, nchar(paste(na.omit(names(sort(-table(w)))[1:5]), collapse="/"))),
+                               named=FALSE),
+                    moda(w), round(prop_may(w, ignore.na = ignore.na),z), antimoda(w),
+                    round(prop_min(w, ignore.na = ignore.na),z), sum(is.na(w)))
       names(resumen2)<- c("N. Classes", "Classes", "Mode", "Prop. mode", "Anti-mode", "Prop. Anti-mode", "NAs")
       data.frame(t(resumen2), check.names = FALSE, stringsAsFactors = FALSE)
     }
     #Date summary
     resumen3<-function(y){
       resumen3 <- c(as.character(min(y, na.rm=TRUE)),
-                    as.character(as.Date(quantile(as.numeric(y), probs=0.25, na.rm=TRUE), origin=as.Date("1970-01-01"))),
+                    as.character(as.Date(quantile(as.numeric(y), probs=0.25, na.rm=TRUE),
+                                         origin=as.Date("1970-01-01"))),
                     as.character(median(y, na.rm=TRUE)),
-                    as.character(as.Date(quantile(as.numeric(y), probs=0.75, na.rm=TRUE), origin=as.Date("1970-01-01"))),
+                    as.character(as.Date(quantile(as.numeric(y), probs=0.75, na.rm=TRUE),
+                                         origin=as.Date("1970-01-01"))),
                     as.character(max(y, na.rm=TRUE)),
                     as.character(mean(y, na.rm=TRUE)),
                     round(sd(y, na.rm=TRUE), z),
@@ -194,11 +208,28 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
       names(resumen3) <- c("Min", "1st Q.", "Median", "3rd Q.", "Max", "Mean", "SD", "Kurtosis", "Skewness")
       distribution <- c("|", rep("-", 28), "|")
       scaled_Y <- scale_01(as.numeric(y))
-      tryCatch(distribution[(nearest((as.numeric(as.Date(resumen3["1st Q."]))-as.numeric(as.Date(resumen3["Min"])))/(as.numeric(as.Date(resumen3["Max"]))-as.numeric(as.Date(resumen3["Min"]))))+1):(nearest((as.numeric(as.Date(resumen3["3rd Q."]))-as.numeric(as.Date(resumen3["Min"])))/(as.numeric(as.Date(resumen3["Max"]))-as.numeric(as.Date(resumen3["Min"]))))-1)]<-"#", error=function(e) NA)
-      tryCatch(distribution[nearest((as.numeric(as.Date(resumen3["1st Q."]))-as.numeric(as.Date(resumen3["Min"])))/(as.numeric(as.Date(resumen3["Max"]))-as.numeric(as.Date(resumen3["Min"]))))]<-"[", error=function(e) NA)
-      tryCatch(distribution[nearest((as.numeric(as.Date(resumen3["3rd Q."]))-as.numeric(as.Date(resumen3["Min"])))/(as.numeric(as.Date(resumen3["Max"]))-as.numeric(as.Date(resumen3["Min"]))))]<-"]", error=function(e) NA)
-      tryCatch(distribution[nearest((as.numeric(as.Date(resumen3["Median"]))-as.numeric(as.Date(resumen3["Min"])))/(as.numeric(as.Date(resumen3["Max"]))-as.numeric(as.Date(resumen3["Min"]))))]<-":", error=function(e) NA)
-      return(data.frame(t(resumen3), NAs=sum(is.na(y)), Distribution=paste(distribution, collapse=""), check.names = FALSE, stringsAsFactors = FALSE))
+      tryCatch(distribution[(nearest((as.numeric(as.Date(resumen3["1st Q."])) -
+                                        as.numeric(as.Date(resumen3["Min"]))) /
+                                      (as.numeric(as.Date(resumen3["Max"])) -
+                                        as.numeric(as.Date(resumen3["Min"])))) + 1) :
+                            (nearest((as.numeric(as.Date(resumen3["3rd Q."])) -
+                                        as.numeric(as.Date(resumen3["Min"]))) /
+                                      (as.numeric(as.Date(resumen3["Max"])) -
+                                        as.numeric(as.Date(resumen3["Min"])))) - 1)] <- "#", error = function(e) NA)
+      tryCatch(distribution[nearest((as.numeric(as.Date(resumen3["1st Q."])) -
+                                       as.numeric(as.Date(resumen3["Min"]))) /
+                                     (as.numeric(as.Date(resumen3["Max"])) -
+                                       as.numeric(as.Date(resumen3["Min"]))))] <- "[", error = function(e) NA)
+      tryCatch(distribution[nearest((as.numeric(as.Date(resumen3["3rd Q."])) -
+                                       as.numeric(as.Date(resumen3["Min"]))) /
+                                     (as.numeric(as.Date(resumen3["Max"])) -
+                                       as.numeric(as.Date(resumen3["Min"]))))] <- "]", error = function(e) NA)
+      tryCatch(distribution[nearest((as.numeric(as.Date(resumen3["Median"])) -
+                                       as.numeric(as.Date(resumen3["Min"]))) /
+                                     (as.numeric(as.Date(resumen3["Max"])) -
+                                       as.numeric(as.Date(resumen3["Min"]))))] <- ":", error = function(e) NA)
+      return(data.frame(t(resumen3), NAs=sum(is.na(y)), Distribution=paste(distribution, collapse=""),
+                        check.names = FALSE, stringsAsFactors = FALSE))
     }
 
     #Results
@@ -227,7 +258,7 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
     } else { summary2 <- NULL}
 
     if(any(nums %in% c("Date"))){
-      summary3 <- do.call(rbind, lapply(x[,nums %in% c("Date"), drop=FALSE], resumen3))
+      summary3 <- do.call(rbind, lapply(x[, nums %in% c("Date"), drop=FALSE], resumen3))
       if(print){
         cat("\n")
         cat("Date variables (", sum(nums %in% c("Date")), ")", sep="")
@@ -236,7 +267,7 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
       }
     } else { summary3 <- NULL}
 
-    invisible(list(numeric=summary1, character=summary2, date=summary3))
+    invisible(list(numeric = summary1, character = summary2, date = summary3))
   }
 }
 
@@ -287,18 +318,18 @@ mine.plot <- function(x, fun=is.na, spacing=5, sort=F, show.x=TRUE, show.y=TRUE,
     orden <- order(sapply(x, function(x) sum(fun(x))), ...)
     x <- x[,orden]
   }
-  old.warn <- options(warn=-1)
-  pad<- ceiling(dim(x)[2]/30)
+  old.warn <- options(warn = -1)
+  pad <- ceiling(dim(x)[2]/30)
   old.par <- par(mar=c(8, 4.5, 6, 4))
   image(t(sapply(x, fun)), xaxt="n", yaxt="n", col=colorRampPalette(c("lightcyan4", "darkred"))(2), ...)
   if(show.x){
     axis(1, at=seq(0, 1, length=dim(x)[2]), labels=paste(names(x), "\n", "(", sapply(x, class), ")", sep=""), las=2, lwd=0, cex.axis=0.8)
   }
   if(show.y){
-    axis(2, at=seq(0, dim(x)[1], by=spacing)/dim(x)[1], labels=seq(0, dim(x)[1], by=spacing), las=1, cex.axis=0.6)
+    axis(2, at = seq(0, dim(x)[1], by = spacing)/dim(x)[1], labels = seq(0, dim(x)[1], by = spacing), las = 1, cex.axis = 0.6)
   }
   for(i in 1:pad){
-    axis(3, at=seq(0, 1, length=dim(x)[2])[seq(0+i, dim(x)[2], by=pad)],
+    axis(3, at=seq(0, 1, length=dim(x)[2])[seq(0 + i, dim(x)[2], by=pad)],
          labels=sapply(x, function(x) round(100*sum(fun(x))/length(x)))[seq(0+i, dim(x)[2], by=pad)], cex.axis=0.6, lwd=0, line=-1+i/2)
   }
   if(!hasArg("main")) mtext(paste("%", as.character(substitute(fun))), 3, line=max(pad/1.5, 2.5), cex=1.2)
@@ -308,10 +339,10 @@ mine.plot <- function(x, fun=is.na, spacing=5, sort=F, show.x=TRUE, show.y=TRUE,
     out <- fun(x[,y])
     id <- which(out)
     value <- x[,y][out]
-    if(ttrue(any(out))) data.frame(variable=variable, id=id, value=as.character(value))
+    if(ttrue(any(out))) data.frame(variable = variable, id = id, value = as.character(value))
   }))
   output2 <- sapply(x, function(x) round(sum(fun(x))/length(x), 2))
-  return(list(list=output1, summary=output2))
+  return(list(list = output1, summary = output2))
   par(old.par)
 }
 
