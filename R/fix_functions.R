@@ -259,36 +259,42 @@ text_date <- function(date, format="%d/%Y %b"){
 #' @description Function to format dates
 #' @param d A character vector
 #' @param use.probs Solve ambiguities by similarity to the most frequent formats
-fxd <- function(d, use.probs=TRUE){
-  formats <- c("%d-%m-%Y", "%d-%m-%y", "%Y-%m-%d", "%m-%d-%Y", "%m-%d-%y", "%d-%b-%Y", "%d-%B-%Y", "%d-%b-%y", "%d-%B-%y",
-               "%d%m%Y", "%d%m%y", "%Y%m%d", "%m%d%Y", "%m%d%y", "%d%b%Y", "%d%B%Y", "%d%b%y", "%d%B%y")
+fxd <- function (d, use.probs = TRUE){
+  formats <- c("%d-%m-%Y", "%Y-%m-%d", "%m-%d-%Y",
+               "%d-%b-%Y", "%d-%B-%Y", "%y%b%d", "%d%b%y",
+               "%d%m%Y", "%Y%m%d", "%m%d%Y", "%d%b%Y",
+               "%d%B%Y")
   Sys.setlocale("LC_TIME", "C")
-  prueba <- lapply(formats, function(x) as.Date(tolower(gsub("--", "-", gsub("[[:punct:]]", "-", gsub("[[:space:]]+", "", d)))), format=x))
+  prueba <- lapply(formats, function(x) as.Date(tolower(gsub("--",
+                                                             "-", gsub("[[:punct:]]", "-", gsub("[[:space:]]+", "",
+                                                                                                d)))), format = x))
   text_dates <- do.call(c, lapply(d, text_date))
-  text_dates2 <- do.call(c, lapply(d, function(x){
-    if(any(as.numeric(unlist(regmatches(x, gregexpr("[0-9]+", x)))) >= 32)){
-      text_date(x, format="%d/%y %b")
-    } else NA
+  text_dates2 <- do.call(c, lapply(d, function(x) {
+    if (any(as.numeric(unlist(regmatches(x, gregexpr("[0-9]+",
+                                                     x)))) >= 32)) {
+      text_date(x, format = "%d/%y %b")
+    }
+    else NA
   }))
-  prueba[[19]] <- text_dates
-  prueba[[20]] <- text_dates2
-  co <-lapply(prueba, function(x) {
-    x[format.Date(x, "%Y")<100]<-NA
-    return(x)
+  prueba[[13]] <- text_dates
+  prueba[[14]] <- text_dates2
+  co <- lapply(prueba, function(x){
+    x[nchar(gsub("[^\\d]+", "", d, perl=TRUE)) == 8 & format.Date(x, "%Y") < 100] <- NA
+    x
   })
-  to.NA <- which(sapply(d, function(x) nchar(as.character(gsub("[[:alpha:]]+", "xx", x)))>8))
-  co[c(2, 5, 8, 9, 11, 14, 17, 18)] <- lapply(co[c(2, 5, 8, 9, 11, 14, 17, 18)], function(x){
-    x[to.NA]<-NA
-    return(x)
-  })
-  if(use.probs){
-    co<-co[order(unlist(lapply(co, function(x) sum(is.na(x)))))]
+  if (use.probs) {
+    co <- co[order(unlist(lapply(co, function(x) sum(is.na(x)))))]
   }
-  final_dates <- do.call("c", lapply(1:length(d), function(y) na.omit(do.call("c", lapply(co, function(x) x[y])))[1]))
-  years <- as.numeric(substr(final_dates, 1, 4))
-  median_year <- median(years, na.rm=TRUE)
-  final_dates[(abs(years - median_year) %>NA% abs(years-100 - median_year)) & nchar(d)<=8] <- do.call(c, lapply(final_dates[(abs(years - median_year) %>NA% abs(years-100 - median_year)) & nchar(d)<=8], function(x) tryCatch(seq(x, length=2, by="-100 years")[2], error=function(e) NA)))
-  final_dates[(abs(years - median_year) %>NA% abs(years+100 - median_year)) & nchar(d)<=8] <- do.call(c, lapply(final_dates[(abs(years - median_year) %>NA% abs(years+100 - median_year)) & nchar(d)<=8], function(x) tryCatch(seq(x, length=2, by="100 years")[2], error=function(e) NA)))
+  final_dates <- do.call("c", lapply(1:length(d), function(y){
+    na.omit(do.call("c", lapply(co, function(x) x[y])))[1]
+  }
+  ))
+  median_year <- median(as.numeric(format(final_dates, "%Y")), na.rm = TRUE)
+  final_dates[as.numeric(format(final_dates, "%Y")) < 100 & !is.na(final_dates)] <- do.call("c", lapply(final_dates[as.numeric(format(final_dates, "%Y")) < 100 & !is.na(final_dates)], function(x){
+    years <- as.numeric(substr(x, 1, 4))
+    posibles <- (years + ((median_year%/%100)+c(-1, 0, 1))*100)
+    seq.Date(x, by=paste((posibles - years)[which.min(abs(median_year - posibles))], "years"), length.out=2)[2]
+  }))
   Sys.setlocale("LC_TIME", "")
   return(final_dates)
 }
