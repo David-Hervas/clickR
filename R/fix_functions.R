@@ -14,13 +14,12 @@ nice_names <- function(x, track=TRUE){
   old <- x
   old_names <- names(x)
   new_names <- gsub("x_","",gsub("_$", "",tolower(gsub("[_]+", "_",gsub("[.]+", "_",make.names(
-    gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", old_names)))))))))))
+    iconv(gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", old_names))))), to="ASCII//TRANSLIT", sub="byte")))))))
   dupe_count <- sapply(1:length(new_names), function(i) {
     sum(new_names[i] == new_names[1:i])
   })
   new_names[dupe_count > 1] <- paste(new_names[dupe_count >
                                                  1], dupe_count[dupe_count > 1], sep = "_")
-  new_names <- iconv(new_names, to = "ASCII//TRANSLIT")
   x <- stats::setNames(x, new_names)
   if(!identical(old_names, new_names)){
     if(track){
