@@ -350,20 +350,21 @@ mine.plot <- function(x, fun=is.na, spacing=5, sort=F, show.x=TRUE, show.y=TRUE,
 #'
 #' @description Function for detecting outliers based on the boxplot method
 #' @param x A vector
+#' @param threshold Threshold (as multiple of the IQR) to consider an observation as outlier
 #' @export
 #' @examples
 #' outliers(iris$Petal.Length)
 #' outliers(airquality$Ozone)
-outliers <- function(x){
+outliers <- function(x, threshold=1.5){
   if(any(c("Date", "POSIXt") %in% class(x))){
     quantiles <- quantile(as.POSIXct(x), probs=c(0.25, 0.75), na.rm=TRUE)
-    unclass(as.POSIXct(x)) %<NA% (unclass(quantiles["25%"]) - 1.5*(unclass(quantiles["75%"])-unclass(quantiles["25%"]))) |
-      unclass(as.POSIXct(x)) %>NA% (unclass(quantiles["75%"]) + 1.5*(unclass(quantiles["75%"])-unclass(quantiles["25%"])))
+    unclass(as.POSIXct(x)) %<NA% (unclass(quantiles["25%"]) - threshold*(unclass(quantiles["75%"])-unclass(quantiles["25%"]))) |
+      unclass(as.POSIXct(x)) %>NA% (unclass(quantiles["75%"]) + threshold*(unclass(quantiles["75%"])-unclass(quantiles["25%"])))
   } else{
     if(is.numeric(x)){
       quantiles <- quantile(x, probs=c(0.25, 0.75), na.rm=TRUE)
-      x %<NA% (quantiles["25%"] - 1.5*(quantiles["75%"]-quantiles["25%"])) |
-        x %>NA% (quantiles["75%"] + 1.5*(quantiles["75%"]-quantiles["25%"]))
+      x %<NA% (quantiles["25%"] - threshold*(quantiles["75%"]-quantiles["25%"])) |
+        x %>NA% (quantiles["75%"] + threshold*(quantiles["75%"]-quantiles["25%"]))
     } else rep(NA, length(x))
   }
 }

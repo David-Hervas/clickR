@@ -4,10 +4,12 @@
 \alias{outliers}
 \title{outliers}
 \usage{
-outliers(x)
+outliers(x, threshold = 1.5)
 }
 \arguments{
 \item{x}{A vector}
+
+\item{threshold}{Threshold (as multiple of the IQR) to consider an observation as outlier}
 }
 \description{
 Function for detecting outliers based on the boxplot method

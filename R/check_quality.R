@@ -208,3 +208,42 @@ workspace <- function(table=FALSE) {
 workspace_sapply <- function(object_class, action="summary"){
   sapply(workspace()[[object_class]], function(x) get(action)(get(x)), simplify=FALSE)
 }
+
+#' Check for bivariate outliers
+#'
+#' @description Checks for bivariate outliers in a data.frame
+#' @param x A data.frame object
+#' @param threshold_d Threshold for the case of two continuous variables
+#' @param threshold_b Threshold for the case of one continuous and one categorical variable
+#' @return A data frame with all the observations considered as bivariate outliers
+#' @importFrom stats cooks.distance
+#' @importFrom utils combn
+#' @export
+#' @examples
+#' bivariate_outliers(iris)
+bivariate_outliers <- function(x, threshold_d=10, threshold_b=1.5){
+  pairwise_comb <- combn(1:ncol(x), 2)
+  outliers <- apply(pairwise_comb, 2, function(y){
+    if(all(sapply(x[,y], is.numeric))){
+      mod_a <- stats::cooks.distance(lm(x[ , y[1]] ~ x[ , y[2]]))
+      mod_b <- stats::cooks.distance(lm(x[ , y[2]] ~ x[ , y[1]]))
+      cookD <- (mod_a+mod_b)/mean(mod_a+mod_b)
+      if(any(cookD > threshold_d)){
+        data.frame(row=rownames(x)[which(cookD > threshold_d)], variable1=names(x)[y[1]], value1=x[,y[1]][which(cookD > threshold_d)],
+                   variable2=names(x)[y[2]], value2=x[,y[2]][which(cookD > threshold_d)])
+      }
+    } else{
+      if(sum(sapply(x[,y], is.numeric) * rev(sapply(x[,y], is.factor))) == 1){
+        factor <- sapply(x[,y], is.factor)
+        case <- unsplit(lapply(split(x[,y][,!factor], x[,y][,factor]), function(x) outliers(x, threshold_b)), x[,y][,factor])
+        if(any(case)){
+          data.frame(row=rownames(x)[case], variable1=names(x)[y[1]], value1=as.character(x[,y[1]][case]),
+                     variable2=names(x)[y[2]], value2=as.character(x[,y[2]][case]))
+        }
+      }
+    }
+  })
+  output <- do.call(rbind, outliers)
+  rownames(output) <- NULL
+  output
+}
