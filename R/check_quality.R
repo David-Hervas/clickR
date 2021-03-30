@@ -225,8 +225,8 @@ bivariate_outliers <- function(x, threshold_d=10, threshold_b=1.5){
   pairwise_comb <- combn(1:ncol(x), 2)
   outliers <- apply(pairwise_comb, 2, function(y){
     if(all(sapply(x[,y], is.numeric))){
-      mod_a <- stats::cooks.distance(lm(x[ , y[1]] ~ x[ , y[2]]))
-      mod_b <- stats::cooks.distance(lm(x[ , y[2]] ~ x[ , y[1]]))
+      mod_a <- stats::cooks.distance(lm(x[ , y[1]] ~ stats::poly(x[ , y[2]], 3)))
+      mod_b <- stats::cooks.distance(lm(x[ , y[2]] ~ stats::poly(x[ , y[1]], 3)))
       cookD <- (mod_a+mod_b)/mean(mod_a+mod_b)
       if(any(cookD > threshold_d)){
         data.frame(row=rownames(x)[which(cookD > threshold_d)], variable1=names(x)[y[1]], value1=x[,y[1]][which(cookD > threshold_d)],
@@ -243,7 +243,7 @@ bivariate_outliers <- function(x, threshold_d=10, threshold_b=1.5){
       }
     }
   })
-  output <- do.call(rbind, outliers)
+  output <- do.call(rbind, as.list(outliers))
   rownames(output) <- NULL
   output
 }
