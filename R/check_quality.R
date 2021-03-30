@@ -228,7 +228,7 @@ bivariate_outliers <- function(x, threshold_r=10, threshold_b=1.5){
       mod_a <- stats::rstudent(lm(x[ , y[1]] ~ stats::poly(x[ , y[2]], 3)))^2
       mod_b <- stats::rstudent(lm(x[ , y[2]] ~ stats::poly(x[ , y[1]], 3)))^2
       rs <- (mod_a+mod_b)/mean(mod_a+mod_b)
-      if(any(rs > threshold_d)){
+      if(any(rs > threshold_r)){
         data.frame(row=rownames(x)[which(rs > threshold_r)], variable1=names(x)[y[1]], value1=x[,y[1]][which(rs > threshold_r)],
                    variable2=names(x)[y[2]], value2=x[,y[2]][which(rs > threshold_r)])
       }
