@@ -213,7 +213,7 @@ workspace_sapply <- function(object_class, action="summary"){
 #'
 #' @description Checks for bivariate outliers in a data.frame
 #' @param x A data.frame object
-#' @param threshold_d Threshold for the case of two continuous variables
+#' @param threshold_r Threshold for the case of two continuous variables
 #' @param threshold_b Threshold for the case of one continuous and one categorical variable
 #' @return A data frame with all the observations considered as bivariate outliers
 #' @importFrom stats cooks.distance
@@ -221,16 +221,16 @@ workspace_sapply <- function(object_class, action="summary"){
 #' @export
 #' @examples
 #' bivariate_outliers(iris)
-bivariate_outliers <- function(x, threshold_d=10, threshold_b=1.5){
+bivariate_outliers <- function(x, threshold_r=10, threshold_b=1.5){
   pairwise_comb <- combn(1:ncol(x), 2)
   outliers <- apply(pairwise_comb, 2, function(y){
     if(all(sapply(x[,y], is.numeric))){
-      mod_a <- stats::cooks.distance(lm(x[ , y[1]] ~ stats::poly(x[ , y[2]], 3)))
-      mod_b <- stats::cooks.distance(lm(x[ , y[2]] ~ stats::poly(x[ , y[1]], 3)))
-      cookD <- (mod_a+mod_b)/mean(mod_a+mod_b)
-      if(any(cookD > threshold_d)){
-        data.frame(row=rownames(x)[which(cookD > threshold_d)], variable1=names(x)[y[1]], value1=x[,y[1]][which(cookD > threshold_d)],
-                   variable2=names(x)[y[2]], value2=x[,y[2]][which(cookD > threshold_d)])
+      mod_a <- stats::rstudent(lm(x[ , y[1]] ~ stats::poly(x[ , y[2]], 3)))^2
+      mod_b <- stats::rstudent(lm(x[ , y[2]] ~ stats::poly(x[ , y[1]], 3)))^2
+      rs <- (mod_a+mod_b)/mean(mod_a+mod_b)
+      if(any(rs > threshold_d)){
+        data.frame(row=rownames(x)[which(rs > threshold_r)], variable1=names(x)[y[1]], value1=x[,y[1]][which(rs > threshold_r)],
+                   variable2=names(x)[y[2]], value2=x[,y[2]][which(rs > threshold_r)])
       }
     } else{
       if(sum(sapply(x[,y], is.numeric) * rev(sapply(x[,y], is.factor))) == 1){

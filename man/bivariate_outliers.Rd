@@ -4,12 +4,12 @@
 \alias{bivariate_outliers}
 \title{Check for bivariate outliers}
 \usage{
-bivariate_outliers(x, threshold_d = 10, threshold_b = 1.5)
+bivariate_outliers(x, threshold_r = 10, threshold_b = 1.5)
 }
 \arguments{
 \item{x}{A data.frame object}
 
-\item{threshold_d}{Threshold for the case of two continuous variables}
+\item{threshold_r}{Threshold for the case of two continuous variables}
 
 \item{threshold_b}{Threshold for the case of one continuous and one categorical variable}
 }
