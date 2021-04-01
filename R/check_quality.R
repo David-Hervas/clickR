@@ -225,20 +225,21 @@ bivariate_outliers <- function(x, threshold_r=10, threshold_b=1.5){
   pairwise_comb <- combn(1:ncol(x), 2)
   outliers <- apply(pairwise_comb, 2, function(y){
     if(all(sapply(x[,y], is.numeric))){
-      mod_a <- stats::rstudent(lm(x[ , y[1]] ~ stats::poly(x[ , y[2]], 3)))^2
-      mod_b <- stats::rstudent(lm(x[ , y[2]] ~ stats::poly(x[ , y[1]], 3)))^2
-      rs <- (mod_a+mod_b)/mean(mod_a+mod_b)
-      if(any(rs > threshold_r)){
-        data.frame(row=rownames(x)[which(rs > threshold_r)], variable1=names(x)[y[1]], value1=x[,y[1]][which(rs > threshold_r)],
-                   variable2=names(x)[y[2]], value2=x[,y[2]][which(rs > threshold_r)])
+      data_l <- data.frame(x=x[ , y[1]], y=x[ , y[2]])
+      mod_a <- stats::rstudent(lm(x ~ y + I(y^2) + I(y^3), data=data_l, na.action = "na.exclude"))^2
+      mod_b <- stats::rstudent(lm(y ~ x + I(x^2) + I(x^3), data=data_l, na.action = "na.exclude"))^2
+      rs <- (mod_a+mod_b)/mean(mod_a+mod_b, na.rm=TRUE)
+      if(any(rs %>NA% threshold_r)){
+        data.frame(row=rownames(x)[which(rs %>NA% threshold_r)], variable1=names(x)[y[1]], value1=x[,y[1]][which(rs %>NA% threshold_r)],
+                   variable2=names(x)[y[2]], value2=x[,y[2]][which(rs %>NA% threshold_r)])
       }
     } else{
       if(sum(sapply(x[,y], is.numeric) * rev(sapply(x[,y], is.factor))) == 1){
         factor <- sapply(x[,y], is.factor)
         case <- unsplit(lapply(split(x[,y][,!factor], x[,y][,factor]), function(x) outliers(x, threshold_b)), x[,y][,factor])
         if(any(case)){
-          data.frame(row=rownames(x)[case], variable1=names(x)[y[1]], value1=as.character(x[,y[1]][case]),
-                     variable2=names(x)[y[2]], value2=as.character(x[,y[2]][case]))
+          data.frame(row=rownames(x)[ttrue(case)], variable1=names(x)[y[1]], value1=as.character(x[,y[1]][ttrue(case)]),
+                     variable2=names(x)[y[2]], value2=as.character(x[,y[2]][ttrue(case)]))
         }
       }
     }
