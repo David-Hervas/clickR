@@ -1,3 +1,19 @@
+clickR 0.7.33
+
+* All report functions are now defunct. These functions have been moved to the new
+repmod pacakge (https://CRAN.R-project.org/package=repmod)
+
+* Removed dependencies from boot, flextable, lme4, lmerTest, officer and xtable
+
+* Numerous bug fixes
+
+
+clickR 0.6.64
+
+* All report function are now deprecated and will be defunct in the next version.
+These funcions have been moved to the new repmod package (https://CRAN.R-project.org/package=repmod)
+
+
 clickR 0.5.38
 
 * Now fix.numerics() is able to fix numbers with thousands separators.
