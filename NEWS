@@ -1,7 +1,14 @@
+clickR 0.8.0
+
+* All report functions have been completely removed from the package. Please install the repmod package for accessing the report functions.
+
+* Bug fixes
+
+
 clickR 0.7.33
 
 * All report functions are now defunct. These functions have been moved to the new
-repmod pacakge (https://CRAN.R-project.org/package=repmod)
+repmod package (https://CRAN.R-project.org/package=repmod)
 
 * Removed dependencies from boot, flextable, lme4, lmerTest, officer and xtable
 

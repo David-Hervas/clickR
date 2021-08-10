@@ -279,7 +279,7 @@ fxd <- function (d, use.probs = TRUE){
   prueba[[13]] <- text_dates
   prueba[[14]] <- text_dates2
   co <- lapply(prueba, function(x){
-    x[nchar(gsub("[^\\d]+", "", d, perl=TRUE)) == 8 & as.numeric(format(x, "%Y")) < 100] <- NA
+    tryCatch(x[nchar(gsub("[^\\d]+", "", d, perl=TRUE)) == 8 & as.numeric(format(x, "%Y")) < 100] <- NA, error=function(e) rep(NA, length(x)))
     x
   })
   if (use.probs) {
