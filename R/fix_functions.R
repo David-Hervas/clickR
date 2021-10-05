@@ -634,3 +634,46 @@ manual_fix <- function(data, variable, subset, newvalues=NULL){
     data
   } else data[f, variable]
 }
+
+
+#' Find and replace
+#'
+#' @description Searches a data.frame for a specific character string and replaces it with another one
+#' @param x A data.frame
+#' @param string A character string to search in the data.frame
+#' @param replacement A character string to replace the old string (can be NA)
+#' @param complete If TRUE, search for complete strings only. If FALSE, search also for partial strings.
+#' @export
+#' @examples
+#' iris2 <- f_replace(iris, "setosa", "ensata")
+#' track_changes(iris2)
+f_replace <- function(x, string, replacement, complete=TRUE, track=TRUE){
+  old_data <- x
+  changes_old <- attr(x, "changes")
+  if(complete) string <- paste("^", string, "$", sep="")
+  output <- as.data.frame(lapply(x, function(x) {
+    if(any(grep(string, x))){
+      kk <- class(x)
+      x <- gsub(string, replacement, x)
+      eval(parse(text=paste("as.", kk, "(x)", sep="")))
+    } else x
+  }))
+  if(track){
+    variables <- names(x)[which(sapply(x, function(x) any(grep(string, x))))]
+    changes <- do.call(rbind, lapply(variables, function(y){
+      observations <- rownames(output)[grepl(string, x[, y])]
+      data.frame(variable=y,
+                 observation=observations,
+                 original=x[observations, y],
+                 new=output[observations, y],
+                 fun="f_replace",
+                 row.names=NULL)
+    }))
+    if(!is.null(changes_old)){
+      attr(output, "changes") <- rbind(changes_old, changes)
+    } else {
+      attr(output, "changes") <- changes
+    }
+  }
+  output
+}

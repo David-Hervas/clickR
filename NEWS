@@ -1,3 +1,9 @@
+clickR 0.8.1
+
+* Added new experimental function f_replace() which works as 'find and replace' on data.frames.
+
+
+
 clickR 0.8.0
 
 * All report functions have been completely removed from the package. Please install the repmod package for accessing the report functions.
