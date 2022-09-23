@@ -4,10 +4,14 @@
 \alias{nice_names}
 \title{Nice names}
 \usage{
-nice_names(x, track = TRUE)
+nice_names(x, select = 1:ncol(x), tolower = TRUE, track = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
+
+\item{select}{Numeric vector with the positions (all by default) to be affected by the function}
+
+\item{tolower}{Set all names to lower case?}
 
 \item{track}{Track changes?}
 }

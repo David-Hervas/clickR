@@ -4,10 +4,14 @@
 \alias{remove_empty}
 \title{remove_empty}
 \usage{
-remove_empty(x, track = TRUE)
+remove_empty(x, remove_rows = TRUE, remove_cols = TRUE, track = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
+
+\item{remove_rows}{Remove empty rows?}
+
+\item{remove_cols}{Remove empty columns?}
 
 \item{track}{Track changes?}
 }

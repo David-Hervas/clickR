@@ -4,10 +4,12 @@
 \alias{fix_all}
 \title{fix_all}
 \usage{
-fix_all(x, track = TRUE)
+fix_all(x, select = 1:ncol(x), track = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
+
+\item{select}{Numeric vector with the positions (all by default) to be affected by the function}
 
 \item{track}{Track changes?}
 }

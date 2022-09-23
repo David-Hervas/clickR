@@ -4,7 +4,14 @@
 \alias{f_replace}
 \title{Find and replace}
 \usage{
-f_replace(x, string, replacement, complete = TRUE, track = TRUE)
+f_replace(
+  x,
+  string,
+  replacement,
+  complete = TRUE,
+  select = 1:ncol(x),
+  track = TRUE
+)
 }
 \arguments{
 \item{x}{A data.frame}
@@ -14,6 +21,8 @@ f_replace(x, string, replacement, complete = TRUE, track = TRUE)
 \item{replacement}{A character string to replace the old string (can be NA)}
 
 \item{complete}{If TRUE, search for complete strings only. If FALSE, search also for partial strings.}
+
+\item{select}{Numeric vector with the positions (all by default) to be affected by the function}
 }
 \description{
 Searches a data.frame for a specific character string and replaces it with another one

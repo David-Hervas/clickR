@@ -2,6 +2,8 @@
 #'
 #' @description Changes names of a data frame to ease work with them
 #' @param x A data.frame
+#' @param select Numeric vector with the positions (all by default) to be affected by the function
+#' @param tolower Set all names to lower case?
 #' @param track Track changes?
 #' @return The input data.frame \code{x} with the fixed names
 #' @export
@@ -9,18 +11,20 @@
 #' d <- data.frame('Variable 1'=NA, '% Response'=NA, ' Variable     3'=NA,check.names=FALSE)
 #' names(d)
 #' names(nice_names(d))
-nice_names <- function(x, track=TRUE){
+nice_names <- function(x, select=1:ncol(x), tolower=TRUE, track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
   old_names <- names(x)
-  new_names <- gsub("x_","",gsub("_$", "",tolower(gsub("[_]+", "_",gsub("[.]+", "_",make.names(
-    iconv(gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", old_names))))), to="ASCII//TRANSLIT", sub="byte")))))))
+  new_names <- gsub("x_|X_","",gsub("_$", "", gsub("[_]+", "_",gsub("[.]+", "_",make.names(
+    iconv(gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", old_names[select]))))), to="ASCII//TRANSLIT", sub="byte"))))))
+  if(tolower) new_names <- tolower(new_names)
   dupe_count <- sapply(1:length(new_names), function(i) {
     sum(new_names[i] == new_names[1:i])
   })
   new_names[dupe_count > 1] <- paste(new_names[dupe_count >
                                                  1], dupe_count[dupe_count > 1], sep = "_")
-  x <- stats::setNames(x, new_names)
+  names(x)[select] <- new_names
+  new_names <- names(x)
   if(!identical(old_names, new_names)){
     if(track){
       changes <- data.frame(variable=new_names[old_names != new_names],
@@ -47,6 +51,7 @@ nice_names <- function(x, track=TRUE){
 #' of the same levels due to different capitalization, whitespaces or non-ASCII characters.
 #' @param x A data.frame
 #' @param k Maximum number of different numeric values to be converted to factor
+#' @param select Numeric vector with the positions (all by default) to be affected by the function
 #' @param drop Drop similar levels?
 #' @param track Keep track of changes?
 #' @export
@@ -55,13 +60,14 @@ nice_names <- function(x, track=TRUE){
 #' descriptive(mtcars)
 #' # After using fix_factors, factor variables are recognized as such.
 #' descriptive(fix_factors(mtcars))
-fix_factors<-function(x, k=5, drop=TRUE, track=TRUE){
+fix_factors<-function(x, k=5, select=1:ncol(x), drop=TRUE, track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
   candidate_variables <- (sapply(x, function(x) (is.numeric(x) |
                                                    is.character(x)) &
                                    length(unique(x))<=k)) |
     (sapply(x, function(x) is.factor(x)))
+  candidate_variables[-select] <- FALSE
   x[, candidate_variables] <- lapply(x[, candidate_variables, drop=FALSE],
                                      function(x) {
                                        if(drop) {factor(iconv(droplevels(as.factor(gsub("^ *|(?<= ) | *$", "", tolower(as.character(x)), perl=TRUE))), to="ASCII//TRANSLIT"))
@@ -95,6 +101,7 @@ fix_factors<-function(x, k=5, drop=TRUE, track=TRUE){
 #' @param max.NA Maximum allowed proportion of NA values created by coercion. If the
 #' coercion to numeric creates more NA values than those specified in \code{max.NA}, then all
 #' changes will be reverted and the variable will remain unchanged.
+#' @param select Numeric vector with the positions (all by default) to be affected by the function
 #' @param track Keep track of changes?
 #' @export
 #' @examples
@@ -102,11 +109,12 @@ fix_factors<-function(x, k=5, drop=TRUE, track=TRUE){
 #'                    Numeric2=c(3.1, 1.2, "3.4s", "48,500.04 $", 7, "$  6.4"))
 #' descriptive(mydata)
 #' descriptive(fix_numerics(mydata, k=5))
-fix_numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
+fix_numerics <- function(x, k=8, max.NA=0.2, select=1:ncol(x), track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
   previous.NA<- sapply(x, function(x) sum(is.na(x)))
   candidate_variables <- apply(sapply(x, function(x) grepl("[0-9]", as.character(x))), 2, any) & sapply(x, function(x) !(is.numeric(x) | inherits(x, 'Date'))) & sapply(x, function(x) length(unique(x))>=k)
+  candidate_variables[-select] <- FALSE
   percent_variables <- apply(sapply(x, function(x) grepl("%", as.character(x))), 2, any)
   sci_notation_variables <- apply(sapply(x, function(x) grepl("[0-9](e|E)([0-9]|-[0-9]|\\+[0-9])", as.character(x))), 2, any)
   thousand_separators <- apply(sapply(x, function(x) grepl(".\\..{3},", x) | grepl(".,.{3}\\.", x) | grepl(".\\..{3}\\.", x) | grepl(".\\,.{3}\\,", x)), 2, any)
@@ -181,6 +189,7 @@ fix_numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
 #' be ambiguities. For example, 04-06-2015 can be interpreted as 2015-06-04 or as 2015-04-06.
 #' If \code{use.probs=TRUE}, ambiguities will be solved by assigning to the most frequent
 #' date format in the column.
+#' @param select Numeric vector with the positions (all by default) to be affected by the function
 #' @param track Track changes?
 #' @export
 #' @examples
@@ -188,7 +197,7 @@ fix_numerics <- function(x, k=8, max.NA=0.2, track=TRUE){
 #'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", "September 24, 2020"),
 #'                    Numeric1=rnorm(4))
 #' fix_dates(mydata)
-fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, track=TRUE){
+fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, select=1:ncol(x), track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
   x<-kill.factors(x)
@@ -197,6 +206,7 @@ fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, trac
   previous.minobs <- sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
   candidate_variables <- apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any) &
     sapply(x, function(x) class(x)!="Date")
+  candidate_variables[-select] <- FALSE
   x[, candidate_variables] <- lapply(x[, candidate_variables, drop = FALSE], function(x) fxd(x, use.probs=use.probs))
   final.NA <- sapply(x, function(x) sum(is.na(x))) - previous.NA
   final.minobs<-sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
@@ -447,28 +457,35 @@ fix_concat <- function(x, varname, sep=", |; | ", track=TRUE){
 #'
 #' @description Removes empty rows or columns from data.frames
 #' @param x A data.frame
+#' @param remove_rows Remove empty rows?
+#' @param remove_cols Remove empty columns?
 #' @param track Track changes?
 #' @export
 #' @examples
 #' mydata <- data.frame(a = c(NA, NA, NA, NA, NA), b = c(1, NA, 3, 4, 5),
 #' c=c(NA, NA, NA, NA, NA), d=c(4, NA, 5, 6, 3))
 #' remove_empty(mydata)
-remove_empty <- function(x, track=TRUE){
+remove_empty <- function(x, remove_rows=TRUE, remove_cols=TRUE, track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
-  empty_rows <- apply(x, 1, function(x) all(is.na(x)))
-  empty_cols <- apply(x, 2, function(x) all(is.na(x)))
-  x <- x[!empty_rows, !empty_cols]
+  if(remove_rows){
+    empty_rows <- apply(x, 1, function(x) all(is.na(x)))
+    x <- x[!empty_rows, ]
+  }
+  if(remove_cols){
+    empty_cols <- apply(x, 2, function(x) all(is.na(x)))
+    x <- x[, !empty_cols]
+  }
   if(!identical(old, x)){
     if(track){
-      if(sum(empty_cols)>0){
+      if(exists("empty_cols") && sum(empty_cols)>0){
         changes_col <- data.frame(variable=names(old)[!names(old) %in% names(x)],
                                   observation="all",
                                   original=NA,
                                   new="removed",
                                   fun="remove_empty", row.names=NULL)
       } else changes_col <- NULL
-      if(sum(empty_rows)>0){
+      if(exists("empty_rows") && sum(empty_rows)>0){
         changes_row <- data.frame(variable="all",
                                   observation=rownames(old)[empty_rows],
                                   original=NA,
@@ -491,20 +508,25 @@ remove_empty <- function(x, track=TRUE){
 #'
 #' @description Tries to automatically fix all problems in the data.frame
 #' @param x A data.frame
+#' @param select Numeric vector with the positions (all by default) to be affected by the function
 #' @param track Track changes?
 #' @export
-fix_all <- function(x, track=TRUE){
+fix_all <- function(x, select=1:ncol(x), track=TRUE){
   x <- fix_numerics(
     fix_factors(
       fix_dates(
         remove_empty(
           fix_NA(
             nice_names(x,
+                       select=select,
                        track=track),
             track=track),
           track=track),
+        select=select,
         track=track),
+      select=select,
       track=track),
+    select=select,
     track=track)
   x
 }
@@ -643,37 +665,38 @@ manual_fix <- function(data, variable, subset, newvalues=NULL){
 #' @param string A character string to search in the data.frame
 #' @param replacement A character string to replace the old string (can be NA)
 #' @param complete If TRUE, search for complete strings only. If FALSE, search also for partial strings.
+#' @param select Numeric vector with the positions (all by default) to be affected by the function
 #' @export
 #' @examples
 #' iris2 <- f_replace(iris, "setosa", "ensata")
 #' track_changes(iris2)
-f_replace <- function(x, string, replacement, complete=TRUE, track=TRUE){
+f_replace <- function(x, string, replacement, complete=TRUE, select=1:ncol(x), track=TRUE){
   old_data <- x
   changes_old <- attr(x, "changes")
   if(complete) string <- paste("^", string, "$", sep="")
-  output <- as.data.frame(lapply(x, function(x) {
-    if(any(grep(string, x))){
+  candidate_variables <- sapply(x, function(x) any(grep(string, x)))
+  candidate_variables[-select] <- FALSE
+  x[,candidate_variables] <- as.data.frame(lapply(x[,candidate_variables, drop=FALSE], function(x) {
       kk <- class(x)
       x <- gsub(string, replacement, x)
       eval(parse(text=paste("as.", kk, "(x)", sep="")))
-    } else x
   }))
   if(track){
-    variables <- names(x)[which(sapply(x, function(x) any(grep(string, x))))]
+    variables <- names(x)[candidate_variables]
     changes <- do.call(rbind, lapply(variables, function(y){
-      observations <- rownames(output)[grepl(string, x[, y])]
+      observations <- rownames(old_data)[grepl(string, old_data[, y])]
       data.frame(variable=y,
                  observation=observations,
-                 original=x[observations, y],
-                 new=output[observations, y],
+                 original=old_data[observations, y],
+                 new=x[observations, y],
                  fun="f_replace",
                  row.names=NULL)
     }))
     if(!is.null(changes_old)){
-      attr(output, "changes") <- rbind(changes_old, changes)
+      attr(x, "changes") <- rbind(changes_old, changes)
     } else {
-      attr(output, "changes") <- changes
+      attr(x, "changes") <- changes
     }
   }
-  output
+  x
 }

@@ -4,7 +4,7 @@
 \alias{fix_numerics}
 \title{Fix numeric data}
 \usage{
-fix_numerics(x, k = 8, max.NA = 0.2, track = TRUE)
+fix_numerics(x, k = 8, max.NA = 0.2, select = 1:ncol(x), track = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
@@ -14,6 +14,8 @@ fix_numerics(x, k = 8, max.NA = 0.2, track = TRUE)
 \item{max.NA}{Maximum allowed proportion of NA values created by coercion. If the
 coercion to numeric creates more NA values than those specified in \code{max.NA}, then all
 changes will be reverted and the variable will remain unchanged.}
+
+\item{select}{Numeric vector with the positions (all by default) to be affected by the function}
 
 \item{track}{Keep track of changes?}
 }

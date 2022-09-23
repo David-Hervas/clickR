@@ -4,12 +4,14 @@
 \alias{fix_factors}
 \title{Fix factors imported as numerics}
 \usage{
-fix_factors(x, k = 5, drop = TRUE, track = TRUE)
+fix_factors(x, k = 5, select = 1:ncol(x), drop = TRUE, track = TRUE)
 }
 \arguments{
 \item{x}{A data.frame}
 
 \item{k}{Maximum number of different numeric values to be converted to factor}
+
+\item{select}{Numeric vector with the positions (all by default) to be affected by the function}
 
 \item{drop}{Drop similar levels?}
 

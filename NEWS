@@ -1,3 +1,7 @@
+clickR 0.8.2
+
+* Now all fix functions working on data.frames have a new argument "select" for selecting on which variables to apply the function.
+
 clickR 0.8.1
 
 * Added new experimental function f_replace() which works as 'find and replace' on data.frames.

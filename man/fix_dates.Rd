@@ -9,6 +9,7 @@ fix_dates(
   max.NA = 0.8,
   min.obs = nrow(x) * 0.05,
   use.probs = TRUE,
+  select = 1:ncol(x),
   track = TRUE
 )
 }
@@ -26,6 +27,8 @@ has fewer non-NA observations, then it will be ignored by \code{fix.dates}.}
 be ambiguities. For example, 04-06-2015 can be interpreted as 2015-06-04 or as 2015-04-06.
 If \code{use.probs=TRUE}, ambiguities will be solved by assigning to the most frequent
 date format in the column.}
+
+\item{select}{Numeric vector with the positions (all by default) to be affected by the function}
 
 \item{track}{Track changes?}
 }
