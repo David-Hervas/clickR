@@ -666,6 +666,7 @@ manual_fix <- function(data, variable, subset, newvalues=NULL){
 #' @param replacement A character string to replace the old string (can be NA)
 #' @param complete If TRUE, search for complete strings only. If FALSE, search also for partial strings.
 #' @param select Numeric vector with the positions (all by default) to be affected by the function
+#' @param track Track changes?
 #' @export
 #' @examples
 #' iris2 <- f_replace(iris, "setosa", "ensata")

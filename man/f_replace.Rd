@@ -23,6 +23,8 @@ f_replace(
 \item{complete}{If TRUE, search for complete strings only. If FALSE, search also for partial strings.}
 
 \item{select}{Numeric vector with the positions (all by default) to be affected by the function}
+
+\item{track}{Track changes?}
 }
 \description{
 Searches a data.frame for a specific character string and replaces it with another one
