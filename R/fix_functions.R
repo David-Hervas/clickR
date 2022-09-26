@@ -192,6 +192,8 @@ fix_numerics <- function(x, k=8, max.NA=0.2, select=1:ncol(x), track=TRUE){
 #' @param select Numeric vector with the positions (all by default) to be affected by the function
 #' @param track Track changes?
 #' @param parallel Should the computations be performed in parallel? Set up strategy first with future::plan()
+#' @importFrom future nbrOfWorkers plan
+#' @importFrom future.apply future_lapply
 #' @export
 #' @examples
 #' mydata<-data.frame(Dates1=c("25/06/1983", "25-08/2014", "2001/11/01", "2008-10-01"),
@@ -200,11 +202,12 @@ fix_numerics <- function(x, k=8, max.NA=0.2, select=1:ncol(x), track=TRUE){
 #' fix_dates(mydata)
 fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, select=1:ncol(x), track=TRUE, parallel=TRUE){
   if(parallel){
-    message("Your parallel configuration is ", if(exists(attr(future::plan(), "call"))) attr(future::plan(), "call") else "single core")
+    pplan <- attr(future::plan(), "call")
+    message("Your parallel configuration is ", if(!is.null(pplan)) pplan else "single core")
     split_factor <- factor(sample(1:future::nbrOfWorkers(), dim(x)[1], replace=TRUE))
     split_x <- split(x, split_factor)
     suppressMessages(
-      split_proc <- future_apply::future_lapply(split_x, function(x) fix_dates(x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, select=1:ncol(x), track=TRUE, parallel=FALSE))
+      split_proc <- future.apply::future_lapply(split_x, function(x) fix_dates(x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, select=1:ncol(x), track=TRUE, parallel=FALSE))
     )
     x <- unsplit(split_proc, f=split_factor)
     changes_par <- do.call(rbind, lapply(split_proc, function(x) attributes(x)$changes))
