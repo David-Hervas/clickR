@@ -191,54 +191,72 @@ fix_numerics <- function(x, k=8, max.NA=0.2, select=1:ncol(x), track=TRUE){
 #' date format in the column.
 #' @param select Numeric vector with the positions (all by default) to be affected by the function
 #' @param track Track changes?
+#' @param parallel Should the computations be performed in parallel? Set up strategy first with future::plan()
 #' @export
 #' @examples
 #' mydata<-data.frame(Dates1=c("25/06/1983", "25-08/2014", "2001/11/01", "2008-10-01"),
 #'                    Dates2=c("01/01/85", "04/04/1982", "07/12-2016", "September 24, 2020"),
 #'                    Numeric1=rnorm(4))
 #' fix_dates(mydata)
-fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, select=1:ncol(x), track=TRUE){
-  changes_old <- attr(x, "changes")
-  old <- x
-  x<-kill.factors(x)
-  x.old<-x
-  previous.NA <- sapply(x, function(x) sum(is.na(x)))
-  previous.minobs <- sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
-  candidate_variables <- apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any) &
-    sapply(x, function(x) class(x)!="Date")
-  candidate_variables[-select] <- FALSE
-  x[, candidate_variables] <- lapply(x[, candidate_variables, drop = FALSE], function(x) fxd(x, use.probs=use.probs))
-  final.NA <- sapply(x, function(x) sum(is.na(x))) - previous.NA
-  final.minobs<-sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
-  x[,((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)]<-x.old[,((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)]
-  print(paste(sum(sapply(x, function(x) sum(is.na(x)))-previous.NA), "new missing values generated"))
-  print(paste(sum((final.NA-previous.NA) > nrow(x)*max.NA), "variables excluded following max.NA criterion"))
-  print(paste(final.minobs-previous.minobs, "variables excluded following min.obs criterion"))
-  final_variables <- candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs))
-  if(track & sum(final_variables)>0){
-    changes1 <- data.frame(variable=names(final_variables[final_variables]),
-                           observation="all",
-                           original=sapply(old[,final_variables, drop=FALSE], class),
-                           new="Date",
-                           fun="fix_dates",
-                           row.names=NULL)
-    changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
-      observations <- rownames(x)[which(!(as.character(old[, y]) %in% as.character(x[, y])))]
-      tryCatch(data.frame(variable=y,
-                          observation=observations,
-                          original=old[observations, y],
-                          new=as.character(x[observations, y]),
-                          fun="fix_dates"), error = function(e) NULL)
-    }))
-    changes <- rbind(changes1, changes2)
-    if(!is.null(changes_old)){
-      attr(x, "changes") <- rbind(changes_old, changes)
-    } else {
-      attr(x, "changes") <- changes
-    }
-  }
+fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, select=1:ncol(x), track=TRUE, parallel=TRUE){
+  if(parallel){
+    message("Your parallel configuration is ", attr(future::plan(), "call"))
+    split_factor <- factor(sample(1:future::nbrOfWorkers(), dim(x)[1], replace=TRUE))
+    split_x <- split(x, split_factor)
+    suppressMessages(
+      split_proc <- future_lapply(split_x, function(x) fix_dates(x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, select=1:ncol(x), track=TRUE, parallel=FALSE))
+    )
+    x <- unsplit(split_proc, f=split_factor)
+    changes_par <- do.call(rbind, lapply(split_proc, function(x) attributes(x)$changes))
+    attr(x, "changes") <- changes_par[!duplicated(changes_par),]
+    attr(x, "messages") <- colSums(do.call(rbind, lapply(split_proc, function(x) attributes(x)$messages)))/c(1, rep(future::nbrOfWorkers(), 2))
+  } else{
+    changes_old <- attr(x, "changes")
+    old <- x
+    x<-kill.factors(x)
+    x.old<-x
+    previous.NA <- sapply(x, function(x) sum(is.na(x)))
+    previous.minobs <- sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
+    candidate_variables <- apply(sapply(x, function(x) grepl("(-{1}|/{1}).{1,4}(-{1}|/{1})", as.character(x))), 2, any) &
+      sapply(x, function(x) class(x)!="Date")
+    candidate_variables[-select] <- FALSE
+    x[, candidate_variables] <- lapply(x[, candidate_variables, drop = FALSE], function(x) fxd(x, use.probs=use.probs))
+    final.NA <- sapply(x, function(x) sum(is.na(x))) - previous.NA
+    final.minobs<-sum(sapply(x, function(x) sum(!is.na(x))<min.obs))
+    x[,((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)]<-x.old[,((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs)]
+    messages <- data.frame(new_missings = sum(sapply(x, function(x) sum(is.na(x)))-previous.NA),
+                           excl_max_NA = sum((final.NA-previous.NA) > nrow(x)*max.NA),
+                           excl_minobs = final.minobs-previous.minobs)
+    attr(x, "messages") <- messages
+    final_variables <- candidate_variables & !(((final.NA-previous.NA) > nrow(x)*max.NA) | sapply(x, function(x) sum(!is.na(x))<min.obs))
+    if(track & sum(final_variables)>0){
+      changes1 <- data.frame(variable=names(final_variables[final_variables]),
+                             observation="all",
+                             original=sapply(old[,final_variables, drop=FALSE], class),
+                             new="Date",
+                             fun="fix_dates",
+                             row.names=NULL)
+      changes2 <- do.call(rbind, lapply(changes1$variable, function(y){
+        observations <- rownames(x)[which(!(as.character(old[, y]) %in% as.character(x[, y])))]
+        tryCatch(data.frame(variable=y,
+                            observation=observations,
+                            original=old[observations, y],
+                            new=as.character(x[observations, y]),
+                            fun="fix_dates"), error = function(e) NULL)
+        }))
+      changes <- rbind(changes1, changes2)
+      if(!is.null(changes_old)){
+        attr(x, "changes") <- rbind(changes_old, changes)
+        } else {
+          attr(x, "changes") <- changes
+        }
+    }}
+  message(attr(x, "messages")[1], " new missing values generated")
+  message(attr(x, "messages")[2], " variables excluded following max.NA criterion")
+  message(attr(x, "messages")[3], " variables excluded following min.obs criterion")
   return(x)
 }
+
 
 #' Internal function for dates with text
 #'
