@@ -4,7 +4,14 @@
 \alias{fix_numerics}
 \title{Fix numeric data}
 \usage{
-fix_numerics(x, k = 8, max.NA = 0.2, select = 1:ncol(x), track = TRUE)
+fix_numerics(
+  x,
+  k = 8,
+  max.NA = 0.2,
+  select = 1:ncol(x),
+  track = TRUE,
+  parallel = TRUE
+)
 }
 \arguments{
 \item{x}{A data.frame}
@@ -18,6 +25,8 @@ changes will be reverted and the variable will remain unchanged.}
 \item{select}{Numeric vector with the positions (all by default) to be affected by the function}
 
 \item{track}{Keep track of changes?}
+
+\item{parallel}{Should the computations be performed in parallel? Set up strategy first with future::plan()}
 }
 \description{
 Fixes numeric data. In many cases, numeric data are not recognized by R
