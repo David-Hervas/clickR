@@ -10,7 +10,8 @@ fix_dates(
   min.obs = nrow(x) * 0.05,
   use.probs = TRUE,
   select = 1:ncol(x),
-  track = TRUE
+  track = TRUE,
+  parallel = TRUE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ date format in the column.}
 \item{select}{Numeric vector with the positions (all by default) to be affected by the function}
 
 \item{track}{Track changes?}
+
+\item{parallel}{Should the computations be performed in parallel? Set up strategy first with future::plan()}
 }
 \description{
 Fixes dates. Dates can be recorded in numerous formats depending on the
