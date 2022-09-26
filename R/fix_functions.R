@@ -200,11 +200,11 @@ fix_numerics <- function(x, k=8, max.NA=0.2, select=1:ncol(x), track=TRUE){
 #' fix_dates(mydata)
 fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, select=1:ncol(x), track=TRUE, parallel=TRUE){
   if(parallel){
-    message("Your parallel configuration is ", attr(future::plan(), "call"))
+    message("Your parallel configuration is ", if(exists(attr(future::plan(), "call"))) attr(future::plan(), "call") else "single core")
     split_factor <- factor(sample(1:future::nbrOfWorkers(), dim(x)[1], replace=TRUE))
     split_x <- split(x, split_factor)
     suppressMessages(
-      split_proc <- future_lapply(split_x, function(x) fix_dates(x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, select=1:ncol(x), track=TRUE, parallel=FALSE))
+      split_proc <- future_apply::future_lapply(split_x, function(x) fix_dates(x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, select=1:ncol(x), track=TRUE, parallel=FALSE))
     )
     x <- unsplit(split_proc, f=split_factor)
     changes_par <- do.call(rbind, lapply(split_proc, function(x) attributes(x)$changes))
