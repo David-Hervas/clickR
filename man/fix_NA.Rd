@@ -7,7 +7,8 @@
 fix_NA(
   x,
   na.strings = c("^$", "^ $", "^\\\\?$", "^-$", "^\\\\.$", "^NaN$", "^NULL$", "^N/A$"),
-  track = TRUE
+  track = TRUE,
+  parallel = TRUE
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ fix_NA(
 \item{na.strings}{Strings to be considered NA}
 
 \item{track}{Track changes?}
+
+\item{parallel}{Should the computations be performed in parallel? Set up strategy first with future::plan()}
 }
 \description{
 Fixes miscoded missing values
