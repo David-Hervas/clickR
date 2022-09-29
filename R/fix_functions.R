@@ -277,7 +277,8 @@ fix_dates <- function (x, max.NA=0.8, min.obs=nrow(x)*0.05, use.probs=TRUE, sele
         } else {
           attr(x, "changes") <- changes
         }
-    }}
+    }
+  }
   message(attr(x, "messages")[1], " new missing values generated")
   message(attr(x, "messages")[2], " variables excluded following max.NA criterion")
   message(attr(x, "messages")[3], " variables excluded following min.obs criterion")
@@ -429,8 +430,8 @@ fix_levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
 #' @param na.strings Strings to be considered NA
 #' @param track Track changes?
 #' @param parallel Should the computations be performed in parallel? Set up strategy first with future::plan()
-#' @importFrom future plan
-#' @importFrom future.apply future_lapply future_sapply
+#' @importFrom future plan nbrOfWorkers
+#' @importFrom future.apply future_lapply
 #' @export
 #' @examples
 #' mydata <- data.frame(prueba = c("", NA, "A", 4, " ", "?", "-", "+"),
@@ -450,41 +451,29 @@ fix_NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$"
         split_proc <- future.apply::future_lapply(split_x, function(x) fix_NA(x, na.strings=na.strings, track=track, parallel=FALSE))
       )
       x <- unsplit(split_proc, f=split_factor)
-      changes_par <- do.call(rbind, lapply(split_proc, function(x) attributes(x)$changes))
-      attr(x, "changes") <- changes_par[!duplicated(changes_par),]
     } else{
-      x <- as.data.frame(lapply_i(x, function(x) {
+      x <- as.data.frame(lapply(x, function(x) {
         kk <- class(x)
         x <- gsub(string, NA, x)
         tryCatch(eval(parse(text=paste("as.", kk, "(x)", sep=""))), error=function(e) as.character(x))
         }))
       rownames(x) <- rownames(old)
-      if(track){
-        # variables <- names(old)[which(sapply_i(old, function(x) sum(is.na(x))) != sapply_i(x, function(x) sum(is.na(x))))]
-        # changes <- do.call(rbind, lapply_i(variables, function(y){
-        #   observations <- rownames(x)[which((!is.na(old[, y]) | is.nan(old[, y])) & is.na(x[, y]))]
-        #   data.frame(variable=y,
-        #              observation=observations,
-        #              original=old[observations, y],
-        #              new=x[observations, y],
-        #              fun="fix_NA",
-        #              row.names=NULL)
-        #   }))
-        changes_ind <- which(v_df_changes(old, x), arr.ind = TRUE)
-        if(nrow(changes_ind) > 0){
-          changes <- data.frame(variable = colnames(old)[changes_ind[,2]],
-                                observation = rownames(old)[changes_ind[,1]],
-                                original = old[changes_ind],
-                                new = x[changes_ind],
-                                fun = "fix_NA")
-        } else{
-          changes <- NULL
-        }
-        if(!is.null(changes_old)){
-          attr(x, "changes") <- rbind(changes_old, changes)
-        } else {
-          attr(x, "changes") <- changes
-        }
+    }
+    if(track){
+      changes_ind <- which(v_df_changes(old, x), arr.ind = TRUE)
+      if(nrow(changes_ind) > 0){
+        changes <- data.frame(variable = colnames(old)[changes_ind[,2]],
+                              observation = rownames(old)[changes_ind[,1]],
+                              original = old[changes_ind],
+                              new = x[changes_ind],
+                              fun = "fix_NA")
+      } else{
+        changes <- NULL
+      }
+      if(!is.null(changes_old)){
+         attr(x, "changes") <- rbind(changes_old, changes)
+      } else {
+        attr(x, "changes") <- changes
       }
     }
     return(x)
