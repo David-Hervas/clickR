@@ -428,37 +428,55 @@ fix_levels <- function(data, factor_name, method="dl", levels=NULL, plot=FALSE, 
 #' @param x A data.frame
 #' @param na.strings Strings to be considered NA
 #' @param track Track changes?
+#' @param parallel Should the computations be performed in parallel? Set up strategy first with future::plan()
+#' @importFrom future nbrOfWorkers plan
+#' @importFrom future.apply future_lapply
 #' @export
 #' @examples
 #' mydata <- data.frame(prueba = c("", NA, "A", 4, " ", "?", "-", "+"),
 #' casa = c("", 1, 2, 3, 4, " ", 6, 7))
 #' fix_NA(mydata)
-fix_NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$", "^NULL$", "^N/A$"), track=TRUE){
-  changes_old <- attr(x, "changes")
-  string <- paste(na.strings, collapse="|")
-  output <- as.data.frame(lapply(x, function(x) {
-    kk <- class(x)
-    x <- gsub(string, NA, x)
-    tryCatch(eval(parse(text=paste("as.", kk, "(x)", sep=""))), error=function(e) as.character(x))
-  }))
-  if(track){
-    variables <- names(x)[which(sapply(x, function(x) sum(is.na(x))) != sapply(output, function(x) sum(is.na(x))))]
-    changes <- do.call(rbind, lapply(variables, function(y){
-      observations <- rownames(output)[which((!is.na(x[, y]) | is.nan(x[, y])) & is.na(output[, y]))]
-      data.frame(variable=y,
-                 observation=observations,
-                 original=x[observations, y],
-                 new=output[observations, y],
-                 fun="fix_NA",
-                 row.names=NULL)
-    }))
-    if(!is.null(changes_old)){
-      attr(output, "changes") <- rbind(changes_old, changes)
-    } else {
-      attr(output, "changes") <- changes
+fix_NA <- function(x, na.strings=c("^$", "^ $", "^\\?$", "^-$", "^\\.$", "^NaN$", "^NULL$", "^N/A$"), track=TRUE, parallel=TRUE){
+  if(parallel){
+    pplan <- attr(future::plan(), "call")
+    message("Your parallel configuration is ", if(!is.null(pplan)) pplan else "single core")
+    if(dim(x)[1]/future::nbrOfWorkers() < 30) warning("Data splitted into many chunks. Please set fewer workers!")
+    split_factor <- factor(sample(1:future::nbrOfWorkers(), dim(x)[1], replace=TRUE))
+    split_x <- split(x, split_factor)
+    suppressMessages(
+      split_proc <- future.apply::future_lapply(split_x, function(x) fix_NA(x, na.strings=na.strings, track=track, parallel=FALSE))
+    )
+    x <- unsplit(split_proc, f=split_factor)
+    changes_par <- do.call(rbind, lapply(split_proc, function(x) attributes(x)$changes))
+    attr(x, "changes") <- changes_par[!duplicated(changes_par),]
+  } else{
+    changes_old <- attr(x, "changes")
+    old <- x
+    string <- paste(na.strings, collapse="|")
+    x <- as.data.frame(lapply(x, function(x) {
+      kk <- class(x)
+      x <- gsub(string, NA, x)
+      tryCatch(eval(parse(text=paste("as.", kk, "(x)", sep=""))), error=function(e) as.character(x))
+      }))
+    if(track){
+      variables <- names(old)[which(sapply(old, function(x) sum(is.na(x))) != sapply(x, function(x) sum(is.na(x))))]
+      changes <- do.call(rbind, lapply(variables, function(y){
+        observations <- rownames(x)[which((!is.na(old[, y]) | is.nan(old[, y])) & is.na(x[, y]))]
+        data.frame(variable=y,
+                   observation=observations,
+                   original=old[observations, y],
+                   new=x[observations, y],
+                   fun="fix_NA",
+                   row.names=NULL)
+        }))
+      if(!is.null(changes_old)){
+        attr(x, "changes") <- rbind(changes_old, changes)
+      } else {
+        attr(x, "changes") <- changes
+      }
     }
   }
-  return(output)
+  return(x)
 }
 
 #' fix_concat
