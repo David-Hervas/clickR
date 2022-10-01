@@ -18,11 +18,7 @@ nice_names <- function(x, select=1:ncol(x), tolower=TRUE, track=TRUE){
   new_names <- gsub("x_|X_","",gsub("_$", "", gsub("[_]+", "_",gsub("[.]+", "_",make.names(
     iconv(gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", old_names[select]))))), to="ASCII//TRANSLIT", sub="byte"))))))
   if(tolower) new_names <- tolower(new_names)
-  dupe_count <- sapply(1:length(new_names), function(i) {
-    sum(new_names[i] == new_names[1:i])
-  })
-  new_names[dupe_count > 1] <- paste(new_names[dupe_count >
-                                                 1], dupe_count[dupe_count > 1], sep = "_")
+  new_names <- make.unique(new_names, sep="_")
   names(x)[select] <- new_names
   new_names <- names(x)
   if(!identical(old_names, new_names)){
