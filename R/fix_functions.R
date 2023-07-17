@@ -59,10 +59,10 @@ nice_names <- function(x, select=1:ncol(x), tolower=TRUE, track=TRUE){
 fix_factors<-function(x, k=5, select=1:ncol(x), drop=TRUE, track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
-  candidate_variables <- (sapply(x, function(x) (is.numeric(x) |
-                                                   is.character(x)) &
-                                   length(unique(x))<=k)) |
-    (sapply(x, function(x) is.factor(x)))
+  candidate_variables <- sapply(x, function(x){
+    ((is.numeric(x) | is.character(x)) & length(unique(x)) <=k) |
+      is.factor(x)
+  })
   candidate_variables[-select] <- FALSE
   x[, candidate_variables] <- lapply(x[, candidate_variables, drop=FALSE],
                                      function(x) {

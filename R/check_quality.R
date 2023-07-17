@@ -111,6 +111,7 @@ ttrue <- function(x){
 #' @param id ID column to reference the found extreme values
 #' @param plot If the variable is numeric, should a boxplot be drawn?
 #' @param numeric If set to TRUE, forces the variable to be considered numeric
+#' @param k Number of different numeric values in a variable to be considered as numeric
 #' @param n Number of extreme values to extract
 #' @param output Format of the output. If TRUE, optimize for exporting as csv
 #' @param ... further arguments passed to boxplot()
@@ -122,14 +123,14 @@ ttrue <- function(x){
 #' check_quality(airquality$Ozone)  #For one variable
 #' lapply(airquality, check_quality)  #For a data.frame
 #' lapply(airquality, check_quality, output=TRUE)  #For a data.frame, one row per variable
-check_quality <- function(x, id=1:length(x), plot=TRUE, numeric=NULL, n=ifelse(is.numeric(x) | ttrue(numeric) | class(x) %in% "Date", 5, 2), output=FALSE, ...){
+check_quality <- function(x, id=1:length(x), plot=TRUE, numeric=NULL, k=5, n=ifelse(is.numeric(x) | ttrue(numeric) | class(x) %in% "Date", 5, 2), output=FALSE, ...){
   call_n <- !is.null(as.list(match.call())$n)
   num <- numeric
   date <- class(x) %in% "Date"
   numbers <- sum(may.numeric(x))
   offending_values<-NA
   if(is.null(numeric)){
-    if(numbers>(length(x)/10)) {
+    if(numbers>(length(x)/10) & unique(numeros(x)) > k) {
       num<-TRUE
       n<-max(c(n, 5*!call_n))} else num <- FALSE
   }
@@ -172,7 +173,7 @@ check_quality <- function(x, id=1:length(x), plot=TRUE, numeric=NULL, n=ifelse(i
                     N.Categories=N.Categories, Extremes_low=Extremes_low, Extremes_high=Extremes_high, Table=strtrim(Tabla2, 150),
                     Offenders=strtrim(offending_values, 150))
   } else{
-    res<-list(Summary=data.frame(n=length(x), NAs=NAs, whitespace=whitespace, numbers=numbers, strings=Strings), Extremes=if(num | date) Extremes else cbind(Table, N.Categories=c(rep("", n-1), length(table(x)))), Offending=offending_values)
+    res<-list(Summary=data.frame(n=length(x), NAs=NAs, whitespace=whitespace, numbers=numbers, strings=Strings, class=class(x)), Extremes=if(num | date) Extremes else cbind(Table, N.Categories=c(rep("", n-1), length(table(x)))), Offending=offending_values)
   }
   return(res)
 }
