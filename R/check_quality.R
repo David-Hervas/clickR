@@ -130,7 +130,7 @@ check_quality <- function(x, id=1:length(x), plot=TRUE, numeric=NULL, k=5, n=ife
   numbers <- sum(may.numeric(x))
   offending_values<-NA
   if(is.null(numeric)){
-    if(numbers>(length(x)/10) & unique(numeros(x)) > k) {
+    if(numbers>(length(x)/10) & length(unique(numeros(x))) > k) {
       num<-TRUE
       n<-max(c(n, 5*!call_n))} else num <- FALSE
   }
