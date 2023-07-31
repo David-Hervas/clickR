@@ -17,6 +17,6 @@
 #' @source \code{datasets} package
 #'
 #' @examples
-#' data(messy_mtcars)
+#' data(mtcars_messy)
 #' descriptive(mtcars_messy)
 "mtcars_messy"
