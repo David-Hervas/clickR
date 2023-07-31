@@ -5,7 +5,7 @@
 #'
 #' @docType data
 #'
-#' @usage data(messy_mtcars)
+#' @usage data(mtcars_messy)
 #'
 #' @format A data frame with 32 observations and 13 variables
 #'
@@ -18,5 +18,5 @@
 #'
 #' @examples
 #' data(messy_mtcars)
-#' descriptive(messy_mtcars)
-"messy_mtcars"
+#' descriptive(mtcars_messy)
+"mtcars_messy"
