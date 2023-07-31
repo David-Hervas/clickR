@@ -9,6 +9,7 @@ check_quality(
   id = 1:length(x),
   plot = TRUE,
   numeric = NULL,
+  k = 5,
   n = ifelse(is.numeric(x) | ttrue(numeric) | class(x) \%in\% "Date", 5, 2),
   output = FALSE,
   ...
@@ -22,6 +23,8 @@ check_quality(
 \item{plot}{If the variable is numeric, should a boxplot be drawn?}
 
 \item{numeric}{If set to TRUE, forces the variable to be considered numeric}
+
+\item{k}{Number of different numeric values in a variable to be considered as numeric}
 
 \item{n}{Number of extreme values to extract}
 
