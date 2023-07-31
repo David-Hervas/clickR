@@ -11,7 +11,7 @@ A data frame with 32 observations and 13 variables
 \code{datasets} package
 }
 \usage{
-data(mtcars_messy)
+mtcars_messy
 }
 \description{
 Modified version of the mtcars dataset with different types of errors
