@@ -18,7 +18,6 @@ Modified version of the mtcars dataset with different types of errors
 in the data. The dataset has 13 variables and 32 observations.
 }
 \examples{
-data(mtcars_messy)
 descriptive(mtcars_messy)
 }
 \references{
