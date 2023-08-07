@@ -1,3 +1,7 @@
+clickR 0.9.37
+* Added parallelization for some of the fix functions through the future package
+* Added example dataset mtcars_messy, which is derived from the mtcars dataset
+
 clickR 0.8.2
 
 * Now all fix functions working on data.frames have a new argument "select" for selecting on which variables to apply the function.
