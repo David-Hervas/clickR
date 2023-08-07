@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.com/David-Hervas/clickR.svg?branch=master)](https://app.travis-ci.com/github/David-Hervas/click)
+[![Build Status](https://api.travis-ci.com/David-Hervas/clickR.svg?branch=master)](https://app.travis-ci.com/github/David-Hervas/clickR)
 [![CRAN Version](http://www.r-pkg.org/badges/version/clickR)](https://CRAN.R-project.org/package=clickR)
 [![](http://cranlogs.r-pkg.org/badges/clickR)](https://CRAN.R-project.org/package=clickR)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/clickR)](https://CRAN.R-project.org/package=clickR)
