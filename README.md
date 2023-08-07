@@ -10,7 +10,7 @@ Tools for assessing data quality, performing exploratory analysis, and semi-auto
 # Installation
 ``` r
 # The stable version of clickR can be installed from CRAN with:
-install.packages("tidyverse")
+install.packages("clickR")
 
 # Alternatively, the development version can be installed from Github:
 remotes::install_github("David-hervas/clickR")
