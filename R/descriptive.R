@@ -449,16 +449,22 @@ kill.factors <- function(dat, k=10){
 #' @param info List the libraries found?
 #' @param load Should the libraries found be loaded?
 #' @export
-good2go <- function(path=getwd(), info=TRUE, load=TRUE){
-  files <- list.files(path=path, pattern="\\.R$")
-  libraries <- unique(do.call("c", lapply(files, function(x) {
+good2go <- function(path = getwd(), info = TRUE, load = TRUE){
+  files <- list.files(path = path, pattern = "\\.R$")
+  libraries <- do.call(c, lapply(files, function(x){
     x <- readLines(x)
-    x[grepl("library\\(|require\\(", x)]
-  }
-  )))
-  p_list <- gsub('\\"', "", gsub("\\)", "", gsub("library\\(|require\\(", "", libraries)))
-  if(load) lapply(p_list, function(x) require(x, character.only = TRUE, quietly=TRUE))
-  if(info) print(paste("Packages:", paste(p_list, collapse=", ")), quote=FALSE)
+    x[grepl("library\\(.+\\)|require\\(.+\\)", x)]
+  }))
+  p_list <- lapply(libraries, function(y){
+    kk <- regexpr("\\(.+\\)", y)
+    substr(y, kk+1, kk+attr(kk, "match.length")-2)
+  })
+  if (load)
+    lapply(p_list[!duplicated(p_list)], function(x) tryCatch(require(x, character.only = TRUE,
+                                                                     quietly = TRUE), error=function(e) warning("Error loading ", x)))
+  if (info)
+    print(paste("Packages:", paste(p_list[!duplicated(p_list)], collapse = ", ")),
+          quote = FALSE)
 }
 
 #' Forge
