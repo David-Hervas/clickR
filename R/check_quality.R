@@ -103,6 +103,28 @@ ttrue <- function(x){
   ttrue(x <= y)
 }
 
+#' between operator
+#'
+#' @description Operator equivalent to x >= lower.value & x <= upper.value
+#' @param x Vector for the left side of the operator
+#' @param y A vector of length two with the lower and upper values of the interval
+#' @return A logical vector of the same length as x
+#' @export
+`%between%` <- function(x, y){
+  x >= y[1] & x <= y[2]
+}
+
+#' between operator & not NA
+#'
+#' @description Operator equivalent to x >= lower.value & x <= upper.value & !is.na(x)
+#' @param x Vector for the left side of the operator
+#' @param y A vector of length two with the lower and upper values of the interval
+#' @return A logical vector of the same length as x
+#' @export
+`%betweenNA%` <- function(x, y){
+  x %>=NA% y[1] & x %<=NA% y[2]
+}
+
 
 #' Checks data quality of a variable
 #'
