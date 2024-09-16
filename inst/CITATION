@@ -1,0 +1,10 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "clickR: Semi-automatic pre-processing of messy data with change tracking for integral dataset cleaning",
+  author   = "Hervas, David and Fuente, David",
+  journal  = "SoftwareX",
+  year     = "2024",
+  volume   = "27",
+  pages    = "101865",
+  doi      = "10.1016/j.softx.2024.101865"
+)
