@@ -1,8 +1,9 @@
 Package: clickR
 Type: Package
 Title: Semi-Automatic Preprocessing of Messy Data with Change Tracking for Dataset Cleaning
-Version: 0.9.42
-Author: David Hervas Marin
+Version: 0.9.43
+Authors@R: person(given="David", family="Hervas Marin", role = c("aut", "cre"),
+                      email = "ddhervas@yahoo.es")
 Maintainer: David Hervas Marin <ddhervas@yahoo.es>
 Imports: beeswarm, future, future.apply, methods, stringdist
 Description: Tools for assessing data quality, performing exploratory analysis, and 
