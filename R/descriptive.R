@@ -501,9 +501,11 @@ forge <- function(data, affixes, force.fixed = NULL, var.name = "time"){
     positions <- which(names(data_ord) %in% force.fixed)
     indices[positions, ] <- FALSE
   }
-  cat("Repetitions for each variable: \n \n")
-  print(sort(table(unlist(lapply(indices, function(x) gsub(paste(affixes,
-    collapse = "|"), "", names(data_ord)[x])))), decreasing = TRUE))
+  message("Repetitions for each variable: \n \n",
+          sort(table(unlist(lapply(indices, function(x){
+            gsub(paste(affixes, collapse = "|"), "", names(data_ord)[x])
+            }
+            ))), decreasing = TRUE))
   listas <- lapply(indices, function(x) {
     setNames(data_ord[, x, drop = FALSE], gsub(paste(affixes,
       collapse = "|"), "", names(data_ord)[x]))
