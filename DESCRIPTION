@@ -1,7 +1,7 @@
 Package: clickR
 Type: Package
 Title: Semi-Automatic Preprocessing of Messy Data with Change Tracking for Dataset Cleaning
-Version: 0.9.44
+Version: 0.9.49
 Authors@R: person(given="David", family="Hervas Marin", role = c("aut", "cre"),
                       email = "ddhervas@yahoo.es")
 Maintainer: David Hervas Marin <ddhervas@yahoo.es>
@@ -10,7 +10,7 @@ Description: Tools for assessing data quality, performing exploratory analysis, 
     semi-automatic preprocessing of messy data with change tracking for integral dataset cleaning.
 License: GPL (>= 2)
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 NeedsCompilation: no
 Packaged: 2016-11-20 16:56:35 UTC; Aghila
 LazyData: true

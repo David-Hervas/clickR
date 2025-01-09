@@ -315,11 +315,12 @@ fxd <- function (d, use.probs = TRUE){
   formats <- c("%d-%m-%Y", "%Y-%m-%d", "%m-%d-%Y",
                "%d-%b-%Y", "%d-%B-%Y", "%y%b%d", "%d%b%y",
                "%d%m%Y", "%Y%m%d", "%m%d%Y", "%d%b%Y",
-               "%d%B%Y")
+               "%d%B%Y", "%d-%m-%y", "%m-%d-%y")
   Sys.setlocale("LC_TIME", "C")
-  prueba <- lapply(formats, function(x) as.Date(tolower(gsub("--",
-                                                             "-", gsub("[[:punct:]]", "-", gsub("[[:space:]]+", "",
-                                                                                                d)))), format = x))
+  d_stand <- tolower(gsub("--",
+                          "-", gsub("[[:punct:]]", "-", gsub("[[:space:]]+", "",
+                                                             d))))
+  prueba <- lapply(formats, function(x) as.Date(d_stand, format = x))
   text_dates <- do.call(c, lapply(d, text_date))
   text_dates2 <- do.call(c, lapply(d, function(x) {
     if (any(as.numeric(unlist(regmatches(x, gregexpr("[0-9]+",
@@ -328,10 +329,15 @@ fxd <- function (d, use.probs = TRUE){
     }
     else NA
   }))
-  prueba[[13]] <- text_dates
-  prueba[[14]] <- text_dates2
+  prueba[[15]] <- text_dates
+  prueba[[16]] <- text_dates2
   co <- lapply(prueba, function(x){
-    tryCatch(x[nchar(gsub("[^\\d]+", "", d, perl=TRUE)) == 8 & as.numeric(format(x, "%Y")) < 100] <- NA, error=function(e) rep(NA, length(x)))
+    tryCatch(x[as.numeric(format(x, "%Y")) < 100] <- NA, error=function(e) rep(NA, length(x)))
+    #tryCatch(x[nchar(gsub("[^\\d]+", "", d, perl=TRUE)) == 8 & as.numeric(format(x, "%Y")) < 100] <- NA, error=function(e) rep(NA, length(x)))
+    x
+  })
+  co[c(6, 7, 13, 14)] <- lapply(co[c(6, 7, 13, 14)], function(x){
+    tryCatch(x[sapply(strsplit(d_stand, "-"), function(x) any(nchar(x) %in% 4))] <- NA, error=function(e) rep(NA, length(x)))
     x
   })
   if (use.probs) {

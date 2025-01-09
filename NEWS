@@ -1,142 +1,73 @@
+clickR 0.9.45
+* Added new function for calculating scores (extreme value detection)
+
 clickR 0.9.37
 * Added parallelization for some of the fix functions through the future package
 * Added example dataset mtcars_messy, which is derived from the mtcars dataset
 
 clickR 0.8.2
-
 * Now all fix functions working on data.frames have a new argument "select" for selecting on which variables to apply the function.
 
 clickR 0.8.1
-
 * Added new experimental function f_replace() which works as 'find and replace' on data.frames.
 
-
-
 clickR 0.8.0
-
 * All report functions have been completely removed from the package. Please install the repmod package for accessing the report functions.
-
 * Bug fixes
 
-
 clickR 0.7.33
-
 * All report functions are now defunct. These functions have been moved to the new
 repmod package (https://CRAN.R-project.org/package=repmod)
-
 * Removed dependencies from boot, flextable, lme4, lmerTest, officer and xtable
-
 * Numerous bug fixes
 
-
 clickR 0.6.64
-
 * All report function are now deprecated and will be defunct in the next version.
 These funcions have been moved to the new repmod package (https://CRAN.R-project.org/package=repmod)
 
-
 clickR 0.5.38
-
 * Now fix.numerics() is able to fix numbers with thousands separators.
 
-
 clickR 0.5.27
-
-Changes:
-
 * Added new functions to track changes made by the different "fix" functions. See track_changes().
 
-
 clickR 0.4.30
-
-Changes:
-
 * Added new function search_scripts() for searching specific string into R scripts in a directory
 
-
 clickR 0.4.20
-
-Changes:
-
 * Added new function forge() for reshaping data from wide to long format
 
-
 clickR 0.4.1 (Release date: 2018-09-21)
-
-Changes:
-
 * Added new function good2go() for loading automatically all packages used in a project
 
-
 clickR 0.4.05 (Release date: 2018-06-21)
-
-Changes:
-
 * Removed dependency from reporteRs (and consequently from rJava)
 
-
 clickR 0.3.64 (Release date: 2018-04-21)
-
-Changes:
-
 * Added option to report.model (info=TRUE) so that the model call can be included in the exported table
 * Fixed small bugs regarding compatibility with brms models
 
-
 clickR 0.3.41 (Release date: 2018-04-01)
-
-Changes:
-
 * Removed dependency from brms
 
-
 clickR 0.3.40 (Release date: 2017-11-25)
-==============
-
-Changes:
-
 * Fixed bug in report.rq() function
 * mine.plot() now gives information about variable classes
 
-
-
-
 clickR 0.3.36 (Release date: 2017-10-28)
-==============
-
-Changes:
-
 * Minor fixes
 
-
-
 clickR 0.3.27 (Release date: 2017-09-03)
-==============
-
-Changes:
-
 * Descriptivo function is now defunct
 * Added support for reporting robust linear models and glmnet models
 * Fixed bugs in some report funtions
 
-
-
 clickR 0.3.2 (Release date: 2017-08-29)
-==============
-
-Changes:
-
 * Added descriptive() function as a revamp of the now deprecated descriptivo() function
 * Added cluster_var() function to perform variable clustering in exploratory analysis
 * Fixed bugs in some report funtions
 
-
-
 clickR 0.3.0 (Release date: 2017-07-23)
-==============
-
-Changes:
-
 * report(model) now returns an (invisible) list in addition to printing the nice output table
 * Added support for reporting models fitted using brms package
 * report.data.frame now accepts specifying number of decimal places
@@ -145,72 +76,30 @@ Changes:
 * Added function coefplot, which is called by plot.reportmodel, but also can be used to manually plot coefficients for unsupported models
 * Minor bug fixes
 
-
-
 clickR 0.2.9 (Release date: 2017-07-05)
-==============
-
-Changes:
-
 * Added nice_names() function to standardize variable names and remove non-ascii characters
 * Added function kill.factors() to remove factor class from variables with many levels (to character)
 * report.data.frame now only summarizes numeric and factor variables
 * Minor bug fixes
 
-
-
 clickR 0.2.6 (Release date: 2017-05-14)
-==============
-
-Changes:
-
 * Refined how fix.numerics() works
 
-
-
 clickR 0.2.4 (Release date: 2017-05-13)
-==============
-
-Changes:
-
 * Minor fixes to fix.numerics()
 
-
-
 clickR 0.2.3 (Release date: 2017-05-12)
-==============
-
-Changes:
-
 * Modified fix.numerics() to avoid massive coercions to NA
 
-
-
 clickR 0.2.1 (Release date: 2017-05-05)
-==============
-
-Changes:
-
 * Added peek() function for concise visualization of data.frames
 
-
-
 clickR 0.2.0 (Release date: 2017-02-20)
-==============
-
-Changes:
-
 * Added check_quality() function for quality control of the data
 * Fixed behaviour of fix.numerics() when dealing with leading whitespaces
 * Added number of observations to report.data.frame
 * Several minor bug fixes
 
-
-
 clickR 0.1.12 (Release date: 2016-12-07)
-==============
-
-Changes:
-
 * Improved behaviour of fix.numerics(), fix.dates() and fix.factors() functions.
 * Fixed a bug in report() that was generating duplicated files when exporting to word.

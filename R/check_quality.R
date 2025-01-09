@@ -271,3 +271,41 @@ bivariate_outliers <- function(x, threshold_r=10, threshold_b=1.5){
   rownames(output) <- NULL
   output
 }
+
+#' Estimate sample scores
+#'
+#' @description Calculates different scores to measure how much extreme are the different data points
+#' @param x A vector
+#' @param type 'z' calculates standard normal scores, 'z-out' calculates standard normal scores excluding
+#' each data point when computing the mean and the standard deviation, 't' calculates t scores,
+#' 'chisq' calculates chisquared scores, 'tukey' calculates scores based on the boxplot method,
+#' 'mad' calculates scores using median and mad instead of mean and sd.
+#' @importFrom stats mad
+#' @export
+#' @examples
+#' xscores(iris$Sepal.Length, type="z-out")
+xscores <- function(x, type="z"){
+  if(! type %in% c("z", "z-out", "t", "chisq", "tukey", "mad")) stop("Invalid method. Available methods are: 'z', 't', 'chisq', 'tukey' and 'mad'")
+  if(type=="z"){
+    score <- (x - mean(x))/sd(x)
+  }
+  if(type=="z-out"){
+    score <- sapply(1:length(x), function(y) (x[y] - mean(x[-y]))/sd(x[-y]))
+  }
+  if(type=="t"){
+    score <- (((x - mean(x))/sd(x)) * sqrt(length(x) - 2))/sqrt(length(x) - 1 - ((x - mean(x))/sd(x))^2)
+  }
+  if(type=="chisq"){
+    score <- (x - mean(x))^2/var(x)
+  }
+  if(type=="tukey"){
+    k <- quantile(x, probs=c(0.25, 0.75))
+    score <- ifelse(x < k[1], (x-k[1])/diff(k),
+                    ifelse(x > k[2], (x-k[2])/diff(k),
+                           ifelse(is.na(x), NA, 0)))
+  }
+  if(type=="mad"){
+    score <- (x - median(x))/mad(x)
+  }
+  score
+}
