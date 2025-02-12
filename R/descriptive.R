@@ -338,7 +338,7 @@ mine.plot <- function(x, fun=is.na, spacing=5, sort=F, show.x=TRUE, show.y=TRUE,
     variable <- names(x)[y]
     out <- fun(x[,y])
     id <- which(out)
-    value <- x[,y][out]
+    value <- x[,y][ttrue(out)]
     if(ttrue(any(out))) data.frame(variable = variable, id = id, value = as.character(value))
   }))
   output2 <- sapply(x, function(x) round(sum(fun(x))/length(x), 2))
