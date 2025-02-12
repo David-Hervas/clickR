@@ -330,7 +330,7 @@ mine.plot <- function(x, fun=is.na, spacing=5, sort=F, show.x=TRUE, show.y=TRUE,
   }
   for(i in 1:pad){
     axis(3, at=seq(0, 1, length=dim(x)[2])[seq(0 + i, dim(x)[2], by=pad)],
-         labels=sapply(x, function(x) round(100*sum(fun(x))/length(x)))[seq(0+i, dim(x)[2], by=pad)], cex.axis=0.6, lwd=0, line=-1+i/2)
+         labels=sapply(x, function(x) round(100*sum(fun(x), na.rm=TRUE)/length(x)))[seq(0+i, dim(x)[2], by=pad)], cex.axis=0.6, lwd=0, line=-1+i/2)
   }
   if(!hasArg("main")) mtext(paste("%", as.character(substitute(fun))), 3, line=max(pad/1.5, 2.5), cex=1.2)
   options(old.warn)
@@ -341,7 +341,7 @@ mine.plot <- function(x, fun=is.na, spacing=5, sort=F, show.x=TRUE, show.y=TRUE,
     value <- x[,y][ttrue(out)]
     if(ttrue(any(out))) data.frame(variable = variable, id = id, value = as.character(value))
   }))
-  output2 <- sapply(x, function(x) round(sum(fun(x))/length(x), 2))
+  output2 <- sapply(x, function(x) round(sum(fun(x), na.rm=TRUE)/length(x), 2))
   return(list(list = output1, summary = output2))
   par(old.par)
 }
