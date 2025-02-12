@@ -49,6 +49,8 @@ nice_names <- function(x, select=1:ncol(x), tolower=TRUE, track=TRUE){
 #' @param k Maximum number of different numeric values to be converted to factor
 #' @param select Numeric vector with the positions (all by default) to be affected by the function
 #' @param drop Drop similar levels?
+#' @param make.nice Remove problematic characters
+#' @param tolower Change all upper case characters to lower case
 #' @param track Keep track of changes?
 #' @export
 #' @examples
@@ -56,7 +58,7 @@ nice_names <- function(x, select=1:ncol(x), tolower=TRUE, track=TRUE){
 #' descriptive(mtcars)
 #' # After using fix_factors, factor variables are recognized as such.
 #' descriptive(fix_factors(mtcars))
-fix_factors<-function(x, k=5, select=1:ncol(x), drop=TRUE, track=TRUE){
+fix_factors<-function(x, k=5, select=1:ncol(x), drop=TRUE, make.nice=FALSE, tolower=FALSE, track=TRUE){
   changes_old <- attr(x, "changes")
   old <- x
   candidate_variables <- sapply(x, function(x){
@@ -66,8 +68,14 @@ fix_factors<-function(x, k=5, select=1:ncol(x), drop=TRUE, track=TRUE){
   candidate_variables[-select] <- FALSE
   x[, candidate_variables] <- lapply(x[, candidate_variables, drop=FALSE],
                                      function(x) {
-                                       if(drop) {factor(iconv(droplevels(as.factor(gsub("^ *|(?<= ) | *$", "", tolower(as.character(x)), perl=TRUE))), to="ASCII//TRANSLIT"))
-                                       } else factor(x)
+                                       if(drop) {x <- iconv(droplevels(as.factor(gsub("^ *|(?<= ) | *$", "", tolower(as.character(x)), perl=TRUE))), to="ASCII//TRANSLIT")
+                                       }
+                                       if(make.nice){
+                                         x <- gsub("x_|X_","",gsub("_$", "", gsub("[_]+", "_",gsub("[.]+", "_",make.names(
+                                           iconv(gsub("^[ ]+", "",gsub("%", "percent",gsub("\"", "",gsub("'", "",gsub("\u00BA", "", x))))), to="ASCII//TRANSLIT", sub="byte"))))))
+                                       }
+                                       if(tolower) x <- tolower(x)
+                                       factor(x)
                                      })
   if(!identical(old, x)){
     if(track){

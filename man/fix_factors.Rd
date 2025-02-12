@@ -4,7 +4,15 @@
 \alias{fix_factors}
 \title{Fix factors imported as numerics}
 \usage{
-fix_factors(x, k = 5, select = 1:ncol(x), drop = TRUE, track = TRUE)
+fix_factors(
+  x,
+  k = 5,
+  select = 1:ncol(x),
+  drop = TRUE,
+  make.nice = FALSE,
+  tolower = FALSE,
+  track = TRUE
+)
 }
 \arguments{
 \item{x}{A data.frame}
@@ -14,6 +22,10 @@ fix_factors(x, k = 5, select = 1:ncol(x), drop = TRUE, track = TRUE)
 \item{select}{Numeric vector with the positions (all by default) to be affected by the function}
 
 \item{drop}{Drop similar levels?}
+
+\item{make.nice}{Remove problematic characters}
+
+\item{tolower}{Change all upper case characters to lower case}
 
 \item{track}{Keep track of changes?}
 }
