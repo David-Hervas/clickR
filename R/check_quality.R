@@ -286,26 +286,27 @@ bivariate_outliers <- function(x, threshold_r=10, threshold_b=1.5){
 #' xscores(iris$Sepal.Length, type="z-out")
 xscores <- function(x, type="z"){
   if(! type %in% c("z", "z-out", "t", "chisq", "tukey", "mad")) stop("Invalid method. Available methods are: 'z', 't', 'chisq', 'tukey' and 'mad'")
+  if(any(is.na(x))) warning("Missing data detected. Score computations will omit missing observations")
   if(type=="z"){
-    score <- (x - mean(x))/sd(x)
+    score <- (x - mean(x, na.rm=TRUE))/sd(x, na.rm=TRUE)
   }
   if(type=="z-out"){
-    score <- sapply(1:length(x), function(y) (x[y] - mean(x[-y]))/sd(x[-y]))
+    score <- sapply(1:length(x), function(y) (x[y] - mean(x[-y], na.rm=TRUE))/sd(x[-y], na.rm=TRUE))
   }
   if(type=="t"){
-    score <- (((x - mean(x))/sd(x)) * sqrt(length(x) - 2))/sqrt(length(x) - 1 - ((x - mean(x))/sd(x))^2)
+    score <- (((x - mean(x, na.rm=TRUE))/sd(x, na.rm=TRUE)) * sqrt(length(x) - 2))/sqrt(length(x) - 1 - ((x - mean(x, na.rm=TRUE))/sd(x, na.rm=TRUE))^2)
   }
   if(type=="chisq"){
-    score <- (x - mean(x))^2/var(x)
+    score <- (x - mean(x, na.rm=TRUE))^2/var(x, na.rm=TRUE)
   }
   if(type=="tukey"){
-    k <- quantile(x, probs=c(0.25, 0.75))
+    k <- quantile(x, probs=c(0.25, 0.75), na.rm=TRUE)
     score <- ifelse(x < k[1], (x-k[1])/diff(k),
                     ifelse(x > k[2], (x-k[2])/diff(k),
                            ifelse(is.na(x), NA, 0)))
   }
   if(type=="mad"){
-    score <- (x - median(x))/mad(x)
+    score <- (x - median(x, na.rm=TRUE))/mad(x, na.rm=TRUE)
   }
   score
 }
