@@ -133,7 +133,7 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
       descriptive(x, z, ignore.na, by=NULL)
       stop("Only one variable in the data. Can't be used as grouping variable")
     }
-    x_sin <- x_sin[!is.na(by_v), ]
+    x_sin <- x_sin[!is.na(by_v), ,drop=FALSE]
     by_v <- by_v[!is.na(by_v)]
     by_v <- factor(by_v)
     niveles <- levels(by_v)
