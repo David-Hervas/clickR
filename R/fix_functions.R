@@ -337,8 +337,13 @@ fxd <- function (d, use.probs = TRUE){
     }
     else NA
   }))
+  fecha_excel <- function(x){
+    suppressWarnings(tryCatch(if(x %<=NA% 59) as.Date("1899-12-31") + as.numeric(x) else as.Date("1899-12-31") + as.numeric(x) -1, error=function(e) NA))
+  }
+  excel_dates <- do.call(c, lapply(d, fecha_excel))
   prueba[[15]] <- text_dates
   prueba[[16]] <- text_dates2
+  prueba[[17]] <- excel_dates
   co <- lapply(prueba, function(x){
     tryCatch(x[as.numeric(format(x, "%Y")) < 100] <- NA, error=function(e) rep(NA, length(x)))
     #tryCatch(x[nchar(gsub("[^\\d]+", "", d, perl=TRUE)) == 8 & as.numeric(format(x, "%Y")) < 100] <- NA, error=function(e) rep(NA, length(x)))
