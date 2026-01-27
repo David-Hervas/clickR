@@ -142,7 +142,7 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
     cat("-------------------------------")
     cat("\n")
     for (i in 1:length(niveles)){
-      x_g <- x_sin[by_v == niveles[i], ]
+      x_g <- x_sin[by_v == niveles[i], ,drop=FALSE]
       cat("Level ", by, ": ", niveles[i], sep="")
       cat("\n")
       descriptive(x=x_g, z=z, ignore.na=ignore.na, by=NULL)
