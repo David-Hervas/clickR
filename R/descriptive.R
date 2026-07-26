@@ -451,19 +451,16 @@ kill.factors <- function(dat, k=10){
 #' @export
 good2go <- function(path = getwd(), info = TRUE, load = TRUE){
   files <- list.files(path = path, pattern = "\\.R$")
-  libraries <- do.call(c, lapply(files, function(x){
+  libraries <- as.vector(do.call(c, lapply(files, function(x) {
     x <- readLines(x)
-    x[grepl("library\\(.+\\)|require\\(.+\\)", x)]
-  }))
-  p_list <- lapply(libraries, function(y){
-    kk <- regexpr("\\(.+\\)", y)
-    substr(y, kk+1, kk+attr(kk, "match.length")-2)
-  })
+    x <- x[grepl("library\\(.+\\)|require\\(.+\\)", x)]
+    sapply(x, function(x) sub(".*\\((.*?)\\).*", "\\1", x))
+  })))
   if (load)
-    lapply(p_list[!duplicated(p_list)], function(x) tryCatch(require(x, character.only = TRUE,
+    lapply(libraries[!duplicated(libraries)], function(x) tryCatch(require(x, character.only = TRUE,
                                                                      quietly = TRUE), error=function(e) warning("Error loading ", x)))
   if (info)
-    print(paste("Packages:", paste(p_list[!duplicated(p_list)], collapse = ", ")),
+    print(paste("Packages:", paste(libraries[!duplicated(libraries)], collapse = ", ")),
           quote = FALSE)
 }
 
