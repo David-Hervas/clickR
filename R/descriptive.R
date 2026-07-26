@@ -458,7 +458,8 @@ good2go <- function(path = getwd(), info = TRUE, load = TRUE){
   })))
   if (load)
     lapply(libraries[!duplicated(libraries)], function(x) tryCatch(require(x, character.only = TRUE,
-                                                                     quietly = TRUE), error=function(e) warning("Error loading ", x)))
+                                                                     quietly = TRUE), error=function(e) warning("Error loading ", x),
+                                                                   warning=function(w) warning("Warning loading ", x)))
   if (info)
     print(paste("Packages:", paste(libraries[!duplicated(libraries)], collapse = ", ")),
           quote = FALSE)
