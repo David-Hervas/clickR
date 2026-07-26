@@ -456,8 +456,7 @@ good2go <- function(path = getwd(), info = TRUE, load = TRUE){
     x <- x[grepl("library\\(.+\\)|require\\(.+\\)", x)]
     sapply(x, function(x) sub(".*\\((.*?)\\).*", "\\1", x))
   })))
-
-  if(any(libraries %notin% installed.packages()[,1])) warning("Package(s) ", libraries[libraries %notin% installed.packages()[,1]], " not installed")
+  if(any(libraries %notin% installed.packages()[,1])) warning("Package(s) ", paste(libraries[libraries %notin% installed.packages()[,1]], collapse = ", "), " not available")
   if (load)
     lapply(libraries[!duplicated(libraries)], function(x) tryCatch(require(x, character.only = TRUE,
                                                                      quietly = TRUE), error=function(e) warning("Error loading ", x)))
@@ -494,32 +493,94 @@ good2go <- function(path = getwd(), info = TRUE, load = TRUE){
 #' forge(df3, affixes=c("1", "2", "3"))
 #' forge(df3, affixes=c("1", "2", "3"), force.fixed = c("var1"))
 forge <- function(data, affixes, force.fixed = NULL, var.name = "time"){
-  data_ord <- data[, order(names(data))]
-  indices <- data.frame(sapply(affixes, function(x) grepl(x, names(data_ord))))
-  if(!is.null(force.fixed)){
-    positions <- which(names(data_ord) %in% force.fixed)
+
+  ## ---- input validation --------------------------------------------------
+  if (!is.data.frame(data))
+    stop("'data' must be a data.frame.")
+  if (!is.character(affixes) || length(affixes) == 0)
+    stop("'affixes' must be a non-empty character vector.")
+  if (anyDuplicated(affixes))
+    stop("'affixes' must not contain duplicated values.")
+  if (!is.null(force.fixed)) {
+    unmatched <- setdiff(force.fixed, names(data))
+    if (length(unmatched) > 0)
+      warning("The following 'force.fixed' names do not match any column ",
+              "in 'data' and will have no effect: ",
+              paste(unmatched, collapse = ", "))
+  }
+
+  # escape regex metacharacters so affixes are matched literally
+  esc <- function(x) gsub("([][{}()+*^$|\\\\.?])", "\\\\\\1", x)
+
+  data_ord <- data[, order(names(data)), drop = FALSE]
+  nms <- names(data_ord)
+
+  ## ---- match each affix as a prefix or a suffix ---------------------------
+  # For a given affix, a column name matches if the affix sits at the start
+  # or at the end of the name. The "base" name is the column name with the
+  # affix removed from whichever side matched (prefix wins if, in some
+  # degenerate case, both sides would match).
+  match_affix <- function(affix) {
+    a <- esc(affix)
+    starts <- grepl(paste0("^", a), nms)
+    ends   <- grepl(paste0(a, "$"), nms)
+    ends_only <- ends & !starts
+    base <- nms
+    base[starts]    <- sub(paste0("^", a), "", nms[starts])
+    base[ends_only] <- sub(paste0(a, "$"), "", nms[ends_only])
+    list(matched = starts | ends, base = base)
+  }
+  matches <- lapply(affixes, match_affix)
+  names(matches) <- affixes
+
+  indices <- as.data.frame(lapply(matches, `[[`, "matched"))
+  names(indices) <- affixes
+
+  if (!is.null(force.fixed)) {
+    positions <- which(nms %in% force.fixed)
     indices[positions, ] <- FALSE
   }
-  message("Repetitions for each variable: \n \n",
-          sort(table(unlist(lapply(indices, function(x){
-            gsub(paste(affixes, collapse = "|"), "", names(data_ord)[x])
-            }
-            ))), decreasing = TRUE))
-  listas <- lapply(indices, function(x) {
-    setNames(data_ord[, x, drop = FALSE], gsub(paste(affixes,
-      collapse = "|"), "", names(data_ord)[x]))
-  })
+
+  if (!any(unlist(indices)))
+    stop("No columns in 'data' matched any of the supplied 'affixes'.")
+
+  ## ---- summary message -----------------------------------------------------
+  base_per_affix <- mapply(function(m, idx) m$base[idx],
+                           matches, indices, SIMPLIFY = FALSE)
+  tab <- sort(table(unlist(base_per_affix)), decreasing = TRUE)
+  message("Repetitions for each variable: \n\n",
+          paste(names(tab), tab, sep = ": ", collapse = "\n"))
+
+  ## ---- build the long blocks, one per affix --------------------------------
+  listas <- mapply(function(m, idx) {
+    setNames(data_ord[, idx, drop = FALSE], m$base[idx])
+  }, matches, indices, SIMPLIFY = FALSE)
+
   variables <- unique(unlist(lapply(listas, names)))
+
   listas <- lapply(listas, function(x) {
-    df <- data.frame(x, matrix(NA, nrow = nrow(data), ncol = length(variables[!variables %in%
-                                                                                names(x)])))
-    names(df) <- c(names(x), variables[!variables %in% names(x)])
+    missing_vars <- variables[!variables %in% names(x)]
+    df <- data.frame(x, matrix(NA, nrow = nrow(data), ncol = length(missing_vars)))
+    names(df) <- c(names(x), missing_vars)
     df
   })
+
   long <- do.call("rbind", listas)
-  fixed <- data_ord[, !apply(indices, 1, any), drop=FALSE]
-  out <- data.frame(fixed[, na.omit(match(names(data), names(fixed))), drop=FALSE][rep(1:nrow(data),
-    length(affixes)), ,drop=FALSE], long, affix = rep(affixes, each = nrow(data)))
+
+  ## ---- fixed (non repeated) variables --------------------------------------
+  fixed <- data_ord[, !apply(indices, 1, any), drop = FALSE]
+
+  out <- data.frame(
+    fixed[, na.omit(match(names(data), names(fixed))), drop = FALSE][
+      rep(seq_len(nrow(data)), length(affixes)), , drop = FALSE],
+    long,
+    affix = rep(affixes, each = nrow(data))
+  )
+
+  if (var.name %in% names(out)[-ncol(out)])
+    stop("'var.name' (\"", var.name, "\") collides with an existing column ",
+         "name in the result. Choose a different 'var.name'.")
+
   names(out)[ncol(out)] <- var.name
   out
 }
