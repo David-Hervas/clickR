@@ -456,10 +456,11 @@ good2go <- function(path = getwd(), info = TRUE, load = TRUE){
     x <- x[grepl("library\\(.+\\)|require\\(.+\\)", x)]
     sapply(x, function(x) sub(".*\\((.*?)\\).*", "\\1", x))
   })))
+
+  if(any(libraries %notin% installed.packages()[,1])) warning("Package(s) ", libraries[libraries %notin% installed.packages()[,1]], " not installed")
   if (load)
     lapply(libraries[!duplicated(libraries)], function(x) tryCatch(require(x, character.only = TRUE,
-                                                                     quietly = TRUE), error=function(e) warning("Error loading ", x),
-                                                                   warning=function(w) warning("Warning loading ", x)))
+                                                                     quietly = TRUE), error=function(e) warning("Error loading ", x)))
   if (info)
     print(paste("Packages:", paste(libraries[!duplicated(libraries)], collapse = ", ")),
           quote = FALSE)
