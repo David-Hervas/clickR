@@ -247,11 +247,11 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
       }
     } else { summary1 <- NULL}
 
-    if(any(nums %in% c("factor", "character", "logical"))){
-      summary2 <- do.call(rbind, lapply(x[, nums %in% c("factor", "character", "logical"), drop=FALSE], resumen2))
+    if(any(nums %in% c("factor", "character", "ordered", "logical"))){
+      summary2 <- do.call(rbind, lapply(x[, nums %in% c("factor", "character", "ordered", "logical"), drop=FALSE], resumen2))
       if(print){
         cat("\n")
-        cat("Categorical variables (", sum(nums %in% c("factor", "character", "logical")), ")", sep="")
+        cat("Categorical variables (", sum(nums %in% c("factor", "character", "ordered", "logical")), ")", sep="")
         cat("\n")
         print(summary2, quote=FALSE)
       }
