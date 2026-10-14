@@ -152,7 +152,7 @@ descriptive <- function(x, z=3, ignore.na=TRUE, by=NULL, print=TRUE){
     }
   } else{
     #Splitter (Splits data.frame: Numeric and categorical part)
-    nums <- sapply(x, class)
+    nums <- sapply(x, function(x) class(x)[1])
 
     #Numeric summary
     resumen <- function(y){
